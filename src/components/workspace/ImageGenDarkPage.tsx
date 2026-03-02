@@ -28,7 +28,7 @@ const ImageGenDarkPage = () => {
         {/* Gallery section */}
         <div className="px-4 pb-8 sm:px-6 lg:px-8">
           <h2 className="mb-5 mt-2 text-lg font-semibold text-workspace-panel-foreground/80">
-            🎨 浏览创意
+            🎨 灵感显影室
           </h2>
           <MasonryGallery />
         </div>
