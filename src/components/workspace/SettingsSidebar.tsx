@@ -136,11 +136,14 @@ const SettingsSidebar = ({ open, onClose }: SettingsSidebarProps) => {
   );
 };
 
-const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+const Section = ({ title, children, extra }: { title: string; children: React.ReactNode; extra?: React.ReactNode }) => (
   <div className="space-y-2.5">
-    <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
-      {title}
-    </h3>
+    <div className="flex items-center justify-between">
+      <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
+        {title}
+      </h3>
+      {extra}
+    </div>
     {children}
   </div>
 );
