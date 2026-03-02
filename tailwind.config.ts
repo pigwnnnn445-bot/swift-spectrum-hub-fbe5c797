@@ -57,6 +57,16 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        workspace: {
+          panel: "hsl(var(--workspace-panel))",
+          "panel-foreground": "hsl(var(--workspace-panel-foreground))",
+          surface: "hsl(var(--workspace-surface))",
+          "surface-foreground": "hsl(var(--workspace-surface-foreground))",
+          chip: "hsl(var(--workspace-chip))",
+          "chip-active": "hsl(var(--workspace-chip-active))",
+          border: "hsl(var(--workspace-border))",
+          neon: "hsl(var(--workspace-neon))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
