@@ -1,14 +1,13 @@
-import { useState } from "react";
 import { Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface StickyPromptBarProps {
   visible: boolean;
+  prompt: string;
+  onPromptChange: (value: string) => void;
 }
 
-const StickyPromptBar = ({ visible }: StickyPromptBarProps) => {
-  const [prompt, setPrompt] = useState("");
-
+const StickyPromptBar = ({ visible, prompt, onPromptChange }: StickyPromptBarProps) => {
   return (
     <div
       className={cn(
@@ -22,7 +21,7 @@ const StickyPromptBar = ({ visible }: StickyPromptBarProps) => {
             <input
               type="text"
               value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
+              onChange={(e) => onPromptChange(e.target.value)}
               placeholder="输入您的提示词，比如：可爱的猫"
               className="flex-1 bg-transparent px-5 py-3 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/40 focus:outline-none"
             />

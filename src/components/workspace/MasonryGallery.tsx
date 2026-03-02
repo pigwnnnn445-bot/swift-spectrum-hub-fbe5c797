@@ -43,11 +43,15 @@ const galleryData: GalleryItem[] = [
   { id: 27, image: zenImg, type: "landscape", title: "枫叶庭院", description: "秋日日式庭院，红枫倒映在池塘中，宁静致远", height: 300 },
 ];
 
-const MasonryGallery = () => {
+interface MasonryGalleryProps {
+  onUsePrompt?: (prompt: string) => void;
+}
+
+const MasonryGallery = ({ onUsePrompt }: MasonryGalleryProps) => {
   return (
     <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-3">
       {galleryData.map((item) => (
-        <GalleryCard key={item.id} item={item} />
+        <GalleryCard key={item.id} item={item} onUsePrompt={onUsePrompt} />
       ))}
     </div>
   );
