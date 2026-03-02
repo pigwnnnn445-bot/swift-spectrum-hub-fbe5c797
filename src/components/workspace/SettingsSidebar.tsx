@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, X } from "lucide-react";
+import { X } from "lucide-react";
 import ModelSelectCard from "./ModelSelectCard";
 import OptionChipGroup from "./OptionChipGroup";
 import UploadReferencePanel from "./UploadReferencePanel";
@@ -37,7 +37,6 @@ const SettingsSidebar = ({ open, onClose }: SettingsSidebarProps) => {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Settings className="h-4 w-4 text-workspace-panel-foreground/60" />
               <h2 className="text-base font-semibold text-workspace-surface-foreground">图像生成</h2>
             </div>
             <button onClick={onClose} className="lg:hidden text-workspace-panel-foreground/60 hover:text-workspace-surface-foreground">
