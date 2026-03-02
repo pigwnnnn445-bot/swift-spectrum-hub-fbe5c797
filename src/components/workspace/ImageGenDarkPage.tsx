@@ -1,11 +1,30 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Menu } from "lucide-react";
 import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
 import MasonryGallery from "./MasonryGallery";
+import StickyPromptBar from "./StickyPromptBar";
 
 const ImageGenDarkPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [heroPromptVisible, setHeroPromptVisible] = useState(true);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const scrollEl = scrollRef.current;
+    if (!scrollEl || !heroRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setHeroPromptVisible(entry.isIntersecting);
+      },
+      { root: scrollEl, threshold: 0 }
+    );
+
+    observer.observe(heroRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
@@ -13,7 +32,10 @@ const ImageGenDarkPage = () => {
       <SettingsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Right main area */}
-      <main className="flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
+      <main ref={scrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
+        {/* Sticky prompt bar */}
+        <StickyPromptBar visible={!heroPromptVisible} />
+
         {/* Mobile menu trigger */}
         <button
           onClick={() => setSidebarOpen(true)}
@@ -24,6 +46,8 @@ const ImageGenDarkPage = () => {
 
         {/* Hero area */}
         <HeroPromptBar />
+        {/* Sentinel to detect when hero prompt scrolls out */}
+        <div ref={heroRef} className="h-0 w-0" />
 
         {/* Gallery section */}
         <div className="px-4 pb-8 sm:px-6 lg:px-8">
