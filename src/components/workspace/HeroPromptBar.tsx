@@ -1,4 +1,5 @@
 import { useRef, useEffect, useCallback } from "react";
+import { Zap } from "lucide-react";
 import heroImg from "@/assets/hero-mountains.jpg";
 
 interface HeroPromptBarProps {
