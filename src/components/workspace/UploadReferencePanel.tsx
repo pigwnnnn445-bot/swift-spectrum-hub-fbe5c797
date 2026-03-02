@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { Upload, Minus, Plus } from "lucide-react";
+import { Upload, Minus, Plus, X } from "lucide-react";
+import { toast } from "sonner";
 import type { UploadRefConfig } from "@/config/modelConfig";
+
+const ACCEPTED_FORMATS = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+const MAX_SIZE_MB = 10;
+const MIN_RESOLUTION = 300;
 
 interface UploadReferencePanelProps {
   config: UploadRefConfig;
@@ -85,23 +90,105 @@ const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
   );
 };
 
+const validateFile = (file: File): Promise<{ valid: boolean; preview?: string }> => {
+  return new Promise((resolve) => {
+    if (!ACCEPTED_FORMATS.includes(file.type)) {
+      toast.error("请上传jpeg,png,jpg,webp的图片");
+      return resolve({ valid: false });
+    }
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      toast.warning("照片大小请勿超过10M。如超出，系统将自动为您压缩");
+    }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      if (img.width < MIN_RESOLUTION || img.height < MIN_RESOLUTION) {
+        toast.error("为了保证生图质量，请您上传的图片分辨率大于300px*300px");
+        URL.revokeObjectURL(url);
+        return resolve({ valid: false });
+      }
+      resolve({ valid: true, preview: url });
+    };
+    img.onerror = () => {
+      toast.error("图片加载失败，请重试");
+      URL.revokeObjectURL(url);
+      resolve({ valid: false });
+    };
+    img.src = url;
+  });
+};
+
 const UploadZone = ({ multi, placeholder }: { multi: boolean; placeholder: string }) => {
   const single = !multi;
   const count = multi ? 2 : 1;
+  const [previews, setPreviews] = useState<(string | null)[]>(Array(count).fill(null));
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const handleClick = (index: number) => {
+    inputRefs.current[index]?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = "";
+    const result = await validateFile(file);
+    if (result.valid && result.preview) {
+      setPreviews((prev) => {
+        const next = [...prev];
+        if (prev[index]) URL.revokeObjectURL(prev[index]!);
+        next[index] = result.preview!;
+        return next;
+      });
+    }
+  };
+
+  const handleRemove = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    setPreviews((prev) => {
+      const next = [...prev];
+      if (prev[index]) URL.revokeObjectURL(prev[index]!);
+      next[index] = null;
+      return next;
+    });
+  };
+
   return (
     <div className={cn("grid gap-2", multi ? "grid-cols-2" : "grid-cols-1")}>
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
+          onClick={() => handleClick(i)}
           className={cn(
-            "flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-workspace-border/60 bg-workspace-chip/20 transition-colors hover:border-primary/40 hover:bg-workspace-chip/40",
+            "relative flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-workspace-border/60 bg-workspace-chip/20 transition-colors hover:border-primary/40 hover:bg-workspace-chip/40 overflow-hidden",
             single ? "aspect-video" : "aspect-square"
           )}
         >
-          <Upload className="mb-1 h-5 w-5 text-workspace-panel-foreground/40" />
-          <span className="text-[10px] text-workspace-panel-foreground/40 text-center px-1">
-            {placeholder}
-          </span>
+          <input
+            ref={(el) => { inputRefs.current[i] = el; }}
+            type="file"
+            accept=".jpeg,.jpg,.png,.webp"
+            className="hidden"
+            onChange={(e) => handleFileChange(e, i)}
+          />
+          {previews[i] ? (
+            <>
+              <img src={previews[i]!} alt="preview" className="absolute inset-0 h-full w-full object-cover" />
+              <button
+                onClick={(e) => handleRemove(e, i)}
+                className="absolute top-1.5 right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+              >
+                <X className="h-3 w-3 text-white" />
+              </button>
+            </>
+          ) : (
+            <>
+              <Upload className="mb-1 h-5 w-5 text-workspace-panel-foreground/40" />
+              <span className="text-[10px] text-workspace-panel-foreground/40 text-center px-1">
+                {placeholder}
+              </span>
+            </>
+          )}
         </div>
       ))}
     </div>
