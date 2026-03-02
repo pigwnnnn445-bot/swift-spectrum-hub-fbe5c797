@@ -86,6 +86,7 @@ const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
 };
 
 const UploadZone = ({ multi, placeholder }: { multi: boolean; placeholder: string }) => {
+  const single = !multi;
   const count = multi ? 2 : 1;
   return (
     <div className={cn("grid gap-2", multi ? "grid-cols-2" : "grid-cols-1")}>
