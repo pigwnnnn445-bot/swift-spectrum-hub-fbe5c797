@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, X } from "lucide-react";
+import { X } from "lucide-react";
 import ModelSelectCard from "./ModelSelectCard";
 import OptionChipGroup from "./OptionChipGroup";
 import UploadReferencePanel from "./UploadReferencePanel";
