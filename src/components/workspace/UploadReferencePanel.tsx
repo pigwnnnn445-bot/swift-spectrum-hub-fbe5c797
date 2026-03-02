@@ -58,12 +58,15 @@ const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
         </div>
       )}
 
-      {/* Upload areas — key by activeType to preserve each tab's state independently */}
-      <UploadZone
-        key={activeType}
-        multi={isPerson ? false : config.multiUpload}
-        placeholder="单击或拖动图像即可上传"
-      />
+      {/* Upload areas — render all types, show only active to preserve state */}
+      {config.types?.map((type) => (
+        <div key={type.id} className={cn(activeType !== type.id && "hidden")}>
+          <UploadZone
+            multi={type.id === "person" ? false : config.multiUpload}
+            placeholder="单击或拖动图像即可上传"
+          />
+        </div>
+      ))}
 
       {/* Similarity control for person type */}
       {isPerson && (
