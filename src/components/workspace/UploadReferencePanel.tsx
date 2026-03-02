@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { Upload, Minus, Plus } from "lucide-react";
+import { Upload, Minus, Plus, X } from "lucide-react";
+import { toast } from "sonner";
 import type { UploadRefConfig } from "@/config/modelConfig";
+
+const ACCEPTED_FORMATS = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+const MAX_SIZE_MB = 10;
+const MIN_RESOLUTION = 300;
 
 interface UploadReferencePanelProps {
   config: UploadRefConfig;
