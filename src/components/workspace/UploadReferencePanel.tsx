@@ -27,6 +27,7 @@ const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
     return (
       <div className="space-y-3">
         <UploadZone
+          key="simple"
           multi={config.multiUpload}
           placeholder={config.placeholder ?? "将图片拖至此处或单击上传"}
         />
@@ -57,8 +58,9 @@ const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
         </div>
       )}
 
-      {/* Upload areas */}
+      {/* Upload areas — key by activeType to preserve each tab's state independently */}
       <UploadZone
+        key={activeType}
         multi={isPerson ? false : config.multiUpload}
         placeholder="单击或拖动图像即可上传"
       />
