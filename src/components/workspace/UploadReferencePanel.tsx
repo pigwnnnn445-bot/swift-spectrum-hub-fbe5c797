@@ -74,7 +74,7 @@ const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
           <span className="text-xs text-workspace-panel-foreground/60">相似</span>
           <div className="flex items-center gap-3">
             <button
-              onClick={() => handleSimilarityChange(-5)}
+              onClick={() => handleSimilarityChange(-1)}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 transition-colors"
             >
               <Minus className="h-4 w-4 text-workspace-panel-foreground" />
@@ -83,7 +83,7 @@ const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
               {similarity}
             </span>
             <button
-              onClick={() => handleSimilarityChange(5)}
+              onClick={() => handleSimilarityChange(1)}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 transition-colors"
             >
               <Plus className="h-4 w-4 text-workspace-panel-foreground" />
