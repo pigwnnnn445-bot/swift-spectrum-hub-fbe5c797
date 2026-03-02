@@ -31,8 +31,8 @@ const GalleryCard = ({ item }: GalleryCardProps) => {
         <p className="text-xs text-workspace-surface-foreground/90 leading-relaxed line-clamp-3 mb-2">
           {item.description}
         </p>
-        <button className="self-start rounded-lg bg-gradient-to-r from-primary to-workspace-neon px-4 py-1.5 text-xs font-medium text-workspace-surface-foreground transition-all hover:brightness-110">
-          Create!
+        <button className="w-[90%] mx-auto rounded-lg bg-gradient-to-r from-primary to-workspace-neon px-4 py-1.5 text-xs font-medium text-workspace-surface-foreground transition-all hover:brightness-110 text-center">
+          制作同款
         </button>
       </div>
     </div>
