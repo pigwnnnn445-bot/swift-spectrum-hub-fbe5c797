@@ -87,6 +87,7 @@ const SettingsSidebar = ({ open, onClose }: SettingsSidebarProps) => {
                 options={features.ratios}
                 selected={ratio}
                 onSelect={setRatio}
+                maxVisible={4}
               />
             </Section>
           )}
