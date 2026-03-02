@@ -27,6 +27,7 @@ const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
     return (
       <div className="space-y-3">
         <UploadZone
+          key="simple"
           multi={config.multiUpload}
           placeholder={config.placeholder ?? "将图片拖至此处或单击上传"}
         />
@@ -57,11 +58,15 @@ const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
         </div>
       )}
 
-      {/* Upload areas */}
-      <UploadZone
-        multi={isPerson ? false : config.multiUpload}
-        placeholder="单击或拖动图像即可上传"
-      />
+      {/* Upload areas — render all types, show only active to preserve state */}
+      {config.types?.map((type) => (
+        <div key={type.id} className={cn(activeType !== type.id && "hidden")}>
+          <UploadZone
+            multi={type.id === "person" ? false : config.multiUpload}
+            placeholder="单击或拖动图像即可上传"
+          />
+        </div>
+      ))}
 
       {/* Similarity control for person type */}
       {isPerson && (
