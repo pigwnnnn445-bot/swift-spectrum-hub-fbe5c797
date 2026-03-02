@@ -128,7 +128,7 @@ const SettingsSidebar = ({ open, onClose }: SettingsSidebarProps) => {
           {/* Upload Reference */}
           {features.uploadRef && (
             <Section title="上传参考图">
-              <UploadReferencePanel config={features.uploadRef} />
+              <UploadReferencePanel key={selectedModel.id} config={features.uploadRef} />
             </Section>
           )}
         </div>
