@@ -6,16 +6,18 @@ const HeroPromptBar = () => {
   const [prompt, setPrompt] = useState("");
 
   return (
-    <div className="relative w-full overflow-hidden">
-      {/* Background image */}
-      <div className="absolute inset-0">
+    <div className="relative w-full overflow-hidden" style={{ minHeight: 400 }}>
+      {/* Background image with overlay */}
+      <div className="absolute left-0 top-0 w-full h-[400px]">
         <img
           src={heroImg}
           alt="Mountain landscape"
           className="h-full w-full object-cover"
         />
-        {/* Dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-workspace-panel/60 via-workspace-panel/80 to-workspace-panel" />
+        {/* Dark overlay matching spec: rgba(0,0,0,0.2) uniform */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))" }} />
+        {/* Bottom fade to workspace panel */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-workspace-panel" />
       </div>
 
       {/* Content */}
