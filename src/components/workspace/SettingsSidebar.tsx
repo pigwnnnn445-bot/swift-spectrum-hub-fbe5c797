@@ -61,7 +61,18 @@ const SettingsSidebar = ({ open, onClose }: SettingsSidebarProps) => {
           </div>
 
           {/* Model */}
-          <Section title="切换模型">
+          <Section title="切换模型" extra={
+            <div className="flex items-center gap-1">
+              <div className="flex -space-x-1.5">
+                {models.slice(0, 3).map((m) => (
+                  <span key={m.id} className="flex h-5 w-5 items-center justify-center rounded-full bg-workspace-chip border border-workspace-border text-[10px]">
+                    {m.icon}
+                  </span>
+                ))}
+              </div>
+              <span className="text-[11px] text-workspace-panel-foreground/50 ml-1">{models.length}+</span>
+            </div>
+          }>
             <ModelSelectCard
               models={models}
               selected={selectedModel}
@@ -125,11 +136,14 @@ const SettingsSidebar = ({ open, onClose }: SettingsSidebarProps) => {
   );
 };
 
-const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+const Section = ({ title, children, extra }: { title: string; children: React.ReactNode; extra?: React.ReactNode }) => (
   <div className="space-y-2.5">
-    <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
-      {title}
-    </h3>
+    <div className="flex items-center justify-between">
+      <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
+        {title}
+      </h3>
+      {extra}
+    </div>
     {children}
   </div>
 );
