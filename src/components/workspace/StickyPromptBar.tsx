@@ -12,14 +12,11 @@ const StickyPromptBar = ({ visible }: StickyPromptBarProps) => {
   return (
     <div
       className={cn(
-        "sticky top-0 z-40 transition-all duration-300",
-        visible
-          ? "translate-y-0 opacity-100"
-          : "-translate-y-full opacity-0 pointer-events-none"
+        "w-full transition-all duration-300 overflow-hidden",
+        visible ? "max-h-20 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
       )}
     >
       <div className="bg-workspace-panel/90 backdrop-blur-xl border-b border-workspace-border/30 shadow-lg">
-        {/* Use same horizontal padding as gallery section so widths align */}
         <div className="px-4 sm:px-6 lg:px-8 py-2.5">
           <div className="flex items-center rounded-2xl border border-workspace-border/30 bg-[hsl(var(--workspace-glass))] backdrop-blur-xl shadow-[0_0_20px_hsl(var(--workspace-glow))]">
             <input

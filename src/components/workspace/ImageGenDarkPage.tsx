@@ -8,12 +8,13 @@ import StickyPromptBar from "./StickyPromptBar";
 const ImageGenDarkPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [heroPromptVisible, setHeroPromptVisible] = useState(true);
-  const heroRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const scrollEl = scrollRef.current;
-    if (!scrollEl || !heroRef.current) return;
+    const sentinel = sentinelRef.current;
+    if (!scrollEl || !sentinel) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -22,7 +23,7 @@ const ImageGenDarkPage = () => {
       { root: scrollEl, threshold: 0 }
     );
 
-    observer.observe(heroRef.current);
+    observer.observe(sentinel);
     return () => observer.disconnect();
   }, []);
 
@@ -33,9 +34,6 @@ const ImageGenDarkPage = () => {
 
       {/* Right main area */}
       <main ref={scrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
-        {/* Sticky prompt bar */}
-        <StickyPromptBar visible={!heroPromptVisible} />
-
         {/* Mobile menu trigger */}
         <button
           onClick={() => setSidebarOpen(true)}
@@ -47,7 +45,12 @@ const ImageGenDarkPage = () => {
         {/* Hero area */}
         <HeroPromptBar />
         {/* Sentinel to detect when hero prompt scrolls out */}
-        <div ref={heroRef} className="h-0 w-0" />
+        <div ref={sentinelRef} className="h-0 w-0" />
+
+        {/* Sticky prompt bar — sticky within main scroll container */}
+        <div className="sticky top-0 z-40">
+          <StickyPromptBar visible={!heroPromptVisible} />
+        </div>
 
         {/* Gallery section */}
         <div className="px-4 pb-8 sm:px-6 lg:px-8">
