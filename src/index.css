@@ -116,3 +116,12 @@
   background: hsl(240 10% 30%);
   border-radius: 4px;
 }
+
+/* Hide scrollbar in prompt textarea */
+.prompt-textarea {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.prompt-textarea::-webkit-scrollbar {
+  display: none;
+}
