@@ -29,7 +29,7 @@ const GalleryCard = ({ item, onUsePrompt }: GalleryCardProps) => {
       />
       {/* Hover overlay */}
       <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 p-3">
-        <p className="text-xs text-workspace-surface-foreground/90 leading-relaxed line-clamp-3 mb-2">
+        <p className="text-xs text-white leading-relaxed line-clamp-3 mb-2 drop-shadow-md">
           {item.description}
         </p>
         <button
