@@ -35,7 +35,7 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost }: StickyPrompt
     >
       <div className="bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-end rounded-2xl border border-workspace-border/30 bg-[hsl(var(--workspace-glass))] backdrop-blur-xl shadow-[0_0_20px_hsl(var(--workspace-glow))]">
+          <div className="flex items-end rounded-2xl border border-workspace-border/60 bg-workspace-surface shadow-sm">
             <textarea
               ref={textareaRef}
               value={prompt}
