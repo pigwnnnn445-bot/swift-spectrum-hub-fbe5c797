@@ -28,17 +28,13 @@ const ImageGenDarkPage = () => {
 
   useEffect(() => {
     const scrollEl = scrollRef.current;
-    const sentinel = sentinelRef.current;
-    if (!scrollEl || !sentinel) return;
+    if (!scrollEl) return;
 
     const handleScroll = () => {
-      const sentinelRect = sentinel.getBoundingClientRect();
-      const mainRect = scrollEl.getBoundingClientRect();
-      setHeroPromptVisible(sentinelRect.top >= mainRect.top);
+      setHeroPromptVisible(scrollEl.scrollTop < 200);
     };
 
     scrollEl.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
     return () => scrollEl.removeEventListener("scroll", handleScroll);
   }, []);
 
