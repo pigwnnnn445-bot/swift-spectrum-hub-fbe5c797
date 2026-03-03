@@ -74,7 +74,7 @@ const ImageGenDarkPage = () => {
         <div ref={sentinelRef} className="h-px w-full" />
 
         <div className="sticky top-0 z-40">
-          <StickyPromptBar visible={true} prompt={prompt} onPromptChange={setPrompt} cost={totalCost} />
+          <StickyPromptBar visible={!heroPromptVisible} prompt={prompt} onPromptChange={setPrompt} cost={totalCost} />
         </div>
 
         <div className="px-4 pb-8 sm:px-6 lg:px-8">
