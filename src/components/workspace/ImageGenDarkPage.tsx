@@ -1,11 +1,15 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Menu } from "lucide-react";
 import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
 import MasonryGallery from "./MasonryGallery";
 import StickyPromptBar from "./StickyPromptBar";
+import { getOnlineModels } from "@/config/modelConfig";
+import type { ModelConfig } from "@/config/modelConfig";
 
 const ImageGenDarkPage = () => {
+  const models = useMemo(() => getOnlineModels(), []);
+  const [selectedModel, setSelectedModel] = useState<ModelConfig>(models[0]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [heroPromptVisible, setHeroPromptVisible] = useState(true);
   const [prompt, setPrompt] = useState("");
@@ -30,7 +34,7 @@ const ImageGenDarkPage = () => {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
-      <SettingsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <SettingsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} selectedModel={selectedModel} onModelChange={setSelectedModel} />
 
       <main ref={scrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
         <button
@@ -40,11 +44,11 @@ const ImageGenDarkPage = () => {
           <Menu className="h-5 w-5 text-workspace-surface-foreground" />
         </button>
 
-        <HeroPromptBar prompt={prompt} onPromptChange={setPrompt} />
+        <HeroPromptBar prompt={prompt} onPromptChange={setPrompt} cost={selectedModel.cost} />
         <div ref={sentinelRef} className="h-0 w-0" />
 
         <div className="sticky top-0 z-40">
-          <StickyPromptBar visible={!heroPromptVisible} prompt={prompt} onPromptChange={setPrompt} />
+          <StickyPromptBar visible={!heroPromptVisible} prompt={prompt} onPromptChange={setPrompt} cost={selectedModel.cost} />
         </div>
 
         <div className="px-4 pb-8 sm:px-6 lg:px-8">

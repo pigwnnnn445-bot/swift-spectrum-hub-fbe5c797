@@ -29,12 +29,16 @@ export interface ModelConfig {
   icon: string;
   /** 是否在线（后端控制，前端过滤用） */
   online: boolean;
+  /** 单次生成消耗的积分/点数 */
+  cost: number;
   /** 该模型支持的功能配置项 */
   features: {
     ratios?: string[];
     resolutions?: string[];
     counts?: number[];
     styles?: string[];
+    /** 是否显示相似度调整组件 */
+    similarity?: boolean;
     uploadRef?: UploadRefConfig;
   };
 }
@@ -50,6 +54,7 @@ export const modelConfigs: ModelConfig[] = [
     description: "高级图像生成模型，输出高度一致，细节更清晰，图像更稳定",
     icon: "🍌",
     online: true,
+    cost: 5,
     features: {
       ratios: ["1:1", "2:3", "3:2", "3:4", "16:9", "4:3", "9:16"],
       resolutions: ["1K", "2K", "4K"],
@@ -60,6 +65,7 @@ export const modelConfigs: ModelConfig[] = [
         "波西米亚风格", "未来主义", "Funko Pop", "包豪斯", "波普艺术",
         "赛博朋克", "地中海", "像素风", "极简主义", "写实",
       ],
+      similarity: true,
       uploadRef: {
         mode: "typed",
         multiUpload: true,
@@ -77,6 +83,7 @@ export const modelConfigs: ModelConfig[] = [
     description: "更鲜明的风格和更丰富的细节",
     icon: "🍌",
     online: true,
+    cost: 8,
     features: {
       ratios: ["1:1", "2:3", "3:2", "3:4", "16:9", "4:3", "9:16"],
       resolutions: ["1K", "2K", "4K"],
@@ -94,6 +101,7 @@ export const modelConfigs: ModelConfig[] = [
     description: "稳定可控模型",
     icon: "🎨",
     online: true,
+    cost: 10,
     features: {
       ratios: ["1:1", "2:3", "3:2", "3:4", "16:9", "4:3", "9:16"],
       styles: [
@@ -102,6 +110,7 @@ export const modelConfigs: ModelConfig[] = [
         "波西米亚风格", "未来主义", "Funko Pop", "包豪斯", "波普艺术",
         "赛博朋克", "地中海", "像素风", "极简主义", "写实",
       ],
+      similarity: true,
       uploadRef: {
         mode: "typed",
         multiUpload: true,
@@ -119,6 +128,7 @@ export const modelConfigs: ModelConfig[] = [
     description: "理解能力强，可生成带文字的图片",
     icon: "🤖",
     online: true,
+    cost: 12,
     features: {
       ratios: ["1:1", "2:3", "3:2"],
       counts: [1],
