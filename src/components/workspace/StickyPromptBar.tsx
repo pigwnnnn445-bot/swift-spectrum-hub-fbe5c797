@@ -42,7 +42,7 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost }: StickyPrompt
               className="prompt-textarea flex-1 resize-none bg-transparent px-5 py-3 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/40 focus:outline-none"
               style={{ maxHeight: 240, minHeight: 60 }}
             />
-            <button disabled={!prompt.trim()} className="mr-2 mb-1.5 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-workspace-neon px-5 py-2 text-sm font-medium text-white transition-all hover:brightness-110 shadow-md shrink-0 disabled:opacity-40 disabled:pointer-events-none">
+            <button disabled={!prompt.trim()} className="mr-2 mb-1.5 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-workspace-neon px-5 py-2 text-sm font-medium text-white transition-all hover:brightness-110 shadow-md shrink-0 disabled:pointer-events-none">
               发送
               <Zap className="h-3.5 w-3.5" />
               <span className="text-white/70">{cost}</span>
