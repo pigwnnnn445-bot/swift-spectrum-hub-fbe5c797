@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { Upload, Minus, Plus, X } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import type { UploadRefConfig } from "@/config/modelConfig";
 
@@ -14,13 +14,6 @@ interface UploadReferencePanelProps {
 
 const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
   const [activeType, setActiveType] = useState(config.types?.[0]?.id ?? "upload");
-  const [similarity, setSimilarity] = useState(50);
-
-  const isPerson = activeType === "person";
-
-  const handleSimilarityChange = (delta: number) => {
-    setSimilarity((prev) => Math.min(100, Math.max(0, prev + delta)));
-  };
 
   // Simple mode: just upload area(s)
   if (config.mode === "simple") {
@@ -68,29 +61,6 @@ const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
         </div>
       ))}
 
-      {/* Similarity control for person type */}
-      {isPerson && (
-        <div className="flex flex-col items-center gap-2 pt-1">
-          <span className="text-xs text-workspace-panel-foreground/60">相似</span>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => handleSimilarityChange(-1)}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 transition-colors"
-            >
-              <Minus className="h-4 w-4 text-workspace-panel-foreground" />
-            </button>
-            <span className="min-w-[2.5rem] text-center text-sm font-medium text-workspace-panel-foreground">
-              {similarity}
-            </span>
-            <button
-              onClick={() => handleSimilarityChange(1)}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 transition-colors"
-            >
-              <Plus className="h-4 w-4 text-workspace-panel-foreground" />
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
