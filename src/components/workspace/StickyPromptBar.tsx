@@ -33,9 +33,9 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost }: StickyPrompt
         visible ? "opacity-100" : "max-h-0 opacity-0 pointer-events-none"
       )}
     >
-      <div className="bg-workspace-panel/90 backdrop-blur-xl border-b border-workspace-border/30 shadow-lg">
+      <div className="bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-end rounded-2xl border border-workspace-border/30 bg-[hsl(var(--workspace-glass))] backdrop-blur-xl shadow-[0_0_20px_hsl(var(--workspace-glow))]">
+          <div className="flex items-end rounded-2xl border border-workspace-border/60 bg-workspace-surface shadow-sm">
             <textarea
               ref={textareaRef}
               value={prompt}
@@ -45,10 +45,10 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost }: StickyPrompt
               className="prompt-textarea flex-1 resize-none bg-transparent px-5 py-3 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/40 focus:outline-none"
               style={{ maxHeight: 240, minHeight: 60 }}
             />
-            <button className="mr-2 mb-1.5 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-workspace-neon px-5 py-2 text-sm font-medium text-workspace-surface-foreground transition-all hover:brightness-110 shadow-[0_0_16px_hsl(var(--workspace-glow))] shrink-0">
+            <button className="mr-2 mb-1.5 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-workspace-neon px-5 py-2 text-sm font-medium text-white transition-all hover:brightness-110 shadow-md shrink-0">
               发送
               <Zap className="h-3.5 w-3.5" />
-              <span className="text-primary-foreground/70">{cost}</span>
+              <span className="text-white/70">{cost}</span>
             </button>
           </div>
         </div>

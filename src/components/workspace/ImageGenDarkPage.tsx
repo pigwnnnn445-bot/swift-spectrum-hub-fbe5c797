@@ -39,7 +39,7 @@ const ImageGenDarkPage = () => {
       <main ref={scrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="fixed left-3 top-3 z-30 flex h-10 w-10 items-center justify-center rounded-xl bg-workspace-panel/90 backdrop-blur border border-workspace-border/30 lg:hidden"
+          className="fixed left-3 top-3 z-30 flex h-10 w-10 items-center justify-center rounded-xl bg-workspace-panel/90 backdrop-blur border border-workspace-border/60 lg:hidden"
         >
           <Menu className="h-5 w-5 text-workspace-surface-foreground" />
         </button>

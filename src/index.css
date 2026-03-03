@@ -44,16 +44,16 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* Custom workspace tokens */
-    --workspace-panel: 240 10% 14%;
-    --workspace-panel-foreground: 0 0% 92%;
-    --workspace-surface: 240 6.7% 20.6%;
-    --workspace-surface-foreground: 0 0% 100%;
-    --workspace-chip: 240 10% 24%;
+    --workspace-panel: 240 20% 97%;
+    --workspace-panel-foreground: 240 10% 30%;
+    --workspace-surface: 0 0% 100%;
+    --workspace-surface-foreground: 240 10% 15%;
+    --workspace-chip: 240 15% 93%;
     --workspace-chip-active: 240 73.9% 61%;
-    --workspace-glass: 240 10% 16% / 0.7;
-    --workspace-border: 240 10% 30%;
-    --workspace-glow: 240 73.9% 61% / 0.15;
-    --workspace-neon: 175 70% 50%;
+    --workspace-glass: 240 20% 97% / 0.8;
+    --workspace-border: 240 15% 85%;
+    --workspace-glow: 240 73.9% 61% / 0.1;
+    --workspace-neon: 175 70% 45%;
   }
 
   .dark {
@@ -113,7 +113,7 @@
   background: transparent;
 }
 .workspace-scroll::-webkit-scrollbar-thumb {
-  background: hsl(240 10% 30%);
+  background: hsl(240 10% 80%);
   border-radius: 4px;
 }
 
