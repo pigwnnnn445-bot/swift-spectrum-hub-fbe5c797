@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Menu } from "lucide-react";
 import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
@@ -6,17 +6,16 @@ import MasonryGallery from "./MasonryGallery";
 import StickyPromptBar from "./StickyPromptBar";
 import { fetchModelsData } from "@/api/modelService";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
+import { useEffect } from "react";
 
 const ImageGenDarkPage = () => {
   const [providers, setProviders] = useState<Provider[]>([]);
   const [models, setModels] = useState<ModelConfig[]>([]);
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [heroPromptVisible, setHeroPromptVisible] = useState(true);
+  const [showStickyBar, setShowStickyBar] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchModelsData().then((data) => {
@@ -26,16 +25,9 @@ const ImageGenDarkPage = () => {
     });
   }, []);
 
-  useEffect(() => {
-    const scrollEl = scrollRef.current;
-    if (!scrollEl) return;
-
-    const handleScroll = () => {
-      setHeroPromptVisible(scrollEl.scrollTop < 200);
-    };
-
-    scrollEl.addEventListener("scroll", handleScroll, { passive: true });
-    return () => scrollEl.removeEventListener("scroll", handleScroll);
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = e.currentTarget.scrollTop;
+    setShowStickyBar(scrollTop > 200);
   }, []);
 
   const handleExtraCostChange = useCallback((extra: number) => {
@@ -58,7 +50,7 @@ const ImageGenDarkPage = () => {
         onExtraCostChange={handleExtraCostChange}
       />
 
-      <div ref={scrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
+      <main className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>
         <button
           onClick={() => setSidebarOpen(true)}
           className="fixed left-3 top-3 z-30 flex h-10 w-10 items-center justify-center rounded-xl bg-workspace-panel/90 backdrop-blur border border-workspace-border/60 lg:hidden"
@@ -67,10 +59,9 @@ const ImageGenDarkPage = () => {
         </button>
 
         <HeroPromptBar prompt={prompt} onPromptChange={setPrompt} cost={totalCost} />
-        <div ref={sentinelRef} className="h-px w-full" />
 
         <div className="sticky top-0 z-40">
-          <StickyPromptBar visible={!heroPromptVisible} prompt={prompt} onPromptChange={setPrompt} cost={totalCost} />
+          <StickyPromptBar visible={showStickyBar} prompt={prompt} onPromptChange={setPrompt} cost={totalCost} />
         </div>
 
         <div className="px-4 pb-8 sm:px-6 lg:px-8">
@@ -79,7 +70,7 @@ const ImageGenDarkPage = () => {
           </h2>
           <MasonryGallery onUsePrompt={setPrompt} />
         </div>
-      </div>
+      </main>
     </div>
   );
 };
