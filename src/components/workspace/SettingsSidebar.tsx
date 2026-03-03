@@ -4,7 +4,6 @@ import ModelSelectCard from "./ModelSelectCard";
 import OptionChipGroup from "./OptionChipGroup";
 import UploadReferencePanel from "./UploadReferencePanel";
 import StyleSelector from "./StyleSelector";
-import { getOnlineModels } from "@/config/modelConfig";
 import type { ModelConfig } from "@/config/modelConfig";
 
 interface SettingsSidebarProps {
@@ -12,11 +11,10 @@ interface SettingsSidebarProps {
   onClose: () => void;
   selectedModel: ModelConfig;
   onModelChange: (model: ModelConfig) => void;
+  models: ModelConfig[];
 }
 
-const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange }: SettingsSidebarProps) => {
-  const models = getOnlineModels();
-
+const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models }: SettingsSidebarProps) => {
   const features = selectedModel.features;
 
   // Local state for selections, reset when model changes
@@ -83,7 +81,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange }: Settin
             />
           </Section>
 
-          {/* Ratio */}
+          {/* Ratio — 后台开启则展示 */}
           {features.ratios && features.ratios.length > 0 && (
             <Section title="比例">
               <OptionChipGroup
@@ -95,7 +93,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange }: Settin
             </Section>
           )}
 
-          {/* Resolution */}
+          {/* Resolution — 后台开启则展示 */}
           {features.resolutions && features.resolutions.length > 0 && (
             <Section title="分辨率">
               <OptionChipGroup
@@ -106,7 +104,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange }: Settin
             </Section>
           )}
 
-          {/* Count */}
+          {/* Count — 后台开启则展示 */}
           {features.counts && features.counts.length > 0 && (
             <Section title="生成数量">
               <OptionChipGroup
@@ -117,7 +115,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange }: Settin
             </Section>
           )}
 
-          {/* Style */}
+          {/* Style — 后台开启则展示 */}
           {features.styles && features.styles.length > 0 && (
             <Section title="风格">
               <StyleSelector
@@ -128,14 +126,14 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange }: Settin
             </Section>
           )}
 
-          {/* Upload Reference */}
+          {/* Upload Reference — 后台开启则展示 */}
           {features.uploadRef && (
             <Section title="上传参考图">
               <UploadReferencePanel key={selectedModel.id} config={features.uploadRef} />
             </Section>
           )}
 
-          {/* Similarity */}
+          {/* Similarity — 后台开启则展示 */}
           {features.similarity && (
             <Section title="相似度">
               <div className="flex items-center justify-center gap-3">

@@ -4,17 +4,25 @@ import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
 import MasonryGallery from "./MasonryGallery";
 import StickyPromptBar from "./StickyPromptBar";
-import { getOnlineModels } from "@/config/modelConfig";
+import { fetchOnlineModels } from "@/api/modelService";
 import type { ModelConfig } from "@/config/modelConfig";
 
 const ImageGenDarkPage = () => {
-  const models = useMemo(() => getOnlineModels(), []);
-  const [selectedModel, setSelectedModel] = useState<ModelConfig>(models[0]);
+  const [models, setModels] = useState<ModelConfig[]>([]);
+  const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [heroPromptVisible, setHeroPromptVisible] = useState(true);
   const [prompt, setPrompt] = useState("");
   const sentinelRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLElement>(null);
+
+  // 从服务层加载模型列表
+  useEffect(() => {
+    fetchOnlineModels().then((list) => {
+      setModels(list);
+      if (list.length > 0) setSelectedModel(list[0]);
+    });
+  }, []);
 
   useEffect(() => {
     const scrollEl = scrollRef.current;
@@ -32,9 +40,12 @@ const ImageGenDarkPage = () => {
     return () => observer.disconnect();
   }, []);
 
+  // 模型未加载完成时不渲染
+  if (!selectedModel) return null;
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
-      <SettingsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} selectedModel={selectedModel} onModelChange={setSelectedModel} />
+      <SettingsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} selectedModel={selectedModel} onModelChange={setSelectedModel} models={models} />
 
       <main ref={scrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
         <button
