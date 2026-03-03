@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { Upload, Minus, Plus, X } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import type { UploadRefConfig } from "@/config/modelConfig";
 
