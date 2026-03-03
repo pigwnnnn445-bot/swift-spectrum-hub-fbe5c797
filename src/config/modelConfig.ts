@@ -100,6 +100,7 @@ export const modelConfigs: ModelConfig[] = [
     description: "稳定可控模型",
     icon: "🎨",
     online: true,
+    cost: 10,
     features: {
       ratios: ["1:1", "2:3", "3:2", "3:4", "16:9", "4:3", "9:16"],
       styles: [
