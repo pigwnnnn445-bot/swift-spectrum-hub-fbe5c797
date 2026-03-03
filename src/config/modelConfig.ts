@@ -126,6 +126,7 @@ export const modelConfigs: ModelConfig[] = [
     description: "理解能力强，可生成带文字的图片",
     icon: "🤖",
     online: true,
+    cost: 12,
     features: {
       ratios: ["1:1", "2:3", "3:2"],
       counts: [1],
