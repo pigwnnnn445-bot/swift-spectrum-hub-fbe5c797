@@ -26,13 +26,10 @@ const useAutoResize = (value: string, maxHeight: number) => {
 const StickyPromptBar = ({ visible, prompt, onPromptChange, cost }: StickyPromptBarProps) => {
   const textareaRef = useAutoResize(prompt, 240);
 
+  if (!visible) return null;
+
   return (
-    <div
-      className={cn(
-        "w-full transition-all duration-300 overflow-hidden",
-        visible ? "opacity-100" : "max-h-0 opacity-0 pointer-events-none"
-      )}
-    >
+    <div className="w-full">
       <div className="bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8 py-2.5">
           <div className="flex items-end rounded-2xl border border-workspace-border/60 bg-workspace-surface shadow-sm">
