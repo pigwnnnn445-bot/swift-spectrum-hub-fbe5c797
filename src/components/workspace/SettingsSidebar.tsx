@@ -158,21 +158,21 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
           {/* Similarity */}
           {hasTypedUpload(selectedModel) && (
             <Section title="相似度">
-              <div className="flex items-center justify-center gap-3">
+              <div className="flex items-center justify-center gap-4">
                 <button
                   onClick={() => setSimilarity((prev) => Math.max(0, prev - 1))}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 transition-colors"
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-primary to-workspace-neon cursor-pointer hover:brightness-110 transition-all"
                 >
-                  <Minus className="h-4 w-4 text-workspace-panel-foreground" />
+                  <Minus className="h-4 w-4 text-white" />
                 </button>
                 <span className="min-w-[2.5rem] text-center text-sm font-medium text-workspace-panel-foreground">
                   {similarity}
                 </span>
                 <button
                   onClick={() => setSimilarity((prev) => Math.min(100, prev + 1))}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 transition-colors"
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-primary to-workspace-neon cursor-pointer hover:brightness-110 transition-all"
                 >
-                  <Plus className="h-4 w-4 text-workspace-panel-foreground" />
+                  <Plus className="h-4 w-4 text-white" />
                 </button>
               </div>
             </Section>
