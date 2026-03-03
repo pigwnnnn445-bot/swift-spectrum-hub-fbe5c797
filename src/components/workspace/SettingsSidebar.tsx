@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { X } from "lucide-react";
+import { useState } from "react";
+import { X, Minus, Plus } from "lucide-react";
 import ModelSelectCard from "./ModelSelectCard";
 import OptionChipGroup from "./OptionChipGroup";
 import UploadReferencePanel from "./UploadReferencePanel";
@@ -10,11 +10,12 @@ import type { ModelConfig } from "@/config/modelConfig";
 interface SettingsSidebarProps {
   open: boolean;
   onClose: () => void;
+  selectedModel: ModelConfig;
+  onModelChange: (model: ModelConfig) => void;
 }
 
-const SettingsSidebar = ({ open, onClose }: SettingsSidebarProps) => {
-  const models = useMemo(() => getOnlineModels(), []);
-  const [selectedModel, setSelectedModel] = useState<ModelConfig>(models[0]);
+const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange }: SettingsSidebarProps) => {
+  const models = getOnlineModels();
 
   const features = selectedModel.features;
 
@@ -23,14 +24,16 @@ const SettingsSidebar = ({ open, onClose }: SettingsSidebarProps) => {
   const [resolution, setResolution] = useState(features.resolutions?.[0] ?? "");
   const [count, setCount] = useState(String(features.counts?.[0] ?? "1"));
   const [style, setStyle] = useState(features.styles?.[0] ?? "自动");
+  const [similarity, setSimilarity] = useState(50);
 
   const handleModelChange = (model: ModelConfig) => {
-    setSelectedModel(model);
+    onModelChange(model);
     const f = model.features;
     setRatio(f.ratios?.[0] ?? "");
     setResolution(f.resolutions?.[0] ?? "");
     setCount(String(f.counts?.[0] ?? "1"));
     setStyle(f.styles?.[0] ?? "自动");
+    setSimilarity(50);
   };
 
   return (
