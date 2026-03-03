@@ -54,6 +54,7 @@ export const modelConfigs: ModelConfig[] = [
     description: "高级图像生成模型，输出高度一致，细节更清晰，图像更稳定",
     icon: "🍌",
     online: true,
+    cost: 5,
     features: {
       ratios: ["1:1", "2:3", "3:2", "3:4", "16:9", "4:3", "9:16"],
       resolutions: ["1K", "2K", "4K"],
