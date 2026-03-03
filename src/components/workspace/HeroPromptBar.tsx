@@ -49,7 +49,7 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost }: HeroPromptBarProps) => 
               className="prompt-textarea flex-1 resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/40 focus:outline-none sm:text-base"
               style={{ maxHeight: 320, minHeight: 80 }}
             />
-            <button className="mr-2 mb-2 flex items-center gap-1.5 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:brightness-110 shadow-[0_0_16px_hsl(var(--workspace-glow))] shrink-0">
+            <button className="mr-2 mb-2 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-workspace-neon px-5 py-2.5 text-sm font-medium text-workspace-surface-foreground transition-all hover:brightness-110 shadow-[0_0_16px_hsl(var(--workspace-glow))] shrink-0">
               发送
               <Zap className="h-3.5 w-3.5" />
               <span className="text-primary-foreground/70">{cost}</span>
