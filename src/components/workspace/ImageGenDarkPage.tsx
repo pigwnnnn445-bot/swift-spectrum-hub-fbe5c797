@@ -83,7 +83,7 @@ const ImageGenDarkPage = () => {
           </h2>
           <MasonryGallery onUsePrompt={setPrompt} />
         </div>
-      </main>
+      </div>
     </div>
   );
 };
