@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 import { X, Minus, Plus } from "lucide-react";
 import ModelSelectCard from "./ModelSelectCard";
 import OptionChipGroup from "./OptionChipGroup";
@@ -157,22 +158,22 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
 
           {/* Similarity */}
           {hasTypedUpload(selectedModel) && (
-            <Section title="相似度">
+            <Section title="相似度" centerTitle>
               <div className="flex items-center justify-center gap-4">
                 <button
                   onClick={() => setSimilarity((prev) => Math.max(0, prev - 1))}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-primary to-workspace-neon cursor-pointer hover:brightness-110 transition-all"
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
                 >
-                  <Minus className="h-4 w-4 text-white" />
+                  <Minus className="h-4 w-4 text-workspace-panel-foreground" />
                 </button>
                 <span className="min-w-[2.5rem] text-center text-sm font-medium text-workspace-panel-foreground">
                   {similarity}
                 </span>
                 <button
                   onClick={() => setSimilarity((prev) => Math.min(100, prev + 1))}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-primary to-workspace-neon cursor-pointer hover:brightness-110 transition-all"
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
                 >
-                  <Plus className="h-4 w-4 text-white" />
+                  <Plus className="h-4 w-4 text-workspace-panel-foreground" />
                 </button>
               </div>
             </Section>
@@ -183,9 +184,9 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
   );
 };
 
-const Section = ({ title, children, extra }: { title: string; children: React.ReactNode; extra?: React.ReactNode }) => (
+const Section = ({ title, children, extra, centerTitle }: { title: string; children: React.ReactNode; extra?: React.ReactNode; centerTitle?: boolean }) => (
   <div className="space-y-2.5">
-    <div className="flex items-center justify-between">
+    <div className={cn("flex items-center", centerTitle ? "justify-center" : "justify-between")}>
       <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
         {title}
       </h3>
