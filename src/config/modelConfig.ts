@@ -82,6 +82,7 @@ export const modelConfigs: ModelConfig[] = [
     description: "更鲜明的风格和更丰富的细节",
     icon: "🍌",
     online: true,
+    cost: 8,
     features: {
       ratios: ["1:1", "2:3", "3:2", "3:4", "16:9", "4:3", "9:16"],
       resolutions: ["1K", "2K", "4K"],
