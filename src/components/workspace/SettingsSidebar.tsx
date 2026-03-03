@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Minus, Plus } from "lucide-react";
 import ModelSelectCard from "./ModelSelectCard";
 import OptionChipGroup from "./OptionChipGroup";
 import UploadReferencePanel from "./UploadReferencePanel";
 import StyleSelector from "./StyleSelector";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
-import { hasTypedUpload, getEnabledImageLikes } from "@/config/modelConfig";
+import { hasTypedUpload } from "@/config/modelConfig";
 
 interface SettingsSidebarProps {
   open: boolean;
@@ -14,28 +14,51 @@ interface SettingsSidebarProps {
   onModelChange: (model: ModelConfig) => void;
   models: ModelConfig[];
   providers: Provider[];
+  /** 通知父组件当前配置项的附加消耗 */
+  onExtraCostChange?: (extra: number) => void;
 }
 
-const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers }: SettingsSidebarProps) => {
-  // Local state for selections, reset when model changes
+const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange }: SettingsSidebarProps) => {
   const [ratio, setRatio] = useState(selectedModel.ratio?.[0] ?? "");
-  const [resolution, setResolution] = useState(selectedModel.resolution?.[0]?.resolution ?? "");
+  const [selectedResolution, setSelectedResolution] = useState(selectedModel.resolution?.[0]?.resolution ?? "");
   const [selectedStyleId, setSelectedStyleId] = useState<number | null>(
     selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource[0]?.id ?? null) : null
   );
   const [similarity, setSimilarity] = useState(50);
 
+  // 计算附加消耗并通知父组件
+  useEffect(() => {
+    let extra = 0;
+
+    // 分辨率附加价格
+    if (selectedModel.resolution_flg === 1) {
+      const res = selectedModel.resolution.find((r) => r.resolution === selectedResolution);
+      if (res) extra += res.price;
+    }
+
+    // 比例附加价格
+    if (selectedModel.ratio_flg === 1) {
+      extra += selectedModel.ratio_price;
+    }
+
+    // 风格附加价格
+    if (selectedModel.style_flg === 1) {
+      extra += selectedModel.style_price;
+    }
+
+    onExtraCostChange?.(extra);
+  }, [selectedModel, selectedResolution, ratio, selectedStyleId, onExtraCostChange]);
+
   const handleModelChange = (model: ModelConfig) => {
     onModelChange(model);
     setRatio(model.ratio?.[0] ?? "");
-    setResolution(model.resolution?.[0]?.resolution ?? "");
+    setSelectedResolution(model.resolution?.[0]?.resolution ?? "");
     setSelectedStyleId(
       model.style_flg === 1 ? (model.style[0]?.resource[0]?.id ?? null) : null
     );
     setSimilarity(50);
   };
 
-  // 获取当前选中的风格资源列表（取第一个 tab）
   const styleResources = selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource ?? []) : [];
 
   return (
@@ -88,7 +111,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
             />
           </Section>
 
-          {/* Ratio — ratio_flg=1 则展示 */}
+          {/* Ratio */}
           {selectedModel.ratio_flg === 1 && selectedModel.ratio.length > 0 && (
             <Section title="比例">
               <OptionChipGroup
@@ -100,29 +123,18 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
             </Section>
           )}
 
-          {/* Resolution — resolution_flg=1 则展示 */}
+          {/* Resolution */}
           {selectedModel.resolution_flg === 1 && selectedModel.resolution.length > 0 && (
             <Section title="分辨率">
               <OptionChipGroup
-                options={selectedModel.resolution.map((r) =>
-                  r.price > 0 ? `${r.resolution} (+${r.price})` : r.resolution
-                )}
-                selected={
-                  selectedModel.resolution.find((r) => r.resolution === resolution)
-                    ? (selectedModel.resolution.find((r) => r.resolution === resolution)!.price > 0
-                        ? `${resolution} (+${selectedModel.resolution.find((r) => r.resolution === resolution)!.price})`
-                        : resolution)
-                    : resolution
-                }
-                onSelect={(val) => {
-                  const clean = val.replace(/\s*\(\+\d+\)/, "");
-                  setResolution(clean);
-                }}
+                options={selectedModel.resolution.map((r) => r.resolution)}
+                selected={selectedResolution}
+                onSelect={setSelectedResolution}
               />
             </Section>
           )}
 
-          {/* Style — style_flg=1 则展示 */}
+          {/* Style */}
           {selectedModel.style_flg === 1 && styleResources.length > 0 && (
             <Section title="风格">
               <StyleSelector
@@ -133,7 +145,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
             </Section>
           )}
 
-          {/* Upload Reference — image_reference_flg=1 则展示 */}
+          {/* Upload Reference */}
           {selectedModel.image_reference_flg === 1 && (
             <Section title="上传参考图">
               <UploadReferencePanel
@@ -143,7 +155,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
             </Section>
           )}
 
-          {/* Similarity — 有启用的 image_like 类型才展示 */}
+          {/* Similarity */}
           {hasTypedUpload(selectedModel) && (
             <Section title="相似度">
               <div className="flex items-center justify-center gap-3">
