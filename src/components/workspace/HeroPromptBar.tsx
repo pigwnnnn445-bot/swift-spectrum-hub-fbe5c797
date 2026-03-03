@@ -27,7 +27,7 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost }: HeroPromptBarProps) => 
 
   return (
     <div className="relative w-full overflow-hidden" style={{ minHeight: 600 }}>
-      <div className="absolute left-0 top-0 w-full h-[400px]">
+      <div className="absolute left-0 top-0 w-full h-[600px]">
         <img src={heroImg} alt="Mountain landscape" className="h-[600px] w-full object-cover" />
         <div className="absolute inset-0" style={{ background: "linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))" }} />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-workspace-panel" />
