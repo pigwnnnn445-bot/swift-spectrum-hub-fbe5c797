@@ -34,8 +34,8 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost }: HeroPromptBarProps) => 
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center px-4 py-16 sm:py-24 md:py-32">
-        <h1 className="mb-8 text-center text-3xl font-extrabold tracking-tight text-workspace-surface-foreground sm:text-4xl md:text-5xl lg:text-[56px]">
-          Idea Blooms Into Form
+        <h1 className="mb-8 text-center text-4xl font-black tracking-wide text-workspace-surface-foreground sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-lg">
+          把想象，变成图像
         </h1>
 
         <div className="relative w-full max-w-[760px]">
