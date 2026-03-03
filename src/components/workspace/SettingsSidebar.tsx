@@ -134,6 +134,29 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange }: Settin
               <UploadReferencePanel key={selectedModel.id} config={features.uploadRef} />
             </Section>
           )}
+
+          {/* Similarity */}
+          {features.similarity && (
+            <Section title="相似度">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setSimilarity((prev) => Math.max(0, prev - 1))}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 transition-colors"
+                >
+                  <Minus className="h-4 w-4 text-workspace-panel-foreground" />
+                </button>
+                <span className="min-w-[2.5rem] text-center text-sm font-medium text-workspace-panel-foreground">
+                  {similarity}
+                </span>
+                <button
+                  onClick={() => setSimilarity((prev) => Math.min(100, prev + 1))}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 transition-colors"
+                >
+                  <Plus className="h-4 w-4 text-workspace-panel-foreground" />
+                </button>
+              </div>
+            </Section>
+          )}
         </div>
       </aside>
     </>
