@@ -26,9 +26,9 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost }: HeroPromptBarProps) => 
   const textareaRef = useAutoResize(prompt, 440);
 
   return (
-    <div className="relative w-full overflow-hidden" style={{ minHeight: 400 }}>
-      <div className="absolute left-0 top-0 w-full h-[500px]">
-        <img src={heroImg} alt="Mountain landscape" className="h-[500px] w-full object-cover" />
+    <div className="relative w-full overflow-hidden" style={{ minHeight: 300 }}>
+      <div className="absolute left-0 top-0 w-full h-[400px]">
+        <img src={heroImg} alt="Mountain landscape" className="h-[400px] w-full object-cover" />
         <div className="absolute inset-0" style={{ background: "linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))" }} />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-workspace-surface" />
       </div>
