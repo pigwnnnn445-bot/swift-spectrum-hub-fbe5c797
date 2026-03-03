@@ -2,65 +2,66 @@ import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Upload, X } from "lucide-react";
 import { toast } from "sonner";
-import type { UploadRefConfig } from "@/config/modelConfig";
+import type { ModelConfig } from "@/config/modelConfig";
+import { getEnabledImageLikes, getLikeTypeLabel, hasTypedUpload } from "@/config/modelConfig";
 
 const ACCEPTED_FORMATS = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
 const MAX_SIZE_MB = 10;
 const MIN_RESOLUTION = 300;
 
 interface UploadReferencePanelProps {
-  config: UploadRefConfig;
+  model: ModelConfig;
 }
 
-const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
-  const [activeType, setActiveType] = useState(config.types?.[0]?.id ?? "upload");
+const UploadReferencePanel = ({ model }: UploadReferencePanelProps) => {
+  const enabledLikes = getEnabledImageLikes(model);
+  const isTyped = hasTypedUpload(model);
 
-  // Simple mode: just upload area(s)
-  if (config.mode === "simple") {
+  const [activeType, setActiveType] = useState(enabledLikes[0]?.like_type ?? 0);
+
+  // Simple mode: no enabled image_like types, just a basic upload zone
+  if (!isTyped) {
     return (
       <div className="space-y-3">
         <UploadZone
           key="simple"
-          multi={config.multiUpload}
-          placeholder={config.placeholder ?? "将图片拖至此处或单击上传"}
+          multi={true}
+          placeholder="将图片拖至此处或单击上传"
         />
       </div>
     );
   }
 
-  // Typed mode: tabs for each type
+  // Typed mode: tabs for each enabled type
   return (
     <div className="space-y-3">
-      {/* Type tabs */}
-      {config.types && config.types.length > 0 && (
+      {enabledLikes.length > 1 && (
         <div className="flex gap-1 rounded-[10px] bg-workspace-chip/50 p-1">
-          {config.types.map((type) => (
+          {enabledLikes.map((item) => (
             <button
-              key={type.id}
-              onClick={() => setActiveType(type.id)}
+              key={item.like_type}
+              onClick={() => setActiveType(item.like_type)}
               className={cn(
                 "flex-1 rounded-lg px-2 py-1.5 text-xs font-medium transition-all",
-                activeType === type.id
+                activeType === item.like_type
                   ? "bg-primary text-primary-foreground"
                   : "text-workspace-panel-foreground/60 hover:text-workspace-panel-foreground/80"
               )}
             >
-              {type.label}
+              {getLikeTypeLabel(item.like_type)}
             </button>
           ))}
         </div>
       )}
 
-      {/* Upload areas — render all types, show only active to preserve state */}
-      {config.types?.map((type) => (
-        <div key={type.id} className={cn(activeType !== type.id && "hidden")}>
+      {enabledLikes.map((item) => (
+        <div key={item.like_type} className={cn(activeType !== item.like_type && "hidden")}>
           <UploadZone
-            multi={type.id === "person" ? false : config.multiUpload}
+            multi={item.more_image_flg === 1}
             placeholder="单击或拖动图像即可上传"
           />
         </div>
       ))}
-
     </div>
   );
 };
@@ -103,17 +104,13 @@ const UploadZone = ({ multi, placeholder }: { multi: boolean; placeholder: strin
   const [replaceIndex, setReplaceIndex] = useState<number>(-1);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  // Single mode: one image only
   if (single) {
     return <SingleUploadZone placeholder={placeholder} />;
   }
 
-  // Multi mode: dynamic list up to MAX_MULTI_IMAGES
   const canAddMore = images.length < MAX_MULTI_IMAGES;
 
-  const handleAdd = () => {
-    addInputRef.current?.click();
-  };
+  const handleAdd = () => addInputRef.current?.click();
 
   const handleAddFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -126,7 +123,6 @@ const UploadZone = ({ multi, placeholder }: { multi: boolean; placeholder: strin
     const result = await validateFile(file);
     if (result.valid && result.preview) {
       setImages((prev) => [...prev, result.preview!]);
-      // Scroll to end after adding
       setTimeout(() => {
         scrollRef.current?.scrollTo({ left: scrollRef.current.scrollWidth, behavior: "smooth" });
       }, 50);
@@ -173,7 +169,6 @@ const UploadZone = ({ multi, placeholder }: { multi: boolean; placeholder: strin
           images.length === 0 && "grid grid-cols-2"
         )}
       >
-        {/* Existing images */}
         {images.map((src, i) => (
           <div
             key={i}
@@ -190,7 +185,6 @@ const UploadZone = ({ multi, placeholder }: { multi: boolean; placeholder: strin
           </div>
         ))}
 
-        {/* Add button / empty slots */}
         {canAddMore && (
           <div
             onClick={handleAdd}
@@ -206,7 +200,6 @@ const UploadZone = ({ multi, placeholder }: { multi: boolean; placeholder: strin
           </div>
         )}
 
-        {/* Show a second empty slot when no images yet */}
         {images.length === 0 && (
           <div
             onClick={handleAdd}
@@ -220,7 +213,6 @@ const UploadZone = ({ multi, placeholder }: { multi: boolean; placeholder: strin
         )}
       </div>
 
-      {/* Image count indicator */}
       {images.length > 0 && (
         <div className="text-center mt-1.5">
           <span className="text-[10px] text-workspace-panel-foreground/40">
