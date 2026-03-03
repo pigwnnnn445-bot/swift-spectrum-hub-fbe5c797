@@ -49,10 +49,15 @@ interface MasonryGalleryProps {
 
 const MasonryGallery = ({ onUsePrompt }: MasonryGalleryProps) => {
   return (
-    <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-3">
-      {galleryData.map((item) => (
-        <GalleryCard key={item.id} item={item} onUsePrompt={onUsePrompt} />
-      ))}
+    <div>
+      <div className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-3">
+        {galleryData.map((item) => (
+          <GalleryCard key={item.id} item={item} onUsePrompt={onUsePrompt} />
+        ))}
+      </div>
+      <p className="mt-10 mb-4 text-center text-sm text-workspace-muted">
+        ✨ 灵感不等人，现在就动笔，让你的作品闪耀登场～
+      </p>
     </div>
   );
 };
