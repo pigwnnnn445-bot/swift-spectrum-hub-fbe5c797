@@ -44,11 +44,11 @@ const ImageGenDarkPage = () => {
           <Menu className="h-5 w-5 text-workspace-surface-foreground" />
         </button>
 
-        <HeroPromptBar prompt={prompt} onPromptChange={setPrompt} />
+        <HeroPromptBar prompt={prompt} onPromptChange={setPrompt} cost={selectedModel.cost} />
         <div ref={sentinelRef} className="h-0 w-0" />
 
         <div className="sticky top-0 z-40">
-          <StickyPromptBar visible={!heroPromptVisible} prompt={prompt} onPromptChange={setPrompt} />
+          <StickyPromptBar visible={!heroPromptVisible} prompt={prompt} onPromptChange={setPrompt} cost={selectedModel.cost} />
         </div>
 
         <div className="px-4 pb-8 sm:px-6 lg:px-8">
