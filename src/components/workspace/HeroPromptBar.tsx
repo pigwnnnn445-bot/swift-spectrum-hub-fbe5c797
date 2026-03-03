@@ -47,7 +47,7 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost }: HeroPromptBarProps) => 
               placeholder="输入您的提示词，比如：可爱的猫"
               rows={1}
               className="prompt-textarea flex-1 resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/40 focus:outline-none sm:text-base"
-              style={{ maxHeight: 160 }}
+              style={{ maxHeight: 320, minHeight: 80 }}
             />
             <button className="mr-2 mb-2 flex items-center gap-1.5 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:brightness-110 shadow-[0_0_16px_hsl(var(--workspace-glow))] shrink-0">
               发送
