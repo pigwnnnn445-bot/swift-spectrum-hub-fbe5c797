@@ -22,7 +22,7 @@ const useAutoResize = (value: string, maxHeight: number) => {
   return ref;
 };
 
-const HeroPromptBar = ({ prompt, onPromptChange }: HeroPromptBarProps) => {
+const HeroPromptBar = ({ prompt, onPromptChange, cost }: HeroPromptBarProps) => {
   const textareaRef = useAutoResize(prompt, 160);
 
   return (
