@@ -48,7 +48,7 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost }: StickyPrompt
             <button className="mr-2 mb-1.5 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-workspace-neon px-5 py-2 text-sm font-medium text-white transition-all hover:brightness-110 shadow-md shrink-0">
               发送
               <Zap className="h-3.5 w-3.5" />
-              <span className="text-primary-foreground/70">{cost}</span>
+              <span className="text-white/70">{cost}</span>
             </button>
           </div>
         </div>
