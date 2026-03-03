@@ -113,7 +113,7 @@
   background: transparent;
 }
 .workspace-scroll::-webkit-scrollbar-thumb {
-  background: hsl(240 10% 30%);
+  background: hsl(240 10% 80%);
   border-radius: 4px;
 }
 
