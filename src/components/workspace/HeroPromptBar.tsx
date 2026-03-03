@@ -23,7 +23,7 @@ const useAutoResize = (value: string, maxHeight: number) => {
 };
 
 const HeroPromptBar = ({ prompt, onPromptChange, cost }: HeroPromptBarProps) => {
-  const textareaRef = useAutoResize(prompt, 320);
+  const textareaRef = useAutoResize(prompt, 440);
 
   return (
     <div className="relative w-full overflow-hidden" style={{ minHeight: 400 }}>
