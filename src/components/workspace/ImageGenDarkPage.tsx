@@ -52,7 +52,7 @@ const ImageGenDarkPage = () => {
         </div>
 
         <div className="px-4 pb-8 sm:px-6 lg:px-8">
-          <h2 className="mb-5 mt-2 text-lg font-semibold text-workspace-panel-foreground/80">
+          <h2 className="mb-5 mt-2 text-lg font-semibold text-workspace-panel-foreground/50">
             🎨 灵感显影室
           </h2>
           <MasonryGallery onUsePrompt={setPrompt} />
