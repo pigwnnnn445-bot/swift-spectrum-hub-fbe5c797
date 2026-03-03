@@ -31,12 +31,15 @@ const ImageGenDarkPage = () => {
     const sentinel = sentinelRef.current;
     if (!scrollEl || !sentinel) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setHeroPromptVisible(entry.isIntersecting),
-      { root: scrollEl, threshold: 0 }
-    );
-    observer.observe(sentinel);
-    return () => observer.disconnect();
+    const handleScroll = () => {
+      const sentinelRect = sentinel.getBoundingClientRect();
+      const mainRect = scrollEl.getBoundingClientRect();
+      setHeroPromptVisible(sentinelRect.top >= mainRect.top);
+    };
+
+    scrollEl.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => scrollEl.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleExtraCostChange = useCallback((extra: number) => {
