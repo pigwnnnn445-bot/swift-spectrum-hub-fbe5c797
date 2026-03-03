@@ -138,7 +138,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange }: Settin
           {/* Similarity */}
           {features.similarity && (
             <Section title="相似度">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center gap-3">
                 <button
                   onClick={() => setSimilarity((prev) => Math.max(0, prev - 1))}
                   className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 transition-colors"
