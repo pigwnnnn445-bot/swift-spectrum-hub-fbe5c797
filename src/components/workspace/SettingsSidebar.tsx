@@ -183,9 +183,9 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
   );
 };
 
-const Section = ({ title, children, extra }: { title: string; children: React.ReactNode; extra?: React.ReactNode }) => (
+const Section = ({ title, children, extra, centerTitle }: { title: string; children: React.ReactNode; extra?: React.ReactNode; centerTitle?: boolean }) => (
   <div className="space-y-2.5">
-    <div className="flex items-center justify-between">
+    <div className={cn("flex items-center", centerTitle ? "justify-center" : "justify-between")}>
       <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
         {title}
       </h3>
