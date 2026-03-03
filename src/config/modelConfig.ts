@@ -65,6 +65,7 @@ export const modelConfigs: ModelConfig[] = [
         "波西米亚风格", "未来主义", "Funko Pop", "包豪斯", "波普艺术",
         "赛博朋克", "地中海", "像素风", "极简主义", "写实",
       ],
+      similarity: true,
       uploadRef: {
         mode: "typed",
         multiUpload: true,
