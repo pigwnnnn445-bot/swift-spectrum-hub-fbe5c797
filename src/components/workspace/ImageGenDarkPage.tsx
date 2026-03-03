@@ -1,11 +1,15 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Menu } from "lucide-react";
 import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
 import MasonryGallery from "./MasonryGallery";
 import StickyPromptBar from "./StickyPromptBar";
+import { getOnlineModels } from "@/config/modelConfig";
+import type { ModelConfig } from "@/config/modelConfig";
 
 const ImageGenDarkPage = () => {
+  const models = useMemo(() => getOnlineModels(), []);
+  const [selectedModel, setSelectedModel] = useState<ModelConfig>(models[0]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [heroPromptVisible, setHeroPromptVisible] = useState(true);
   const [prompt, setPrompt] = useState("");
