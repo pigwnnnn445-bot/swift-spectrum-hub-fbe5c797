@@ -30,7 +30,7 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost }: StickyPrompt
     <div
       className={cn(
         "w-full transition-all duration-300 overflow-hidden",
-        visible ? "opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+        visible ? "max-h-40 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
       )}
     >
       <div className="bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm">
