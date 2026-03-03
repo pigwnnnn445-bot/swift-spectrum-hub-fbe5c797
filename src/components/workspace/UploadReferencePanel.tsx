@@ -14,13 +14,6 @@ interface UploadReferencePanelProps {
 
 const UploadReferencePanel = ({ config }: UploadReferencePanelProps) => {
   const [activeType, setActiveType] = useState(config.types?.[0]?.id ?? "upload");
-  const [similarity, setSimilarity] = useState(50);
-
-  const isPerson = activeType === "person";
-
-  const handleSimilarityChange = (delta: number) => {
-    setSimilarity((prev) => Math.min(100, Math.max(0, prev + delta)));
-  };
 
   // Simple mode: just upload area(s)
   if (config.mode === "simple") {
