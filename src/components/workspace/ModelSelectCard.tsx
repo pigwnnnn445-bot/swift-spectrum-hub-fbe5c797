@@ -28,9 +28,11 @@ const ModelSelectCard = ({ models, selected, onSelect }: ModelSelectCardProps) =
         onClick={() => setOpen(!open)}
         className="flex w-full items-center gap-3 rounded-xl border border-workspace-border bg-workspace-chip/50 p-3 cursor-pointer hover:bg-workspace-chip transition-colors text-left"
       >
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/20">
-          <span className="text-lg">{selected.icon}</span>
-        </div>
+        <img
+          src={selected.image}
+          alt={selected.name}
+          className="h-10 w-10 shrink-0 rounded-lg object-cover"
+        />
         <div className="flex-1 min-w-0">
           <div className="text-sm font-medium text-workspace-surface-foreground">{selected.name}</div>
         </div>
@@ -39,7 +41,7 @@ const ModelSelectCard = ({ models, selected, onSelect }: ModelSelectCardProps) =
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-xl border border-workspace-border bg-workspace-panel shadow-lg overflow-hidden">
+        <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-xl border border-workspace-border bg-workspace-panel shadow-lg overflow-hidden max-h-[400px] overflow-y-auto workspace-scroll">
           {models.map((model) => (
             <button
               key={model.id}
@@ -49,13 +51,18 @@ const ModelSelectCard = ({ models, selected, onSelect }: ModelSelectCardProps) =
                 model.id === selected.id && "bg-workspace-chip/40"
               )}
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/20">
-                <span className="text-lg">{model.icon}</span>
-              </div>
+              <img
+                src={model.image}
+                alt={model.name}
+                className="h-10 w-10 shrink-0 rounded-lg object-cover"
+              />
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-workspace-surface-foreground">{model.name}</div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-workspace-surface-foreground">{model.name}</span>
+                  <span className="text-[10px] text-workspace-panel-foreground/40">⚡{model.price}</span>
+                </div>
                 <div className="mt-0.5 text-xs text-workspace-panel-foreground/60 leading-relaxed line-clamp-2">
-                  {model.description}
+                  {model.content}
                 </div>
               </div>
             </button>

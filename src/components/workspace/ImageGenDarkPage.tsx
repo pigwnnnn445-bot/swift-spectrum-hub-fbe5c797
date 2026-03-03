@@ -1,13 +1,14 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Menu } from "lucide-react";
 import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
 import MasonryGallery from "./MasonryGallery";
 import StickyPromptBar from "./StickyPromptBar";
-import { fetchOnlineModels } from "@/api/modelService";
-import type { ModelConfig } from "@/config/modelConfig";
+import { fetchModelsData } from "@/api/modelService";
+import type { ModelConfig, Provider } from "@/config/modelConfig";
 
 const ImageGenDarkPage = () => {
+  const [providers, setProviders] = useState<Provider[]>([]);
   const [models, setModels] = useState<ModelConfig[]>([]);
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -16,11 +17,12 @@ const ImageGenDarkPage = () => {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLElement>(null);
 
-  // 从服务层加载模型列表
+  // 从服务层加载数据
   useEffect(() => {
-    fetchOnlineModels().then((list) => {
-      setModels(list);
-      if (list.length > 0) setSelectedModel(list[0]);
+    fetchModelsData().then((data) => {
+      setProviders(data.provider_list);
+      setModels(data.model_list);
+      if (data.model_list.length > 0) setSelectedModel(data.model_list[0]);
     });
   }, []);
 
@@ -30,22 +32,25 @@ const ImageGenDarkPage = () => {
     if (!scrollEl || !sentinel) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setHeroPromptVisible(entry.isIntersecting);
-      },
+      ([entry]) => setHeroPromptVisible(entry.isIntersecting),
       { root: scrollEl, threshold: 0 }
     );
-
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, []);
 
-  // 模型未加载完成时不渲染
   if (!selectedModel) return null;
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
-      <SettingsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} selectedModel={selectedModel} onModelChange={setSelectedModel} models={models} />
+      <SettingsSidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+        models={models}
+        providers={providers}
+      />
 
       <main ref={scrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
         <button
@@ -55,11 +60,11 @@ const ImageGenDarkPage = () => {
           <Menu className="h-5 w-5 text-workspace-surface-foreground" />
         </button>
 
-        <HeroPromptBar prompt={prompt} onPromptChange={setPrompt} cost={selectedModel.cost} />
+        <HeroPromptBar prompt={prompt} onPromptChange={setPrompt} cost={selectedModel.price} />
         <div ref={sentinelRef} className="h-0 w-0" />
 
         <div className="sticky top-0 z-40">
-          <StickyPromptBar visible={!heroPromptVisible} prompt={prompt} onPromptChange={setPrompt} cost={selectedModel.cost} />
+          <StickyPromptBar visible={!heroPromptVisible} prompt={prompt} onPromptChange={setPrompt} cost={selectedModel.price} />
         </div>
 
         <div className="px-4 pb-8 sm:px-6 lg:px-8">

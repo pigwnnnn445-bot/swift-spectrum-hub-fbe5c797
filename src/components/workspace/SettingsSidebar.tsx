@@ -4,7 +4,8 @@ import ModelSelectCard from "./ModelSelectCard";
 import OptionChipGroup from "./OptionChipGroup";
 import UploadReferencePanel from "./UploadReferencePanel";
 import StyleSelector from "./StyleSelector";
-import type { ModelConfig } from "@/config/modelConfig";
+import type { ModelConfig, Provider } from "@/config/modelConfig";
+import { hasTypedUpload, getEnabledImageLikes } from "@/config/modelConfig";
 
 interface SettingsSidebarProps {
   open: boolean;
@@ -12,27 +13,30 @@ interface SettingsSidebarProps {
   selectedModel: ModelConfig;
   onModelChange: (model: ModelConfig) => void;
   models: ModelConfig[];
+  providers: Provider[];
 }
 
-const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models }: SettingsSidebarProps) => {
-  const features = selectedModel.features;
-
+const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers }: SettingsSidebarProps) => {
   // Local state for selections, reset when model changes
-  const [ratio, setRatio] = useState(features.ratios?.[0] ?? "");
-  const [resolution, setResolution] = useState(features.resolutions?.[0] ?? "");
-  const [count, setCount] = useState(String(features.counts?.[0] ?? "1"));
-  const [style, setStyle] = useState(features.styles?.[0] ?? "自动");
+  const [ratio, setRatio] = useState(selectedModel.ratio?.[0] ?? "");
+  const [resolution, setResolution] = useState(selectedModel.resolution?.[0]?.resolution ?? "");
+  const [selectedStyleId, setSelectedStyleId] = useState<number | null>(
+    selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource[0]?.id ?? null) : null
+  );
   const [similarity, setSimilarity] = useState(50);
 
   const handleModelChange = (model: ModelConfig) => {
     onModelChange(model);
-    const f = model.features;
-    setRatio(f.ratios?.[0] ?? "");
-    setResolution(f.resolutions?.[0] ?? "");
-    setCount(String(f.counts?.[0] ?? "1"));
-    setStyle(f.styles?.[0] ?? "自动");
+    setRatio(model.ratio?.[0] ?? "");
+    setResolution(model.resolution?.[0]?.resolution ?? "");
+    setSelectedStyleId(
+      model.style_flg === 1 ? (model.style[0]?.resource[0]?.id ?? null) : null
+    );
     setSimilarity(50);
   };
+
+  // 获取当前选中的风格资源列表（取第一个 tab）
+  const styleResources = selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource ?? []) : [];
 
   return (
     <>
@@ -65,13 +69,16 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models }
           <Section title="切换模型" extra={
             <div className="flex items-center gap-1">
               <div className="flex -space-x-1.5">
-                {models.slice(0, 3).map((m) => (
-                  <span key={m.id} className="flex h-5 w-5 items-center justify-center rounded-full bg-workspace-chip border border-workspace-border text-[10px]">
-                    {m.icon}
-                  </span>
+                {providers.slice(0, 3).map((p) => (
+                  <img
+                    key={p.id}
+                    src={p.image}
+                    alt={p.name}
+                    className="h-5 w-5 rounded-full border border-workspace-border object-cover"
+                  />
                 ))}
               </div>
-              <span className="text-[11px] text-workspace-panel-foreground/50 ml-1">{models.length}+</span>
+              <span className="text-[11px] text-workspace-panel-foreground/50 ml-1">{providers.length}+</span>
             </div>
           }>
             <ModelSelectCard
@@ -81,11 +88,11 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models }
             />
           </Section>
 
-          {/* Ratio — 后台开启则展示 */}
-          {features.ratios && features.ratios.length > 0 && (
+          {/* Ratio — ratio_flg=1 则展示 */}
+          {selectedModel.ratio_flg === 1 && selectedModel.ratio.length > 0 && (
             <Section title="比例">
               <OptionChipGroup
-                options={features.ratios}
+                options={selectedModel.ratio}
                 selected={ratio}
                 onSelect={setRatio}
                 maxVisible={4}
@@ -93,48 +100,51 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models }
             </Section>
           )}
 
-          {/* Resolution — 后台开启则展示 */}
-          {features.resolutions && features.resolutions.length > 0 && (
+          {/* Resolution — resolution_flg=1 则展示 */}
+          {selectedModel.resolution_flg === 1 && selectedModel.resolution.length > 0 && (
             <Section title="分辨率">
               <OptionChipGroup
-                options={features.resolutions}
-                selected={resolution}
-                onSelect={setResolution}
+                options={selectedModel.resolution.map((r) =>
+                  r.price > 0 ? `${r.resolution} (+${r.price})` : r.resolution
+                )}
+                selected={
+                  selectedModel.resolution.find((r) => r.resolution === resolution)
+                    ? (selectedModel.resolution.find((r) => r.resolution === resolution)!.price > 0
+                        ? `${resolution} (+${selectedModel.resolution.find((r) => r.resolution === resolution)!.price})`
+                        : resolution)
+                    : resolution
+                }
+                onSelect={(val) => {
+                  const clean = val.replace(/\s*\(\+\d+\)/, "");
+                  setResolution(clean);
+                }}
               />
             </Section>
           )}
 
-          {/* Count — 后台开启则展示 */}
-          {features.counts && features.counts.length > 0 && (
-            <Section title="生成数量">
-              <OptionChipGroup
-                options={features.counts.map(String)}
-                selected={count}
-                onSelect={setCount}
-              />
-            </Section>
-          )}
-
-          {/* Style — 后台开启则展示 */}
-          {features.styles && features.styles.length > 0 && (
+          {/* Style — style_flg=1 则展示 */}
+          {selectedModel.style_flg === 1 && styleResources.length > 0 && (
             <Section title="风格">
               <StyleSelector
-                styles={features.styles}
-                selected={style}
-                onSelect={setStyle}
+                resources={styleResources}
+                selectedId={selectedStyleId}
+                onSelect={setSelectedStyleId}
               />
             </Section>
           )}
 
-          {/* Upload Reference — 后台开启则展示 */}
-          {features.uploadRef && (
+          {/* Upload Reference — image_reference_flg=1 则展示 */}
+          {selectedModel.image_reference_flg === 1 && (
             <Section title="上传参考图">
-              <UploadReferencePanel key={selectedModel.id} config={features.uploadRef} />
+              <UploadReferencePanel
+                key={selectedModel.id}
+                model={selectedModel}
+              />
             </Section>
           )}
 
-          {/* Similarity — 后台开启则展示 */}
-          {features.similarity && (
+          {/* Similarity — 有启用的 image_like 类型才展示 */}
+          {hasTypedUpload(selectedModel) && (
             <Section title="相似度">
               <div className="flex items-center justify-center gap-3">
                 <button
