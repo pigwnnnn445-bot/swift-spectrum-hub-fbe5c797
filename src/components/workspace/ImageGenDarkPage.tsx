@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Menu } from "lucide-react";
 import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
@@ -14,10 +14,10 @@ const ImageGenDarkPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [heroPromptVisible, setHeroPromptVisible] = useState(true);
   const [prompt, setPrompt] = useState("");
+  const [extraCost, setExtraCost] = useState(0);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLElement>(null);
 
-  // 从服务层加载数据
   useEffect(() => {
     fetchModelsData().then((data) => {
       setProviders(data.provider_list);
@@ -39,7 +39,13 @@ const ImageGenDarkPage = () => {
     return () => observer.disconnect();
   }, []);
 
+  const handleExtraCostChange = useCallback((extra: number) => {
+    setExtraCost(extra);
+  }, []);
+
   if (!selectedModel) return null;
+
+  const totalCost = selectedModel.price + extraCost;
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
@@ -50,6 +56,7 @@ const ImageGenDarkPage = () => {
         onModelChange={setSelectedModel}
         models={models}
         providers={providers}
+        onExtraCostChange={handleExtraCostChange}
       />
 
       <main ref={scrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
@@ -60,11 +67,11 @@ const ImageGenDarkPage = () => {
           <Menu className="h-5 w-5 text-workspace-surface-foreground" />
         </button>
 
-        <HeroPromptBar prompt={prompt} onPromptChange={setPrompt} cost={selectedModel.price} />
+        <HeroPromptBar prompt={prompt} onPromptChange={setPrompt} cost={totalCost} />
         <div ref={sentinelRef} className="h-0 w-0" />
 
         <div className="sticky top-0 z-40">
-          <StickyPromptBar visible={!heroPromptVisible} prompt={prompt} onPromptChange={setPrompt} cost={selectedModel.price} />
+          <StickyPromptBar visible={!heroPromptVisible} prompt={prompt} onPromptChange={setPrompt} cost={totalCost} />
         </div>
 
         <div className="px-4 pb-8 sm:px-6 lg:px-8">
