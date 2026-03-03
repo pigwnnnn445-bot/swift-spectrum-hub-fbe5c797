@@ -16,7 +16,7 @@ const ImageGenDarkPage = () => {
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchModelsData().then((data) => {
