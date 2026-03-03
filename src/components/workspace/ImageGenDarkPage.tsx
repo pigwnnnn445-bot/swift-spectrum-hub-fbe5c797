@@ -34,7 +34,7 @@ const ImageGenDarkPage = () => {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
-      <SettingsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <SettingsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} selectedModel={selectedModel} onModelChange={setSelectedModel} />
 
       <main ref={scrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
         <button
