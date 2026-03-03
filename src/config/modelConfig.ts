@@ -29,12 +29,16 @@ export interface ModelConfig {
   icon: string;
   /** 是否在线（后端控制，前端过滤用） */
   online: boolean;
+  /** 单次生成消耗的积分/点数 */
+  cost: number;
   /** 该模型支持的功能配置项 */
   features: {
     ratios?: string[];
     resolutions?: string[];
     counts?: number[];
     styles?: string[];
+    /** 是否显示相似度调整组件 */
+    similarity?: boolean;
     uploadRef?: UploadRefConfig;
   };
 }

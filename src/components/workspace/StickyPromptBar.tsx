@@ -6,6 +6,7 @@ interface StickyPromptBarProps {
   visible: boolean;
   prompt: string;
   onPromptChange: (value: string) => void;
+  cost: number;
 }
 
 const useAutoResize = (value: string, maxHeight: number) => {

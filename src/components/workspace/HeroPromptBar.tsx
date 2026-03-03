@@ -5,6 +5,7 @@ import heroImg from "@/assets/hero-mountains.jpg";
 interface HeroPromptBarProps {
   prompt: string;
   onPromptChange: (value: string) => void;
+  cost: number;
 }
 
 const useAutoResize = (value: string, maxHeight: number) => {
