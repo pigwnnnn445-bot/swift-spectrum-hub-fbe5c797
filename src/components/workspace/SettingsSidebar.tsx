@@ -17,6 +17,9 @@ interface SettingsSidebarProps {
   providers: Provider[];
   /** 通知父组件当前配置项的附加消耗 */
   onExtraCostChange?: (extra: number) => void;
+  /** 生成图片数量 */
+  imageCount: number;
+  onImageCountChange: (count: number) => void;
 }
 
 const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange }: SettingsSidebarProps) => {
