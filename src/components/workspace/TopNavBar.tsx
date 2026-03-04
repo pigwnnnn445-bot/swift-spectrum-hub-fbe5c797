@@ -17,12 +17,21 @@ import { Button } from "@/components/ui/button";
 
 // Mock data
 const mockQuota = {
-  plan: "免费版",
-  total: 100,
-  used: 100,
-  remain: 0,
-  resetDate: "2026-04-01",
+  plan: "Pro Plan",
+  active: true,
+  subscriptionUsed: 0,
+  subscriptionTotal: 100,
+  paidQuota: 5074,
+  remainingTime: "1d 3h 56min",
 };
+
+const mockModels = [
+  { name: "GPT-5.2", desc: "Quick response, broad knowledge", cost: 1, icon: "🤖" },
+  { name: "Gemini-3-Flas", desc: "Google's Top Model", cost: 1, icon: "🔵" },
+  { name: "Rita-Pro", desc: "官方模型", cost: 1, icon: "🟢" },
+  { name: "Rita", desc: "官方模型", cost: 0, icon: "🟢" },
+  { name: "Claude-Opus-4.5", desc: "Claude's Top Model", cost: 3, icon: "🟣" },
+];
 
 const TopNavBar = () => {
   const [upgradeOpen, setUpgradeOpen] = useState(false);
