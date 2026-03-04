@@ -22,6 +22,8 @@ export interface GenerateTask {
   images: string[];
   /** 失败时的错误信息 */
   errorMessage?: string;
+  /** 图生图参考图 URL 数组（存在时表示图生图任务） */
+  referenceImages?: string[];
   /** 创建时间 */
   createdAt: number;
   /** 原始请求参数（方便重试） */
