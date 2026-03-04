@@ -37,6 +37,7 @@ const TopNavBar = () => {
   const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   return (
+    <div>
     <div className="relative flex items-center justify-center px-4 py-2 bg-workspace-panel sm:px-6 lg:px-8">
       {/* Center: quota + upgrade */}
       <div className="flex items-center gap-1">
@@ -135,6 +136,8 @@ const TopNavBar = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+    <div className="h-px bg-workspace-border/60" />
     </div>
   );
 };
