@@ -31,10 +31,39 @@ const TopNavBar = () => {
     <div className="relative flex items-center justify-center px-4 py-2 border-b border-border bg-background/80 backdrop-blur-sm sm:px-6 lg:px-8">
       {/* Center: quota + upgrade */}
       <div className="flex items-center gap-1">
-        <div className="flex items-center gap-1 text-sm text-foreground">
-          <Zap className="h-3.5 w-3.5 text-primary" />
-          <span className="font-medium">{mockQuota.total}</span>
-        </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <button className="flex items-center gap-1 text-sm text-foreground hover:bg-accent rounded-lg px-2 py-1 transition-colors cursor-pointer">
+              <Zap className="h-3.5 w-3.5 text-primary" />
+              <span className="font-medium">{mockQuota.total}</span>
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-56 rounded-xl border-border bg-popover p-4 text-sm">
+            <p className="mb-3 font-semibold text-foreground">配额信息</p>
+            <div className="space-y-2 text-muted-foreground">
+              <div className="flex justify-between">
+                <span>当前套餐</span>
+                <span className="text-foreground">{mockQuota.plan}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>总配额</span>
+                <span className="text-foreground">{mockQuota.total}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>已用配额</span>
+                <span className="text-foreground">{mockQuota.used}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>剩余配额</span>
+                <span className="text-foreground">{mockQuota.remain}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>重置时间</span>
+                <span className="text-foreground">{mockQuota.resetDate}</span>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
 
         <div className="mx-2 h-4 w-px bg-border" />
 
