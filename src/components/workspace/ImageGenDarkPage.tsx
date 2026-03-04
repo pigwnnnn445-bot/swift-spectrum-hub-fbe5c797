@@ -27,7 +27,9 @@ const ImageGenDarkPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCooldown, setIsCooldown] = useState(false);
   const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+  const promptInputRef = useRef<HTMLTextAreaElement | null>(null);
+  // 参考图状态（用于"应用为参考图"回填）
+  const [referenceImages, setReferenceImages] = useState<string[]>([]);
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
