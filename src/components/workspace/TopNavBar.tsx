@@ -54,7 +54,7 @@ const TopNavBar = () => {
               <p className="font-semibold text-foreground">您的{mockQuota.plan}套餐</p>
               {mockQuota.active && (
                 <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-medium text-primary">
-                  Active
+                  可用
                 </span>
               )}
             </div>
