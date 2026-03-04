@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Zap, Rocket, FolderOpen, ChevronRight } from "lucide-react";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
