@@ -4,6 +4,7 @@ import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
 import MasonryGallery from "./MasonryGallery";
 import StickyPromptBar from "./StickyPromptBar";
+import TopNavBar from "./TopNavBar";
 import { fetchModelsData } from "@/api/modelService";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
 import { useEffect } from "react";
@@ -51,12 +52,17 @@ const ImageGenDarkPage = () => {
       />
 
       <main className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="fixed left-3 top-3 z-30 flex h-10 w-10 items-center justify-center rounded-xl bg-workspace-panel/90 backdrop-blur border border-workspace-border/60 lg:hidden"
-        >
-          <Menu className="h-5 w-5 text-workspace-surface-foreground" />
-        </button>
+        <div className="sticky top-0 z-50 flex items-center">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="ml-2 mr-1 flex h-8 w-8 items-center justify-center rounded-lg bg-background/80 backdrop-blur border border-border lg:hidden shrink-0"
+          >
+            <Menu className="h-4 w-4 text-foreground" />
+          </button>
+          <div className="flex-1 min-w-0">
+            <TopNavBar />
+          </div>
+        </div>
 
         <HeroPromptBar prompt={prompt} onPromptChange={setPrompt} cost={totalCost} />
 
