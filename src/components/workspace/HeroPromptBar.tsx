@@ -5,6 +5,8 @@ interface HeroPromptBarProps {
   prompt: string;
   onPromptChange: (value: string) => void;
   cost: number;
+  isGenerating?: boolean;
+  onSubmit?: () => void;
 }
 
 const useAutoResize = (value: string, maxHeight: number) => {
