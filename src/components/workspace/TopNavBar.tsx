@@ -48,28 +48,46 @@ const TopNavBar = () => {
               <span className="font-medium">{mockQuota.total}</span>
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-56 rounded-xl border-border bg-popover p-4 text-sm">
-            <p className="mb-3 font-semibold text-foreground">配额信息</p>
-            <div className="space-y-2 text-muted-foreground">
-              <div className="flex justify-between">
-                <span>当前套餐</span>
-                <span className="text-foreground">{mockQuota.plan}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>总配额</span>
-                <span className="text-foreground">{mockQuota.total}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>已用配额</span>
-                <span className="text-foreground">{mockQuota.used}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>剩余配额</span>
-                <span className="text-foreground">{mockQuota.remain}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>重置时间</span>
-                <span className="text-foreground">{mockQuota.resetDate}</span>
+          <PopoverContent className="w-72 rounded-xl border-border bg-popover p-5 text-sm">
+            {/* Plan header */}
+            <div className="flex items-center justify-between mb-4">
+              <p className="font-semibold text-foreground">Your {mockQuota.plan}</p>
+              {mockQuota.active && (
+                <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-medium text-primary">
+                  Active
+                </span>
+              )}
+            </div>
+
+            {/* Quota stats */}
+            <div className="space-y-1.5 text-muted-foreground mb-4">
+              <p>Subscription Quota: <span className="font-semibold text-foreground">{mockQuota.subscriptionUsed}</span>/{mockQuota.subscriptionTotal}</p>
+              <p>Paid Quota: <span className="font-semibold text-foreground">{mockQuota.paidQuota}</span></p>
+              <p>Remaining time: <span className="font-semibold text-foreground">{mockQuota.remainingTime}</span></p>
+            </div>
+
+            {/* Model cost list */}
+            <div className="border-t border-border pt-3">
+              <p className="text-xs text-muted-foreground mb-3">Quota Usage Instructions:</p>
+              <div className="space-y-2.5">
+                {mockModels.map((m) => (
+                  <div key={m.name} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base">{m.icon}</span>
+                      <div>
+                        <p className="text-sm font-medium text-foreground leading-tight">{m.name}</p>
+                        <p className="text-xs text-muted-foreground">{m.desc}</p>
+                      </div>
+                    </div>
+                    {m.cost === 0 ? (
+                      <span className="text-xs font-medium text-primary">Free</span>
+                    ) : (
+                      <span className="flex items-center gap-0.5 text-xs font-medium text-primary">
+                        <Zap className="h-3 w-3" /> {m.cost}
+                      </span>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </PopoverContent>
