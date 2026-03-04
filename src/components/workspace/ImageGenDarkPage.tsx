@@ -137,7 +137,7 @@ const ImageGenDarkPage = () => {
   if (!selectedModel) return null;
 
   const totalCost = selectedModel.price + extraCost;
-  const hasTasks = tasks.length > 0;
+  
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
