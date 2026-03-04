@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Zap, Rocket } from "lucide-react";
+import { Zap, Rocket, FolderOpen, ChevronRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
