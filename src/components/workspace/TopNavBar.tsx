@@ -1,10 +1,5 @@
 import { useState } from "react";
-import { HelpCircle, Zap, Rocket, FolderOpen, ChevronRight } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Zap, Rocket, FolderOpen, ChevronRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
