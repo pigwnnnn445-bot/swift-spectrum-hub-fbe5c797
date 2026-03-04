@@ -170,7 +170,7 @@ const ImageGenDarkPage = () => {
           cost={totalCost}
           isGenerating={isGenerating}
           onSubmit={handleSubmit}
-          hasActiveTask={isGenerating}
+          hasActiveTask={hasEnteredCreationMode}
         />
 
         {/* 吸顶输入条：生成中时由 HeroPromptBar 自身吸顶，无需 StickyPromptBar */}
