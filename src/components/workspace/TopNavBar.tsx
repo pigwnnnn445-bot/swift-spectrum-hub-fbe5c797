@@ -61,9 +61,9 @@ const TopNavBar = () => {
 
             {/* Quota stats */}
             <div className="space-y-1.5 text-muted-foreground mb-4">
-              <p>Subscription Quota: <span className="font-semibold text-foreground">{mockQuota.subscriptionUsed}</span>/{mockQuota.subscriptionTotal}</p>
-              <p>Paid Quota: <span className="font-semibold text-foreground">{mockQuota.paidQuota}</span></p>
-              <p>Remaining time: <span className="font-semibold text-foreground">{mockQuota.remainingTime}</span></p>
+              <p>订阅配额: <span className="font-semibold text-foreground">{mockQuota.subscriptionUsed}</span>/{mockQuota.subscriptionTotal}</p>
+              <p>附加配额: <span className="font-semibold text-foreground">{mockQuota.paidQuota}</span></p>
+              <p>到期时间: <span className="font-semibold text-foreground">{mockQuota.remainingTime}</span></p>
             </div>
 
             {/* Model cost list */}
