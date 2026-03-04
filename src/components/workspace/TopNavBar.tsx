@@ -63,20 +63,20 @@ const TopNavBar = () => {
             <div className="border-t border-border pt-3">
               <p className="text-xs text-muted-foreground mb-2">配额使用说明:</p>
               <div className="max-h-40 overflow-y-auto space-y-2.5 workspace-scroll">
-                {mockModels.map((m) => (
-                  <div key={m.name} className="flex items-center justify-between">
+                {mockModelsData.model_list.map((m) => (
+                  <div key={m.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-base">{m.icon}</span>
+                      <img src={m.image} alt={m.name} className="h-5 w-5 rounded-full object-cover" />
                       <div>
                         <p className="text-sm font-medium text-foreground leading-tight">{m.name}</p>
-                        <p className="text-xs text-muted-foreground">{m.desc}</p>
+                        <p className="text-xs text-muted-foreground">{m.content}</p>
                       </div>
                     </div>
-                    {m.cost === 0 ? (
+                    {m.price === 0 ? (
                       <span className="text-xs font-medium text-primary">Free</span>
                     ) : (
                       <span className="flex items-center gap-0.5 text-xs font-medium text-primary">
-                        <Zap className="h-3 w-3" /> {m.cost}
+                        <Zap className="h-3 w-3" /> {m.price}
                       </span>
                     )}
                   </div>
