@@ -66,7 +66,7 @@ const ImageGenDarkPage = () => {
 
         <HeroPromptBar prompt={prompt} onPromptChange={setPrompt} cost={totalCost} />
 
-        <div className="sticky top-0 z-40">
+        <div className="sticky top-[41px] z-40">
           <StickyPromptBar visible={showStickyBar} prompt={prompt} onPromptChange={setPrompt} cost={totalCost} />
         </div>
 
