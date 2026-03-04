@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, type RefObject } from "react";
 import { Zap } from "lucide-react";
 
 interface HeroPromptBarProps {
@@ -8,8 +8,9 @@ interface HeroPromptBarProps {
   isGenerating?: boolean;
   isSubmitDisabled?: boolean;
   onSubmit?: () => void;
-  /** 是否有正在生成的任务（用于隐藏引导区 + 输入框吸顶撑满） */
   hasActiveTask?: boolean;
+  /** 外部 ref，用于聚焦输入框 */
+  promptInputRef?: RefObject<HTMLTextAreaElement | null>;
 }
 
 const useAutoResize = (value: string, maxHeight: number) => {
