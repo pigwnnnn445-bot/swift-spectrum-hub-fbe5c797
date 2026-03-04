@@ -1,0 +1,104 @@
+import { RotateCw, AlertCircle, Copy, ArrowUp } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { GenerateTask } from "@/types/task";
+
+interface TaskCardProps {
+  task: GenerateTask;
+  onRetry?: (taskId: string) => void;
+}
+
+const TaskCard = ({ task, onRetry }: TaskCardProps) => {
+  const isGenerating = task.status === "generating" || task.status === "submitting";
+  const isError = task.status === "error";
+  const isSuccess = task.status === "success";
+
+  return (
+    <div className="rounded-xl border border-workspace-border/60 bg-workspace-surface overflow-hidden">
+      <div className="flex flex-col lg:flex-row gap-4 p-4">
+        {/* 左侧：图片区域 */}
+        <div className="flex-1 min-w-0">
+          <div className="grid gap-2" style={{
+            gridTemplateColumns: task.count <= 1 ? "1fr" : task.count === 2 ? "1fr 1fr" : "repeat(auto-fill, minmax(180px, 1fr))",
+          }}>
+            {isGenerating &&
+              Array.from({ length: task.count }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse"
+                />
+              ))}
+
+            {isSuccess &&
+              task.images.map((src, i) => (
+                <div key={i} className="relative group overflow-hidden rounded-lg">
+                  <img
+                    src={src}
+                    alt={`生成结果 ${i + 1}`}
+                    className="w-full aspect-square object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+
+            {isError && (
+              <div className="flex aspect-square items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20">
+                <div className="flex flex-col items-center gap-2 text-center px-4">
+                  <AlertCircle className="h-8 w-8 text-destructive/70" />
+                  <p className="text-sm text-destructive/80">{task.errorMessage || "生成失败"}</p>
+                  <button
+                    onClick={() => onRetry?.(task.id)}
+                    className="mt-1 flex items-center gap-1.5 rounded-lg bg-workspace-chip px-3 py-1.5 text-xs font-medium text-workspace-surface-foreground hover:bg-workspace-chip-active/20 transition-colors"
+                  >
+                    <RotateCw className="h-3 w-3" />
+                    重试
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 右侧：任务信息 */}
+        <div className="w-full lg:w-[280px] shrink-0 flex flex-col gap-3">
+          {/* Prompt 文本 */}
+          <p className="text-sm text-workspace-surface-foreground leading-relaxed line-clamp-6">
+            {task.prompt}
+          </p>
+
+          {/* 操作按钮（仅成功时） */}
+          {isSuccess && (
+            <div className="flex items-center gap-2">
+              <button className="flex items-center gap-1 rounded-lg bg-workspace-chip px-2.5 py-1.5 text-xs text-workspace-panel-foreground hover:bg-workspace-chip-active/20 transition-colors">
+                <Copy className="h-3 w-3" />
+              </button>
+              <button className="flex items-center gap-1 rounded-lg bg-workspace-chip px-2.5 py-1.5 text-xs text-workspace-panel-foreground hover:bg-workspace-chip-active/20 transition-colors">
+                <ArrowUp className="h-3 w-3" />
+              </button>
+            </div>
+          )}
+
+          {/* 模型/比例标签 */}
+          <div className="flex flex-wrap items-center gap-2 mt-auto">
+            <span className="flex items-center gap-1.5 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+              <img src={task.modelImage} alt="" className="h-4 w-4 rounded-full object-cover" />
+              {task.modelName}
+            </span>
+            {task.ratio && (
+              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+                ⬜ {task.ratio}
+              </span>
+            )}
+            {isGenerating && (
+              <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs text-primary">
+                <RotateCw className="h-3 w-3 animate-spin" />
+                生成中...
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TaskCard;
