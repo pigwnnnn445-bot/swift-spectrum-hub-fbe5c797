@@ -170,6 +170,8 @@ const ImageGenDarkPage = () => {
         models={models}
         providers={providers}
         onExtraCostChange={handleExtraCostChange}
+        imageCount={imageCount}
+        onImageCountChange={setImageCount}
       />
 
       <main className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>

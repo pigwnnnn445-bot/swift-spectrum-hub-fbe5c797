@@ -138,6 +138,17 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
             </Section>
           )}
 
+          {/* Image Count */}
+          {selectedModel.image_num > 0 && (
+            <Section title="生成图片数量">
+              <OptionChipGroup
+                options={["1", "2", "3", "4"]}
+                selected={String(imageCount)}
+                onSelect={(v) => onImageCountChange(Number(v))}
+              />
+            </Section>
+          )}
+
           {/* Style */}
           {selectedModel.style_flg === 1 && styleResources.length > 0 && (
             <Section title="风格">
