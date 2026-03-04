@@ -190,8 +190,8 @@ const ImageGenDarkPage = () => {
         {/* 任务列表 */}
         <TaskList tasks={tasks} onRetry={handleRetry} />
 
-        {/* 灵感画廊：有任务时隐藏 */}
-        {!hasTasks && (
+        {/* 灵感画廊：进入创作模式后隐藏 */}
+        {!hasEnteredCreationMode && (
           <div className="px-4 pb-8 sm:px-6 lg:px-8">
             <h2 className="mb-5 mt-2 text-lg font-semibold text-workspace-panel-foreground">
               🎨 灵感显影室
