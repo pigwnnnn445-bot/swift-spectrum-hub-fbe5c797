@@ -9,6 +9,7 @@ import TaskList from "./TaskList";
 import { fetchModelsData } from "@/api/modelService";
 import { mockGenerate } from "@/api/mockGenerate";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
+import { getEnabledImageLikes } from "@/config/modelConfig";
 import type { GenerateTask } from "@/types/task";
 import { toast } from "@/hooks/use-toast";
 
