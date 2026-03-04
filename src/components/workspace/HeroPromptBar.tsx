@@ -6,6 +6,7 @@ interface HeroPromptBarProps {
   onPromptChange: (value: string) => void;
   cost: number;
   isGenerating?: boolean;
+  isSubmitDisabled?: boolean;
   onSubmit?: () => void;
   /** 是否有正在生成的任务（用于隐藏引导区 + 输入框吸顶撑满） */
   hasActiveTask?: boolean;
@@ -25,7 +26,7 @@ const useAutoResize = (value: string, maxHeight: number) => {
   return ref;
 };
 
-const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, onSubmit, hasActiveTask }: HeroPromptBarProps) => {
+const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, isSubmitDisabled, onSubmit, hasActiveTask }: HeroPromptBarProps) => {
   const textareaRef = useAutoResize(prompt, 220);
 
   return (
@@ -50,7 +51,7 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, onSubmit, h
               style={{ maxHeight: 220, minHeight: hasActiveTask ? 60 : 100 }}
             />
             <button
-              disabled={!prompt.trim() || isGenerating}
+              disabled={isSubmitDisabled || !prompt.trim()}
               onClick={onSubmit}
               className="mr-2 mb-2 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-workspace-neon px-5 py-2.5 text-sm font-medium text-white transition-all hover:brightness-110 shadow-md shrink-0 disabled:opacity-40 disabled:pointer-events-none"
             >
