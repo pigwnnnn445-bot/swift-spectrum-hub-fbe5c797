@@ -4,6 +4,7 @@ import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
 import MasonryGallery from "./MasonryGallery";
 import StickyPromptBar from "./StickyPromptBar";
+import TopNavBar from "./TopNavBar";
 import { fetchModelsData } from "@/api/modelService";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
 import { useEffect } from "react";
