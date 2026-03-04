@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Menu } from "lucide-react";
 import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
@@ -10,7 +10,6 @@ import { fetchModelsData } from "@/api/modelService";
 import { mockGenerate } from "@/api/mockGenerate";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
 import type { GenerateTask } from "@/types/task";
-import { useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 
 const ImageGenDarkPage = () => {
