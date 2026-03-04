@@ -22,6 +22,7 @@ const ImageGenDarkPage = () => {
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
   const [tasks, setTasks] = useState<GenerateTask[]>([]);
+  const [hasEnteredCreationMode, setHasEnteredCreationMode] = useState(false);
 
   useEffect(() => {
     fetchModelsData().then((data) => {
