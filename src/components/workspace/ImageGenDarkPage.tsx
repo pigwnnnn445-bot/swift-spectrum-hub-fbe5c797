@@ -158,6 +158,48 @@ const ImageGenDarkPage = () => {
     }
   }, [tasks]);
 
+  // ── 应用提示词回填 ──
+  const handleApplyPrompt = useCallback((text: string) => {
+    setPrompt(text);
+    // 聚焦并光标定位末尾
+    setTimeout(() => {
+      const el = promptInputRef.current;
+      if (el) {
+        el.focus();
+        el.setSelectionRange(text.length, text.length);
+      }
+    }, 50);
+  }, []);
+
+  // ── 应用为参考图 ──
+  const handleApplyReferenceImage = useCallback((imageUrl: string) => {
+    if (!selectedModel) return;
+
+    // 检查模型是否支持参考图
+    const enabledLikes = getEnabledImageLikes(selectedModel);
+    if (selectedModel.image_like_flg !== 1 || enabledLikes.length === 0) {
+      toast({ title: "当前模型不支持上传参考图", variant: "destructive" });
+      return;
+    }
+
+    // 检查重复
+    if (referenceImages.includes(imageUrl)) {
+      toast({ title: "请不要上传重复图片", variant: "destructive" });
+      return;
+    }
+
+    // 上限：使用 UploadReferencePanel 的 MAX_MULTI_IMAGES = 5
+    const maxImages = 5;
+    setReferenceImages((prev) => {
+      if (prev.length >= maxImages) {
+        // FIFO 替换最早一张
+        return [...prev.slice(1), imageUrl];
+      }
+      return [...prev, imageUrl];
+    });
+    toast({ title: "参考图已添加" });
+  }, [selectedModel, referenceImages]);
+
   if (!selectedModel) return null;
 
   const totalCost = selectedModel.price + extraCost;
@@ -198,6 +240,7 @@ const ImageGenDarkPage = () => {
           isSubmitDisabled={isSubmitting || isCooldown}
           onSubmit={handleSubmit}
           hasActiveTask={hasEnteredCreationMode}
+          promptInputRef={promptInputRef}
         />
 
         {/* 吸顶输入条：进入创作模式后由 HeroPromptBar 吸顶，无需 StickyPromptBar */}
