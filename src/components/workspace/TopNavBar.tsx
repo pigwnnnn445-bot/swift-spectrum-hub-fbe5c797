@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Zap, Rocket } from "lucide-react";
+import { Zap, Rocket, FolderOpen, ChevronRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +23,7 @@ const TopNavBar = () => {
   const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   return (
-    <div className="flex items-center justify-center px-4 py-2 border-b border-border bg-background/80 backdrop-blur-sm sm:px-6 lg:px-8">
+    <div className="relative flex items-center justify-center px-4 py-2 border-b border-border bg-background/80 backdrop-blur-sm sm:px-6 lg:px-8">
       {/* Center: quota + upgrade */}
       <div className="flex items-center gap-1">
         <div className="flex items-center gap-1 text-sm text-foreground">
@@ -41,6 +41,13 @@ const TopNavBar = () => {
           <span>Upgrade</span>
         </button>
       </div>
+
+      {/* Right: asset management */}
+      <button className="absolute right-4 sm:right-6 lg:right-8 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors cursor-pointer">
+        <FolderOpen className="h-4 w-4" />
+        <span className="hidden sm:inline">资产管理</span>
+        <ChevronRight className="h-3.5 w-3.5" />
+      </button>
 
       {/* Upgrade modal */}
       <Dialog open={upgradeOpen} onOpenChange={setUpgradeOpen}>
