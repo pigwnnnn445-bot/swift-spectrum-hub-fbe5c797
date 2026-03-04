@@ -27,8 +27,16 @@ const useAutoResize = (value: string, maxHeight: number) => {
   return ref;
 };
 
-const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, isSubmitDisabled, onSubmit, hasActiveTask }: HeroPromptBarProps) => {
-  const textareaRef = useAutoResize(prompt, 220);
+const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, isSubmitDisabled, onSubmit, hasActiveTask, promptInputRef }: HeroPromptBarProps) => {
+  const autoRef = useAutoResize(prompt, 220);
+
+  // Merge internal auto-resize ref with external ref
+  const setRefs = useCallback((el: HTMLTextAreaElement | null) => {
+    (autoRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = el;
+    if (promptInputRef) {
+      (promptInputRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = el;
+    }
+  }, [autoRef, promptInputRef]);
 
   return (
     <div className={`relative w-full bg-workspace-panel ${hasActiveTask ? "sticky top-[41px] z-40" : ""}`}>
