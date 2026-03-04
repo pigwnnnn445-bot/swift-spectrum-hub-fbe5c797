@@ -44,6 +44,7 @@ const TopNavBar = () => {
           <PopoverTrigger asChild>
             <button className="flex items-center gap-1 text-sm text-foreground hover:bg-accent rounded-lg px-2 py-1 transition-colors cursor-pointer">
               <Zap className="h-3.5 w-3.5 text-primary" />
+              <span className="font-medium">{mockQuota.subscriptionTotal}</span>
               <span className="font-medium">{mockQuota.total}</span>
             </button>
           </PopoverTrigger>
