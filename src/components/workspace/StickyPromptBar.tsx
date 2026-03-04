@@ -25,7 +25,7 @@ const useAutoResize = (value: string, maxHeight: number) => {
   return ref;
 };
 
-const StickyPromptBar = ({ visible, prompt, onPromptChange, cost }: StickyPromptBarProps) => {
+const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isGenerating, onSubmit }: StickyPromptBarProps) => {
   const textareaRef = useAutoResize(prompt, 240);
 
   if (!visible) return null;
