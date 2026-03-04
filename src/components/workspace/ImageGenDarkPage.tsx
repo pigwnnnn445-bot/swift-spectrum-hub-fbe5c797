@@ -50,17 +50,19 @@ const ImageGenDarkPage = () => {
     setExtraCost(extra);
   }, []);
 
-  // ── 检查是否有任务正在生成 ──
+  // ── 检查是否有任务正在生成（仅用于按钮文案等实时状态） ──
   const isGenerating = tasks.some((t) => t.status === "generating" || t.status === "submitting");
 
   // ── 提交生成任务 ──
   const handleSubmit = useCallback(async () => {
-    if (!selectedModel || !prompt.trim() || isGenerating) return;
+    if (!selectedModel || !prompt.trim() || isSubmitting || isCooldown) return;
 
     if (!prompt.trim()) {
       toast({ title: "请输入提示词", variant: "destructive" });
       return;
     }
+
+    setIsSubmitting(true);
 
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     // 默认生成 4 张（若模型 image_num > 0 则用模型值）
@@ -96,6 +98,7 @@ const ImageGenDarkPage = () => {
     // ── 调用 mock 接口（发布时替换为真实 API） ──
     try {
       const result = await mockGenerate(count);
+      setIsSubmitting(false);
       setTasks((prev) =>
         prev.map((t) => {
           if (t.id !== taskId) return t;
@@ -105,14 +108,24 @@ const ImageGenDarkPage = () => {
           return { ...t, status: "error" as const, errorMessage: result.errorMessage };
         })
       );
+      // 仅成功时进入 2 秒静默冷却
+      if (result.success) {
+        if (cooldownRef.current) clearTimeout(cooldownRef.current);
+        setIsCooldown(true);
+        cooldownRef.current = setTimeout(() => {
+          setIsCooldown(false);
+          cooldownRef.current = null;
+        }, 2000);
+      }
     } catch {
+      setIsSubmitting(false);
       setTasks((prev) =>
         prev.map((t) =>
           t.id === taskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t
         )
       );
     }
-  }, [selectedModel, prompt, isGenerating]);
+  }, [selectedModel, prompt, isSubmitting, isCooldown]);
 
   // ── 重试任务 ──
   const handleRetry = useCallback(async (taskId: string) => {
