@@ -20,6 +20,7 @@ const ImageGenDarkPage = () => {
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
+  const [imageCount, setImageCount] = useState(1);
   const [tasks, setTasks] = useState<GenerateTask[]>([]);
   const [hasEnteredCreationMode, setHasEnteredCreationMode] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,8 +74,7 @@ const ImageGenDarkPage = () => {
     }, 2000);
 
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    // 默认生成 4 张（若模型 image_num > 0 则用模型值）
-    const count = selectedModel.image_num > 0 ? selectedModel.image_num : 4;
+    const count = imageCount;
 
     const newTask: GenerateTask = {
       id: taskId,
@@ -170,6 +170,8 @@ const ImageGenDarkPage = () => {
         models={models}
         providers={providers}
         onExtraCostChange={handleExtraCostChange}
+        imageCount={imageCount}
+        onImageCountChange={setImageCount}
       />
 
       <main className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>

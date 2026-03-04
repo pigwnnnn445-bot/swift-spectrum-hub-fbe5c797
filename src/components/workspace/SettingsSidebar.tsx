@@ -17,9 +17,12 @@ interface SettingsSidebarProps {
   providers: Provider[];
   /** 通知父组件当前配置项的附加消耗 */
   onExtraCostChange?: (extra: number) => void;
+  /** 生成图片数量 */
+  imageCount: number;
+  onImageCountChange: (count: number) => void;
 }
 
-const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange }: SettingsSidebarProps) => {
+const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange }: SettingsSidebarProps) => {
   const [ratio, setRatio] = useState(selectedModel.ratio?.[0] ?? "");
   const [selectedResolution, setSelectedResolution] = useState(selectedModel.resolution?.[0]?.resolution ?? "");
   const [selectedStyleId, setSelectedStyleId] = useState<number | null>(
@@ -131,6 +134,17 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
                 options={selectedModel.resolution.map((r) => r.resolution)}
                 selected={selectedResolution}
                 onSelect={setSelectedResolution}
+              />
+            </Section>
+          )}
+
+          {/* Image Count */}
+          {selectedModel.image_num > 0 && (
+            <Section title="生成图片数量">
+              <OptionChipGroup
+                options={["1", "2", "3", "4"]}
+                selected={String(imageCount)}
+                onSelect={(v) => onImageCountChange(Number(v))}
               />
             </Section>
           )}
