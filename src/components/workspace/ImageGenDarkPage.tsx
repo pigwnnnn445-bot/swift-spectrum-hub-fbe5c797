@@ -173,8 +173,8 @@ const ImageGenDarkPage = () => {
           hasActiveTask={hasEnteredCreationMode}
         />
 
-        {/* 吸顶输入条：生成中时由 HeroPromptBar 自身吸顶，无需 StickyPromptBar */}
-        {!isGenerating && (
+        {/* 吸顶输入条：进入创作模式后由 HeroPromptBar 吸顶，无需 StickyPromptBar */}
+        {!hasEnteredCreationMode && (
           <div className="sticky top-[41px] z-40">
             <StickyPromptBar
               visible={showStickyBar}
