@@ -74,8 +74,7 @@ const ImageGenDarkPage = () => {
     }, 2000);
 
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    // 默认生成 4 张（若模型 image_num > 0 则用模型值）
-    const count = selectedModel.image_num > 0 ? selectedModel.image_num : 4;
+    const count = imageCount;
 
     const newTask: GenerateTask = {
       id: taskId,
