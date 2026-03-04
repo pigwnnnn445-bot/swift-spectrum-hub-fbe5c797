@@ -51,7 +51,7 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, isSubmitDis
         <div className={`relative w-full ${hasActiveTask ? "" : "max-w-[760px]"}`}>
           <div className="flex items-end rounded-2xl border border-workspace-border/60 bg-workspace-surface shadow-lg">
             <textarea
-              ref={textareaRef}
+              ref={setRefs}
               value={prompt}
               onChange={(e) => onPromptChange(e.target.value)}
               placeholder="输入您的提示词，比如：可爱的猫"
