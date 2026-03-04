@@ -6,6 +6,7 @@ interface HeroPromptBarProps {
   onPromptChange: (value: string) => void;
   cost: number;
   isGenerating?: boolean;
+  isSubmitDisabled?: boolean;
   onSubmit?: () => void;
   /** 是否有正在生成的任务（用于隐藏引导区 + 输入框吸顶撑满） */
   hasActiveTask?: boolean;
