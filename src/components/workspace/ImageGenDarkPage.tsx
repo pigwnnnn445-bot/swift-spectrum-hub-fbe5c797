@@ -20,6 +20,7 @@ const ImageGenDarkPage = () => {
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
+  const [imageCount, setImageCount] = useState(1);
   const [tasks, setTasks] = useState<GenerateTask[]>([]);
   const [hasEnteredCreationMode, setHasEnteredCreationMode] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
