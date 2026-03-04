@@ -168,18 +168,22 @@ const ImageGenDarkPage = () => {
           cost={totalCost}
           isGenerating={isGenerating}
           onSubmit={handleSubmit}
+          hasActiveTask={isGenerating}
         />
 
-        <div className="sticky top-[41px] z-40">
-          <StickyPromptBar
-            visible={showStickyBar}
-            prompt={prompt}
-            onPromptChange={setPrompt}
-            cost={totalCost}
-            isGenerating={isGenerating}
-            onSubmit={handleSubmit}
-          />
-        </div>
+        {/* 吸顶输入条：生成中时由 HeroPromptBar 自身吸顶，无需 StickyPromptBar */}
+        {!isGenerating && (
+          <div className="sticky top-[41px] z-40">
+            <StickyPromptBar
+              visible={showStickyBar}
+              prompt={prompt}
+              onPromptChange={setPrompt}
+              cost={totalCost}
+              isGenerating={isGenerating}
+              onSubmit={handleSubmit}
+            />
+          </div>
+        )}
 
         {/* 任务列表 */}
         <TaskList tasks={tasks} onRetry={handleRetry} />
