@@ -68,8 +68,8 @@ const TopNavBar = () => {
 
             {/* Model cost list */}
             <div className="border-t border-border pt-3">
-              <p className="text-xs text-muted-foreground mb-3">Quota Usage Instructions:</p>
-              <div className="space-y-2.5">
+              <p className="text-xs text-muted-foreground mb-2">Quota Usage Instructions:</p>
+              <div className="max-h-40 overflow-y-auto space-y-2.5 workspace-scroll">
                 {mockModels.map((m) => (
                   <div key={m.name} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
