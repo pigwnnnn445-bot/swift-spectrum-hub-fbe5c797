@@ -84,7 +84,7 @@ const TopNavBar = () => {
           onClick={() => setUpgradeOpen(true)}
           className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary transition-colors cursor-pointer"
         >
-          <Rocket className="h-3.5 w-3.5 text-emerald-500" />
+          <Rocket className="h-3.5 w-3.5 text-accent-foreground" />
           <span>Upgrade</span>
         </button>
       </div>
