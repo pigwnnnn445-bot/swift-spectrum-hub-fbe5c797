@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RotateCw, AlertCircle, ChevronDown, ChevronUp, Image as ImageIcon } from "lucide-react";
+import { RotateCw, AlertCircle, ChevronDown, ChevronUp, Copy, ArrowUp, Image as ImageIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { GenerateTask } from "@/types/task";
 
@@ -77,15 +77,26 @@ const TaskCard = ({ task, onRetry }: TaskCardProps) => {
 
         {/* 右侧：任务信息 */}
         <div className="w-full lg:w-[280px] shrink-0 flex flex-col gap-3">
-          {/* A. 提示词 */}
+          {/* A. 提示词 + 占位图标 */}
           <div className="flex flex-col gap-1">
-            <p
-              className={`text-sm text-workspace-surface-foreground leading-relaxed ${
-                promptExpanded ? "" : "line-clamp-6"
-              }`}
-            >
-              {task.prompt}
-            </p>
+            <div className="relative">
+              <p
+                className={`text-sm text-workspace-surface-foreground leading-relaxed pr-14 ${
+                  promptExpanded ? "" : "line-clamp-6"
+                }`}
+              >
+                {task.prompt}
+              </p>
+              {/* 右上角占位图标（纯展示，不绑定交互） */}
+              <div className="absolute top-0 right-0 flex items-center gap-1.5">
+                <span className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground/50">
+                  <Copy className="h-3.5 w-3.5" />
+                </span>
+                <span className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground/50">
+                  <ArrowUp className="h-3.5 w-3.5" />
+                </span>
+              </div>
+            </div>
             {task.prompt.length > 200 && (
               <button
                 onClick={() => setPromptExpanded((v) => !v)}
@@ -104,7 +115,7 @@ const TaskCard = ({ task, onRetry }: TaskCardProps) => {
             )}
           </div>
 
-          {/* B/C/D. 模型 + 比例 + 图生图标签 */}
+          {/* B + C. 模型 + 比例标签 */}
           <div className="flex flex-wrap items-center gap-2">
             {task.modelName && (
               <span className="flex items-center gap-1.5 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
@@ -114,13 +125,7 @@ const TaskCard = ({ task, onRetry }: TaskCardProps) => {
             )}
             {task.ratio && (
               <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
-                ⬜ {task.ratio}
-              </span>
-            )}
-            {hasReferenceImages && (
-              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
-                <ImageIcon className="h-3 w-3" />
-                Image to image
+                □ {task.ratio}
               </span>
             )}
             {isGenerating && (
@@ -131,22 +136,30 @@ const TaskCard = ({ task, onRetry }: TaskCardProps) => {
             )}
           </div>
 
-          {/* E. 图生图参考图缩略图 */}
+          {/* D. 图生图标签 */}
           {hasReferenceImages && (
-            <div className="flex flex-wrap gap-2">
-              {task.referenceImages!.map((src, i) => (
-                <div
-                  key={i}
-                  className="h-12 w-12 overflow-hidden rounded-lg border border-workspace-border/40"
-                >
-                  <img
-                    src={src}
-                    alt={`参考图 ${i + 1}`}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-              ))}
+            <div className="flex flex-col gap-2">
+              <span className="inline-flex items-center gap-1 self-start rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+                <ImageIcon className="h-3 w-3" />
+                Image to image
+              </span>
+
+              {/* E. 参考图缩略图 */}
+              <div className="flex flex-wrap gap-2">
+                {task.referenceImages!.map((src, i) => (
+                  <div
+                    key={i}
+                    className="h-12 w-12 overflow-hidden rounded-lg border border-workspace-border/40"
+                  >
+                    <img
+                      src={src}
+                      alt={`参考图 ${i + 1}`}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
