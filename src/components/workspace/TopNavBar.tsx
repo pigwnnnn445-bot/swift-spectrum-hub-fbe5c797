@@ -51,7 +51,7 @@ const TopNavBar = () => {
           <PopoverContent className="w-72 rounded-xl border-border bg-popover p-5 text-sm">
             {/* Plan header */}
             <div className="flex items-center justify-between mb-4">
-              <p className="font-semibold text-foreground">Your {mockQuota.plan}</p>
+              <p className="font-semibold text-foreground">您的{mockQuota.plan}套餐</p>
               {mockQuota.active && (
                 <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-medium text-primary">
                   Active
