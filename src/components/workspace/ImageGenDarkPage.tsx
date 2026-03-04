@@ -22,6 +22,7 @@ const ImageGenDarkPage = () => {
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
   const [tasks, setTasks] = useState<GenerateTask[]>([]);
+  const [hasEnteredCreationMode, setHasEnteredCreationMode] = useState(false);
 
   useEffect(() => {
     fetchModelsData().then((data) => {
@@ -75,6 +76,7 @@ const ImageGenDarkPage = () => {
     };
 
     // 插入到列表顶部
+    setHasEnteredCreationMode(true);
     setTasks((prev) => [newTask, ...prev]);
 
     // 切换为 generating
@@ -135,7 +137,7 @@ const ImageGenDarkPage = () => {
   if (!selectedModel) return null;
 
   const totalCost = selectedModel.price + extraCost;
-  const hasTasks = tasks.length > 0;
+  
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
@@ -168,11 +170,11 @@ const ImageGenDarkPage = () => {
           cost={totalCost}
           isGenerating={isGenerating}
           onSubmit={handleSubmit}
-          hasActiveTask={isGenerating}
+          hasActiveTask={hasEnteredCreationMode}
         />
 
-        {/* 吸顶输入条：生成中时由 HeroPromptBar 自身吸顶，无需 StickyPromptBar */}
-        {!isGenerating && (
+        {/* 吸顶输入条：进入创作模式后由 HeroPromptBar 吸顶，无需 StickyPromptBar */}
+        {!hasEnteredCreationMode && (
           <div className="sticky top-[41px] z-40">
             <StickyPromptBar
               visible={showStickyBar}
@@ -188,8 +190,8 @@ const ImageGenDarkPage = () => {
         {/* 任务列表 */}
         <TaskList tasks={tasks} onRetry={handleRetry} />
 
-        {/* 灵感画廊：有任务时隐藏 */}
-        {!hasTasks && (
+        {/* 灵感画廊：进入创作模式后隐藏 */}
+        {!hasEnteredCreationMode && (
           <div className="px-4 pb-8 sm:px-6 lg:px-8">
             <h2 className="mb-5 mt-2 text-lg font-semibold text-workspace-panel-foreground">
               🎨 灵感显影室
