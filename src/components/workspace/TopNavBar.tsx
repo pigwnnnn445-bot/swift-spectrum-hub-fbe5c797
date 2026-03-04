@@ -137,6 +137,8 @@ const TopNavBar = () => {
         </DialogContent>
       </Dialog>
     </div>
+    <div className="h-px bg-workspace-border/60" />
+    </div>
   );
 };
 
