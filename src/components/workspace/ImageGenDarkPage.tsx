@@ -22,6 +22,16 @@ const ImageGenDarkPage = () => {
   const [extraCost, setExtraCost] = useState(0);
   const [tasks, setTasks] = useState<GenerateTask[]>([]);
   const [hasEnteredCreationMode, setHasEnteredCreationMode] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCooldown, setIsCooldown] = useState(false);
+  const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 组件卸载时清理 cooldown timeout
+  useEffect(() => {
+    return () => {
+      if (cooldownRef.current) clearTimeout(cooldownRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     fetchModelsData().then((data) => {
