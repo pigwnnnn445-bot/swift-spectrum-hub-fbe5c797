@@ -4,9 +4,11 @@ import TaskCard from "./TaskCard";
 interface TaskListProps {
   tasks: GenerateTask[];
   onRetry?: (taskId: string) => void;
+  onApplyPrompt?: (prompt: string) => void;
+  onApplyReferenceImage?: (imageUrl: string) => void;
 }
 
-const TaskList = ({ tasks, onRetry }: TaskListProps) => {
+const TaskList = ({ tasks, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskListProps) => {
   if (tasks.length === 0) return null;
 
   return (
@@ -16,7 +18,13 @@ const TaskList = ({ tasks, onRetry }: TaskListProps) => {
       </h2>
       <div className="space-y-4">
         {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} onRetry={onRetry} />
+          <TaskCard
+            key={task.id}
+            task={task}
+            onRetry={onRetry}
+            onApplyPrompt={onApplyPrompt}
+            onApplyReferenceImage={onApplyReferenceImage}
+          />
         ))}
       </div>
     </div>

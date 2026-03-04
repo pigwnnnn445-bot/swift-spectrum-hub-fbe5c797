@@ -9,6 +9,7 @@ import TaskList from "./TaskList";
 import { fetchModelsData } from "@/api/modelService";
 import { mockGenerate } from "@/api/mockGenerate";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
+import { getEnabledImageLikes } from "@/config/modelConfig";
 import type { GenerateTask } from "@/types/task";
 import { toast } from "@/hooks/use-toast";
 
@@ -26,7 +27,9 @@ const ImageGenDarkPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCooldown, setIsCooldown] = useState(false);
   const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+  const promptInputRef = useRef<HTMLTextAreaElement | null>(null);
+  // 参考图状态（用于"应用为参考图"回填）
+  const [referenceImages, setReferenceImages] = useState<string[]>([]);
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
@@ -155,6 +158,48 @@ const ImageGenDarkPage = () => {
     }
   }, [tasks]);
 
+  // ── 应用提示词回填 ──
+  const handleApplyPrompt = useCallback((text: string) => {
+    setPrompt(text);
+    // 聚焦并光标定位末尾
+    setTimeout(() => {
+      const el = promptInputRef.current;
+      if (el) {
+        el.focus();
+        el.setSelectionRange(text.length, text.length);
+      }
+    }, 50);
+  }, []);
+
+  // ── 应用为参考图 ──
+  const handleApplyReferenceImage = useCallback((imageUrl: string) => {
+    if (!selectedModel) return;
+
+    // 检查模型是否支持参考图
+    const enabledLikes = getEnabledImageLikes(selectedModel);
+    if (selectedModel.image_like_flg !== 1 || enabledLikes.length === 0) {
+      toast({ title: "当前模型不支持上传参考图", variant: "destructive" });
+      return;
+    }
+
+    // 检查重复
+    if (referenceImages.includes(imageUrl)) {
+      toast({ title: "请不要上传重复图片", variant: "destructive" });
+      return;
+    }
+
+    // 上限：使用 UploadReferencePanel 的 MAX_MULTI_IMAGES = 5
+    const maxImages = 5;
+    setReferenceImages((prev) => {
+      if (prev.length >= maxImages) {
+        // FIFO 替换最早一张
+        return [...prev.slice(1), imageUrl];
+      }
+      return [...prev, imageUrl];
+    });
+    toast({ title: "参考图已添加" });
+  }, [selectedModel, referenceImages]);
+
   if (!selectedModel) return null;
 
   const totalCost = selectedModel.price + extraCost;
@@ -195,6 +240,7 @@ const ImageGenDarkPage = () => {
           isSubmitDisabled={isSubmitting || isCooldown}
           onSubmit={handleSubmit}
           hasActiveTask={hasEnteredCreationMode}
+          promptInputRef={promptInputRef}
         />
 
         {/* 吸顶输入条：进入创作模式后由 HeroPromptBar 吸顶，无需 StickyPromptBar */}
@@ -212,7 +258,7 @@ const ImageGenDarkPage = () => {
         )}
 
         {/* 任务列表 */}
-        <TaskList tasks={tasks} onRetry={handleRetry} />
+        <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} />
 
         {/* 灵感画廊：进入创作模式后隐藏 */}
         {!hasEnteredCreationMode && (

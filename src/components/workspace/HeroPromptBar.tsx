@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, type RefObject } from "react";
 import { Zap } from "lucide-react";
 
 interface HeroPromptBarProps {
@@ -8,8 +8,9 @@ interface HeroPromptBarProps {
   isGenerating?: boolean;
   isSubmitDisabled?: boolean;
   onSubmit?: () => void;
-  /** 是否有正在生成的任务（用于隐藏引导区 + 输入框吸顶撑满） */
   hasActiveTask?: boolean;
+  /** 外部 ref，用于聚焦输入框 */
+  promptInputRef?: RefObject<HTMLTextAreaElement | null>;
 }
 
 const useAutoResize = (value: string, maxHeight: number) => {
@@ -26,8 +27,16 @@ const useAutoResize = (value: string, maxHeight: number) => {
   return ref;
 };
 
-const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, isSubmitDisabled, onSubmit, hasActiveTask }: HeroPromptBarProps) => {
-  const textareaRef = useAutoResize(prompt, 220);
+const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, isSubmitDisabled, onSubmit, hasActiveTask, promptInputRef }: HeroPromptBarProps) => {
+  const autoRef = useAutoResize(prompt, 220);
+
+  // Merge internal auto-resize ref with external ref
+  const setRefs = useCallback((el: HTMLTextAreaElement | null) => {
+    (autoRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = el;
+    if (promptInputRef) {
+      (promptInputRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = el;
+    }
+  }, [autoRef, promptInputRef]);
 
   return (
     <div className={`relative w-full bg-workspace-panel ${hasActiveTask ? "sticky top-[41px] z-40" : ""}`}>
@@ -42,7 +51,7 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, isSubmitDis
         <div className={`relative w-full ${hasActiveTask ? "" : "max-w-[760px]"}`}>
           <div className="flex items-end rounded-2xl border border-workspace-border/60 bg-workspace-surface shadow-lg">
             <textarea
-              ref={textareaRef}
+              ref={setRefs}
               value={prompt}
               onChange={(e) => onPromptChange(e.target.value)}
               placeholder="输入您的提示词，比如：可爱的猫"

@@ -1,20 +1,53 @@
 import { useState } from "react";
 import { RotateCw, AlertCircle, ChevronDown, ChevronUp, Copy, ArrowUp, Image as ImageIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "@/hooks/use-toast";
 import type { GenerateTask } from "@/types/task";
 
 interface TaskCardProps {
   task: GenerateTask;
   onRetry?: (taskId: string) => void;
+  onApplyPrompt?: (prompt: string) => void;
+  onApplyReferenceImage?: (imageUrl: string) => void;
 }
 
-const TaskCard = ({ task, onRetry }: TaskCardProps) => {
+const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskCardProps) => {
   const isGenerating = task.status === "generating" || task.status === "submitting";
   const isError = task.status === "error";
   const isSuccess = task.status === "success";
   const hasReferenceImages = (task.referenceImages?.length ?? 0) > 0;
 
   const [promptExpanded, setPromptExpanded] = useState(false);
+
+  const handleCopyPrompt = async () => {
+    try {
+      await navigator.clipboard.writeText(task.prompt);
+      toast({ title: "复制成功" });
+    } catch {
+      toast({ title: "复制失败，请重试", variant: "destructive" });
+    }
+  };
+
+  const handleApplyPrompt = () => {
+    onApplyPrompt?.(task.prompt);
+  };
+
+  const handleCopyImage = async (url: string) => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      await navigator.clipboard.write([
+        new ClipboardItem({ [blob.type]: blob }),
+      ]);
+      toast({ title: "参考图已复制" });
+    } catch {
+      toast({ title: "复制失败，浏览器可能不支持复制图片", variant: "destructive" });
+    }
+  };
+
+  const handleApplyImage = (url: string) => {
+    onApplyReferenceImage?.(url);
+  };
 
   return (
     <div className="rounded-xl border border-workspace-border/60 bg-workspace-surface overflow-hidden">
@@ -77,8 +110,8 @@ const TaskCard = ({ task, onRetry }: TaskCardProps) => {
 
         {/* 右侧：任务信息 */}
         <div className="w-full lg:w-[280px] shrink-0 flex flex-col gap-3">
-          {/* A. 提示词 + 占位图标 */}
-          <div className="flex flex-col gap-1">
+          {/* A. 提示词 + hover 操作 */}
+          <div className="group/prompt relative flex flex-col gap-1">
             <div className="relative">
               <p
                 className={`text-sm text-workspace-surface-foreground leading-relaxed pr-14 ${
@@ -87,14 +120,22 @@ const TaskCard = ({ task, onRetry }: TaskCardProps) => {
               >
                 {task.prompt}
               </p>
-              {/* 右上角占位图标（纯展示，不绑定交互） */}
-              <div className="absolute top-0 right-0 flex items-center gap-1.5">
-                <span className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground/50">
+              {/* hover 操作按钮 */}
+              <div className="absolute top-0 right-0 flex items-center gap-1 opacity-0 group-hover/prompt:opacity-100 transition-opacity">
+                <button
+                  onClick={handleCopyPrompt}
+                  title="复制提示词"
+                  className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-colors"
+                >
                   <Copy className="h-3.5 w-3.5" />
-                </span>
-                <span className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground/50">
+                </button>
+                <button
+                  onClick={handleApplyPrompt}
+                  title="应用提示词"
+                  className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-colors"
+                >
                   <ArrowUp className="h-3.5 w-3.5" />
-                </span>
+                </button>
               </div>
             </div>
             {task.prompt.length > 200 && (
@@ -136,7 +177,7 @@ const TaskCard = ({ task, onRetry }: TaskCardProps) => {
             )}
           </div>
 
-          {/* D. 图生图标签 */}
+          {/* D + E. 图生图标签 + 参考图缩略图 */}
           {hasReferenceImages && (
             <div className="flex flex-col gap-2">
               <span className="inline-flex items-center gap-1 self-start rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
@@ -144,12 +185,11 @@ const TaskCard = ({ task, onRetry }: TaskCardProps) => {
                 Image to image
               </span>
 
-              {/* E. 参考图缩略图 */}
               <div className="flex flex-wrap gap-2">
                 {task.referenceImages!.map((src, i) => (
                   <div
                     key={i}
-                    className="h-12 w-12 overflow-hidden rounded-lg border border-workspace-border/40"
+                    className="group/ref relative h-12 w-12 overflow-hidden rounded-lg border border-workspace-border/40"
                   >
                     <img
                       src={src}
@@ -157,6 +197,23 @@ const TaskCard = ({ task, onRetry }: TaskCardProps) => {
                       className="h-full w-full object-cover"
                       loading="lazy"
                     />
+                    {/* hover 操作 */}
+                    <div className="absolute inset-0 flex items-center justify-center gap-1 bg-black/50 opacity-0 group-hover/ref:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => handleCopyImage(src)}
+                        title="复制参考图"
+                        className="flex h-5 w-5 items-center justify-center rounded text-white/80 hover:text-white transition-colors"
+                      >
+                        <Copy className="h-3 w-3" />
+                      </button>
+                      <button
+                        onClick={() => handleApplyImage(src)}
+                        title="应用为参考图"
+                        className="flex h-5 w-5 items-center justify-center rounded text-white/80 hover:text-white transition-colors"
+                      >
+                        <ArrowUp className="h-3 w-3" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
