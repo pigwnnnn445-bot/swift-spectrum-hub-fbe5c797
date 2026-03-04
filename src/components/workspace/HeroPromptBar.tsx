@@ -5,6 +5,8 @@ interface HeroPromptBarProps {
   prompt: string;
   onPromptChange: (value: string) => void;
   cost: number;
+  isGenerating?: boolean;
+  onSubmit?: () => void;
 }
 
 const useAutoResize = (value: string, maxHeight: number) => {
@@ -21,7 +23,7 @@ const useAutoResize = (value: string, maxHeight: number) => {
   return ref;
 };
 
-const HeroPromptBar = ({ prompt, onPromptChange, cost }: HeroPromptBarProps) => {
+const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, onSubmit }: HeroPromptBarProps) => {
   const textareaRef = useAutoResize(prompt, 220);
 
   return (
@@ -42,8 +44,12 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost }: HeroPromptBarProps) => 
               className="prompt-textarea flex-1 resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/50 focus:outline-none sm:text-base"
               style={{ maxHeight: 220, minHeight: 100 }}
             />
-            <button disabled={!prompt.trim()} className="mr-2 mb-2 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-workspace-neon px-5 py-2.5 text-sm font-medium text-white transition-all hover:brightness-110 shadow-md shrink-0 disabled:opacity-40 disabled:pointer-events-none">
-              发送
+            <button
+              disabled={!prompt.trim() || isGenerating}
+              onClick={onSubmit}
+              className="mr-2 mb-2 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-workspace-neon px-5 py-2.5 text-sm font-medium text-white transition-all hover:brightness-110 shadow-md shrink-0 disabled:opacity-40 disabled:pointer-events-none"
+            >
+              {isGenerating ? "生成中..." : "发送"}
               <Zap className="h-3.5 w-3.5" />
               <span className="text-white/70">{cost}</span>
             </button>
