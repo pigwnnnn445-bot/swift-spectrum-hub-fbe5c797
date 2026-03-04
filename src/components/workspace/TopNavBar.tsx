@@ -51,24 +51,24 @@ const TopNavBar = () => {
           <PopoverContent className="w-72 rounded-xl border-border bg-popover p-5 text-sm">
             {/* Plan header */}
             <div className="flex items-center justify-between mb-4">
-              <p className="font-semibold text-foreground">Your {mockQuota.plan}</p>
+              <p className="font-semibold text-foreground">您的{mockQuota.plan}套餐</p>
               {mockQuota.active && (
                 <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-medium text-primary">
-                  Active
+                  可用
                 </span>
               )}
             </div>
 
             {/* Quota stats */}
             <div className="space-y-1.5 text-muted-foreground mb-4">
-              <p>Subscription Quota: <span className="font-semibold text-foreground">{mockQuota.subscriptionUsed}</span>/{mockQuota.subscriptionTotal}</p>
-              <p>Paid Quota: <span className="font-semibold text-foreground">{mockQuota.paidQuota}</span></p>
-              <p>Remaining time: <span className="font-semibold text-foreground">{mockQuota.remainingTime}</span></p>
+              <p>订阅配额: <span className="font-semibold text-foreground">{mockQuota.subscriptionUsed}</span>/{mockQuota.subscriptionTotal}</p>
+              <p>附加配额: <span className="font-semibold text-foreground">{mockQuota.paidQuota}</span></p>
+              <p>到期时间: <span className="font-semibold text-foreground">{mockQuota.remainingTime}</span></p>
             </div>
 
             {/* Model cost list */}
             <div className="border-t border-border pt-3">
-              <p className="text-xs text-muted-foreground mb-2">Quota Usage Instructions:</p>
+              <p className="text-xs text-muted-foreground mb-2">配额使用说明:</p>
               <div className="max-h-40 overflow-y-auto space-y-2.5 workspace-scroll">
                 {mockModels.map((m) => (
                   <div key={m.name} className="flex items-center justify-between">
