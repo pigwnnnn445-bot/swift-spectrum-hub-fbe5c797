@@ -62,7 +62,7 @@ const TopNavBar = () => {
             {/* Model cost list */}
             <div className="border-t border-border pt-3">
               <p className="text-xs text-muted-foreground mb-2">配额使用说明:</p>
-              <div className="max-h-40 overflow-y-auto space-y-2.5 workspace-scroll pr-px">
+              <div className="max-h-40 overflow-y-auto space-y-2.5 workspace-scroll" style={{ paddingRight: '3px' }}>
                 {mockModelsData.model_list.map((m) => (
                   <div key={m.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
