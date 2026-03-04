@@ -42,6 +42,13 @@ const TopNavBar = () => {
         </button>
       </div>
 
+      {/* Right: asset management */}
+      <button className="absolute right-4 sm:right-6 lg:right-8 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors cursor-pointer">
+        <FolderOpen className="h-4 w-4" />
+        <span className="hidden sm:inline">资产管理</span>
+        <ChevronRight className="h-3.5 w-3.5" />
+      </button>
+
       {/* Upgrade modal */}
       <Dialog open={upgradeOpen} onOpenChange={setUpgradeOpen}>
         <DialogContent className="sm:max-w-md rounded-xl">
