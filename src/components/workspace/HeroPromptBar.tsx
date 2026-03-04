@@ -7,6 +7,8 @@ interface HeroPromptBarProps {
   cost: number;
   isGenerating?: boolean;
   onSubmit?: () => void;
+  /** 是否有正在生成的任务（用于隐藏引导区 + 输入框吸顶撑满） */
+  hasActiveTask?: boolean;
 }
 
 const useAutoResize = (value: string, maxHeight: number) => {
