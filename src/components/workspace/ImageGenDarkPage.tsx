@@ -64,6 +64,14 @@ const ImageGenDarkPage = () => {
 
     setIsSubmitting(true);
 
+    // 点击发送后立即开始 2 秒静默冷却
+    if (cooldownRef.current) clearTimeout(cooldownRef.current);
+    setIsCooldown(true);
+    cooldownRef.current = setTimeout(() => {
+      setIsCooldown(false);
+      cooldownRef.current = null;
+    }, 2000);
+
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     // 默认生成 4 张（若模型 image_num > 0 则用模型值）
     const count = selectedModel.image_num > 0 ? selectedModel.image_num : 4;
@@ -108,15 +116,6 @@ const ImageGenDarkPage = () => {
           return { ...t, status: "error" as const, errorMessage: result.errorMessage };
         })
       );
-      // 仅成功时进入 2 秒静默冷却
-      if (result.success) {
-        if (cooldownRef.current) clearTimeout(cooldownRef.current);
-        setIsCooldown(true);
-        cooldownRef.current = setTimeout(() => {
-          setIsCooldown(false);
-          cooldownRef.current = null;
-        }, 2000);
-      }
     } catch {
       setIsSubmitting(false);
       setTasks((prev) =>
