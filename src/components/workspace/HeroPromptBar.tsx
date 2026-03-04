@@ -25,17 +25,20 @@ const useAutoResize = (value: string, maxHeight: number) => {
   return ref;
 };
 
-const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, onSubmit }: HeroPromptBarProps) => {
+const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, onSubmit, hasActiveTask }: HeroPromptBarProps) => {
   const textareaRef = useAutoResize(prompt, 220);
 
   return (
-    <div className="relative w-full bg-workspace-panel">
-      <div className="relative z-10 flex flex-col items-center justify-center px-4 py-12 sm:py-16">
-        <h1 className="mb-8 text-center text-4xl font-black tracking-wide text-workspace-surface-foreground sm:text-5xl md:text-6xl lg:text-7xl">
-          把想象，变成图像
-        </h1>
+    <div className={`relative w-full bg-workspace-panel ${hasActiveTask ? "sticky top-[41px] z-40" : ""}`}>
+      <div className={`relative z-10 flex flex-col items-center justify-center px-4 ${hasActiveTask ? "py-2.5 sm:py-2.5" : "py-12 sm:py-16"}`}>
+        {/* 引导文案：生成中时隐藏 */}
+        {!hasActiveTask && (
+          <h1 className="mb-8 text-center text-4xl font-black tracking-wide text-workspace-surface-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+            把想象，变成图像
+          </h1>
+        )}
 
-        <div className="relative w-full max-w-[760px]">
+        <div className={`relative w-full ${hasActiveTask ? "" : "max-w-[760px]"}`}>
           <div className="flex items-end rounded-2xl border border-workspace-border/60 bg-workspace-surface shadow-lg">
             <textarea
               ref={textareaRef}
@@ -44,7 +47,7 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, onSubmit }:
               placeholder="输入您的提示词，比如：可爱的猫"
               rows={1}
               className="prompt-textarea flex-1 resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/50 focus:outline-none sm:text-base"
-              style={{ maxHeight: 220, minHeight: 100 }}
+              style={{ maxHeight: 220, minHeight: hasActiveTask ? 60 : 100 }}
             />
             <button
               disabled={!prompt.trim() || isGenerating}

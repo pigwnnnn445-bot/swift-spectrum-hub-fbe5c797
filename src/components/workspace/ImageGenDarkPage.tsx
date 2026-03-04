@@ -168,6 +168,7 @@ const ImageGenDarkPage = () => {
           cost={totalCost}
           isGenerating={isGenerating}
           onSubmit={handleSubmit}
+          hasActiveTask={isGenerating}
         />
 
         <div className="sticky top-[41px] z-40">
