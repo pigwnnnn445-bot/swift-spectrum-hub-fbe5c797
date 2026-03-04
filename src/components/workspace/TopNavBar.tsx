@@ -41,7 +41,7 @@ const TopNavBar = () => {
               <span className="font-medium">{mockQuota.subscriptionTotal}</span>
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-72 rounded-xl border-border bg-popover p-5 text-sm" sideOffset={13}>
+          <PopoverContent className="w-72 rounded-xl border-border bg-popover p-5 text-sm" sideOffset={17}>
             {/* Plan header */}
             <div className="flex items-center justify-between mb-4">
               <p className="font-semibold text-foreground">您的{mockQuota.plan}套餐</p>
