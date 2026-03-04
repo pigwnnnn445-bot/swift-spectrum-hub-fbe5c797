@@ -23,7 +23,7 @@ const TopNavBar = () => {
   const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   return (
-    <div className="flex items-center justify-center px-4 py-2 border-b border-border bg-background/80 backdrop-blur-sm sm:px-6 lg:px-8">
+    <div className="relative flex items-center justify-center px-4 py-2 border-b border-border bg-background/80 backdrop-blur-sm sm:px-6 lg:px-8">
       {/* Center: quota + upgrade */}
       <div className="flex items-center gap-1">
         <div className="flex items-center gap-1 text-sm text-foreground">
