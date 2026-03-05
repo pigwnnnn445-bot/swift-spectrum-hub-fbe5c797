@@ -104,13 +104,6 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
               <div className="flex flex-col items-center gap-2 text-center px-6 py-4">
                 <AlertCircle className="h-8 w-8 text-destructive/70" />
                 <p className="text-sm text-destructive/80">{task.errorMessage || "生成失败"}</p>
-                <button
-                  onClick={() => onRetry?.(task.id)}
-                  className="mt-1 flex items-center gap-1.5 rounded-lg bg-workspace-chip px-3 py-1.5 text-xs font-medium text-workspace-surface-foreground hover:bg-workspace-chip-active/20 transition-colors cursor-pointer"
-                >
-                  <RotateCw className="h-3 w-3" />
-                  重试
-                </button>
               </div>
             </div>
           )}
