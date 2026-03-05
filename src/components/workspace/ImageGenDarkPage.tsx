@@ -450,6 +450,18 @@ const ImageGenDarkPage = () => {
           console.log("[Inpaint payload]", payload);
         }}
       />
+
+      {/* 大图详情视图 */}
+      {detailOpen && detailTask && (
+        <ImageDetailWorkspace
+          initialImageUrl={detailImageUrl}
+          initialTask={detailTask}
+          tasks={tasks}
+          models={models}
+          onGenerate={handleDetailGenerate}
+          onClose={() => { setDetailOpen(false); setDetailTask(null); }}
+        />
+      )}
     </div>
   );
 };
