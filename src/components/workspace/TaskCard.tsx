@@ -128,7 +128,8 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                 Array.from({ length: task.count }).map((_, i) => (
                   <div
                     key={i}
-                    className="aspect-square flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20"
+                    className="flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20"
+                    style={{ aspectRatio }}
                   >
                     <div className="flex flex-col items-center gap-1.5 text-center px-3 py-2">
                       <AlertCircle className="h-6 w-6 text-destructive/70" />
