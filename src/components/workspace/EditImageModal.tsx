@@ -103,6 +103,16 @@ const EditImageModal = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const MAX_HEIGHT = 280;
+
+  const resizeTextarea = useCallback(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, MAX_HEIGHT) + "px";
+    el.style.overflowY = el.scrollHeight > MAX_HEIGHT ? "auto" : "hidden";
+  }, []);
+
   // Reset on open — set default model from task snapshot
   useEffect(() => {
     if (open && task) {
