@@ -209,7 +209,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
             <div className="flex flex-col gap-2">
               <span className="inline-flex items-center gap-1 self-start rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
                 <ImageIcon className="h-3 w-3" />
-                Image to image
+                图生图
               </span>
 
               <div className="flex flex-wrap gap-2">
