@@ -242,6 +242,8 @@ const ImageGenDarkPage = () => {
         onResolutionChange={setSidebarResolution}
         onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
         onSimilarityChange={setSidebarSimilarity}
+        referenceImages={referenceImages}
+        onReferenceImagesChange={setReferenceImages}
       />
 
       <main className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>
