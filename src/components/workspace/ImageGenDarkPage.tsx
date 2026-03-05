@@ -232,7 +232,7 @@ const ImageGenDarkPage = () => {
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         selectedModel={selectedModel}
-        onModelChange={setSelectedModel}
+        onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
         models={models}
         providers={providers}
         onExtraCostChange={handleExtraCostChange}
