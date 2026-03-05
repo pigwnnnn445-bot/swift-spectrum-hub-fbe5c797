@@ -223,6 +223,8 @@ const ModelDetailPage = () => {
             <PriceField label="重新生成" price={model.regenerate_price} />
             <PriceField label="移除背景" price={model.remove_background_price} />
             <PriceField label="参考图上传" price={model.image_reference_price} />
+            <PriceField label="局部重绘" price={model.inpaint_price} />
+            <PriceField label="编辑图像" price={model.edit_image_price} />
           </CardContent>
         </Card>
       </div>

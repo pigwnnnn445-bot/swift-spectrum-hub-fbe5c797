@@ -514,10 +514,15 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, onClose, onGenerate }: P
             <Button
               onClick={handleGenerate}
               disabled={isSubmitting}
-              className="shrink-0 gap-1.5"
+              className="shrink-0 gap-2 px-4"
             >
-              <Zap className="h-4 w-4" />
-              发送
+              <span>发送</span>
+              {price > 0 && (
+                <span className="flex items-center gap-1 text-primary-foreground/80 text-xs">
+                  <Coins className="h-3.5 w-3.5" />
+                  {price}
+                </span>
+              )}
             </Button>
           </div>
         </div>

@@ -84,6 +84,8 @@ const ModelListPage = () => {
                 <TableCell className="text-center"><FlagBadge value={model.resolution_flg} /></TableCell>
                 <TableCell className="text-center"><FlagBadge value={model.style_flg} /></TableCell>
                 <TableCell className="text-center"><FlagBadge value={model.image_reference_flg} /></TableCell>
+                <TableCell className="text-center"><FlagBadge value={model.inpaint_flg} /></TableCell>
+                <TableCell className="text-center"><FlagBadge value={model.edit_image_flg} /></TableCell>
                 <TableCell className="text-center text-sm">
                   {model.image_num > 0 ? `最多${model.image_num}` : "—"}
                 </TableCell>
