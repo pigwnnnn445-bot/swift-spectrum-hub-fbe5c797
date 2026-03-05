@@ -57,21 +57,29 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
         <div className="flex-[3] min-w-0">
           {/* 图片网格 */}
           <div className="flex flex-wrap gap-2">
-            {/* 生成中骨架屏 */}
+            {/* 生成中骨架屏 — 单图大尺寸，多图小缩略图 */}
             {isGenerating &&
               Array.from({ length: task.count }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="aspect-square w-full max-w-[340px] min-w-[240px] rounded-lg bg-workspace-chip animate-pulse"
+                  className={`aspect-square rounded-lg bg-workspace-chip animate-pulse ${
+                    task.count === 1
+                      ? "w-full max-w-[340px] min-w-[240px]"
+                      : "w-[120px] min-w-[80px]"
+                  }`}
                 />
               ))}
 
-            {/* 成功图片 */}
+            {/* 成功图片 — 单图大尺寸，多图小缩略图 */}
             {isSuccess &&
               task.images.map((src, i) => (
                 <div
                   key={i}
-                  className="relative group overflow-hidden rounded-lg max-w-[340px] min-w-[240px]"
+                  className={`relative group overflow-hidden rounded-lg ${
+                    task.images.length === 1
+                      ? "max-w-[340px] min-w-[240px]"
+                      : "w-[120px] min-w-[80px]"
+                  }`}
                 >
                   <img
                     src={src}
@@ -82,12 +90,10 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                 </div>
               ))}
 
-            {/* 错误状态 */}
+            {/* 错误状态 — 横向可读，不使用 aspect-square */}
             {isError && (
-              <div className={`flex aspect-square items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20 ${
-                task.count === 1 ? "max-w-[340px] min-w-[240px]" : ""
-              }`}>
-                <div className="flex flex-col items-center gap-2 text-center px-4">
+              <div className="w-full min-w-[240px] max-w-[340px] min-h-[160px] flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20">
+                <div className="flex flex-col items-center gap-2 text-center px-6 py-4">
                   <AlertCircle className="h-8 w-8 text-destructive/70" />
                   <p className="text-sm text-destructive/80">{task.errorMessage || "生成失败"}</p>
                   <button
