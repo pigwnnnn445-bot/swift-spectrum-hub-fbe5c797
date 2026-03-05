@@ -11,9 +11,13 @@ const MIN_RESOLUTION = 300;
 
 interface UploadReferencePanelProps {
   model: ModelConfig;
+  /** 受控：当前参考图列表 */
+  images?: string[];
+  /** 受控：参考图变更回调 */
+  onImagesChange?: (images: string[]) => void;
 }
 
-const UploadReferencePanel = ({ model }: UploadReferencePanelProps) => {
+const UploadReferencePanel = ({ model, images: controlledImages, onImagesChange }: UploadReferencePanelProps) => {
   const enabledLikes = getEnabledImageLikes(model);
   const isTyped = hasTypedUpload(model);
 
@@ -27,6 +31,8 @@ const UploadReferencePanel = ({ model }: UploadReferencePanelProps) => {
           key="simple"
           multi={true}
           placeholder="将图片拖至此处或单击上传"
+          images={controlledImages}
+          onImagesChange={onImagesChange}
         />
       </div>
     );
@@ -59,6 +65,8 @@ const UploadReferencePanel = ({ model }: UploadReferencePanelProps) => {
           <UploadZone
             multi={item.more_image_flg === 1}
             placeholder="单击或拖动图像即可上传"
+            images={controlledImages}
+            onImagesChange={onImagesChange}
           />
         </div>
       ))}
@@ -96,11 +104,19 @@ const validateFile = (file: File): Promise<{ valid: boolean; preview?: string }>
 
 const MAX_MULTI_IMAGES = 5;
 
-const UploadZone = ({ multi, placeholder }: { multi: boolean; placeholder: string }) => {
+const UploadZone = ({ multi, placeholder, images: controlledImages, onImagesChange }: { multi: boolean; placeholder: string; images?: string[]; onImagesChange?: (images: string[]) => void }) => {
   const single = !multi;
-  const [images, setImages] = useState<string[]>([]);
+  const isControlled = controlledImages !== undefined && onImagesChange !== undefined;
+  const [localImages, setLocalImages] = useState<string[]>([]);
+  const images = isControlled ? controlledImages : localImages;
   const addInputRef = useRef<HTMLInputElement | null>(null);
   const replaceInputRef = useRef<HTMLInputElement | null>(null);
+  const setImages = isControlled
+    ? (updater: string[] | ((prev: string[]) => string[])) => {
+        const next = typeof updater === "function" ? updater(controlledImages) : updater;
+        onImagesChange(next);
+      }
+    : setLocalImages;
   const [replaceIndex, setReplaceIndex] = useState<number>(-1);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 

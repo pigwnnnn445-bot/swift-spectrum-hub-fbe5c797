@@ -28,9 +28,13 @@ interface SettingsSidebarProps {
   onStyleChange?: (styleId: number | null, styleName: string) => void;
   /** 通知父组件当前相似度 */
   onSimilarityChange?: (similarity: number) => void;
+  /** 受控：参考图列表 */
+  referenceImages?: string[];
+  /** 受控：参考图变更回调 */
+  onReferenceImagesChange?: (images: string[]) => void;
 }
 
-const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange, onRatioChange, onResolutionChange, onStyleChange, onSimilarityChange }: SettingsSidebarProps) => {
+const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange, onRatioChange, onResolutionChange, onStyleChange, onSimilarityChange, referenceImages, onReferenceImagesChange }: SettingsSidebarProps) => {
   const [ratio, setRatioLocal] = useState(selectedModel.ratio?.[0] ?? "");
   const [selectedResolution, setSelectedResolutionLocal] = useState(selectedModel.resolution?.[0]?.resolution ?? "");
   const [selectedStyleId, setSelectedStyleIdLocal] = useState<number | null>(
@@ -209,6 +213,8 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
               <UploadReferencePanel
                 key={selectedModel.id}
                 model={selectedModel}
+                images={referenceImages}
+                onImagesChange={onReferenceImagesChange}
               />
             </Section>
           )}
