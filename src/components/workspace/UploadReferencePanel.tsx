@@ -104,11 +104,17 @@ const validateFile = (file: File): Promise<{ valid: boolean; preview?: string }>
 
 const MAX_MULTI_IMAGES = 5;
 
-const UploadZone = ({ multi, placeholder }: { multi: boolean; placeholder: string }) => {
+const UploadZone = ({ multi, placeholder, images: controlledImages, onImagesChange }: { multi: boolean; placeholder: string; images?: string[]; onImagesChange?: (images: string[]) => void }) => {
   const single = !multi;
-  const [images, setImages] = useState<string[]>([]);
-  const addInputRef = useRef<HTMLInputElement | null>(null);
-  const replaceInputRef = useRef<HTMLInputElement | null>(null);
+  const isControlled = controlledImages !== undefined && onImagesChange !== undefined;
+  const [localImages, setLocalImages] = useState<string[]>([]);
+  const images = isControlled ? controlledImages : localImages;
+  const setImages = isControlled
+    ? (updater: string[] | ((prev: string[]) => string[])) => {
+        const next = typeof updater === "function" ? updater(controlledImages) : updater;
+        onImagesChange(next);
+      }
+    : setLocalImages;
   const [replaceIndex, setReplaceIndex] = useState<number>(-1);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
