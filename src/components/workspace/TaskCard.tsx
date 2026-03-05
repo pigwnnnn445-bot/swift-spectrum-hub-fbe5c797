@@ -312,6 +312,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
           <div className="relative pb-[10px] mb-[10px] border-b border-workspace-border/40">
             <div className="relative">
               <p
+                ref={promptRef}
                 className={`text-sm text-workspace-surface-foreground leading-relaxed pr-16 ${
                   promptExpanded ? "" : "line-clamp-6"
                 }`}
