@@ -337,7 +337,45 @@ const ImageGenDarkPage = () => {
       <EditImageModal
         open={editModalOpen}
         imageUrl={editingImageUrl}
-        onClose={() => setEditModalOpen(false)}
+        task={editingTask}
+        models={models}
+        onClose={() => { setEditModalOpen(false); setEditingTask(null); }}
+        onGenerate={(payload) => {
+          // TODO: 接入真实编辑图像接口，目前创建占位任务
+          const newTaskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+          const newTask: GenerateTask = {
+            id: newTaskId,
+            prompt: payload.editPrompt,
+            status: "submitting",
+            modelId: payload.modelId,
+            modelName: payload.modelName,
+            modelImage: payload.modelImage,
+            ratio: payload.ratio,
+            resolution: payload.resolution,
+            styleName: payload.styleName,
+            styleId: payload.styleId,
+            generationMode: payload.generationMode,
+            similarity: payload.similarity,
+            count: 1,
+            images: [],
+            referenceImages: payload.referenceImages,
+            createdAt: Date.now(),
+            requestPayload: payload as unknown as Record<string, unknown>,
+          };
+          setHasEnteredCreationMode(true);
+          setTasks((prev) => [newTask, ...prev]);
+          // mock generate
+          setTasks((prev) => prev.map((t) => (t.id === newTaskId ? { ...t, status: "generating" as const } : t)));
+          mockGenerate(1).then((result) => {
+            setTasks((prev) => prev.map((t) => {
+              if (t.id !== newTaskId) return t;
+              if (result.success) return { ...t, status: "success" as const, images: result.images ?? [] };
+              return { ...t, status: "error" as const, errorMessage: result.errorMessage };
+            }));
+          }).catch(() => {
+            setTasks((prev) => prev.map((t) => t.id === newTaskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t));
+          });
+        }}
       />
     </div>
   );
