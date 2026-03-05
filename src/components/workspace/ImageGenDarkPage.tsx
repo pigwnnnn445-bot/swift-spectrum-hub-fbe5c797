@@ -37,6 +37,9 @@ const ImageGenDarkPage = () => {
   const [sidebarStyleId, setSidebarStyleId] = useState<number | null>(null);
   const [sidebarStyleName, setSidebarStyleName] = useState("");
   const [sidebarSimilarity, setSidebarSimilarity] = useState(50);
+  // 编辑图像弹窗状态
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingImageUrl, setEditingImageUrl] = useState("");
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
