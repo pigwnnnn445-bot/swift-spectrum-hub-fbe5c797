@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { RotateCw, AlertCircle, ChevronDown, ChevronUp, Copy, ArrowUp, Image as ImageIcon, Palette } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import type { GenerateTask } from "@/types/task";
@@ -121,21 +122,31 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                 {task.prompt}
               </p>
               {/* hover 操作按钮 */}
-              <div className="absolute top-0 right-0 flex items-center gap-1 opacity-0 group-hover/prompt:opacity-100 transition-opacity">
-                <button
-                  onClick={handleCopyPrompt}
-                  title="复制提示词"
-                  className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-colors"
-                >
-                  <Copy className="h-3.5 w-3.5" />
-                </button>
-                <button
-                  onClick={handleApplyPrompt}
-                  title="应用提示词"
-                  className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-colors"
-                >
-                  <ArrowUp className="h-3.5 w-3.5" />
-                </button>
+              <div className="absolute top-0 right-0 flex items-center gap-1">
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={handleCopyPrompt}
+                        className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-colors"
+                      >
+                        <Copy className="h-3.5 w-3.5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">复制提示词</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={handleApplyPrompt}
+                        className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-colors"
+                      >
+                        <ArrowUp className="h-3.5 w-3.5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">应用提示词</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </div>
             {task.prompt.length > 200 && (
