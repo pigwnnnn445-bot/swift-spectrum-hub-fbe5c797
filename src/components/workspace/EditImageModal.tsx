@@ -89,7 +89,7 @@ const EditImageModal = ({ open, imageUrl, onClose }: EditImageModalProps) => {
             onClick={handleGenerate}
             className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
-            Generate
+            发送
             <span className="flex items-center gap-0.5 text-xs opacity-80">
               <Zap className="h-3 w-3" />5
             </span>
