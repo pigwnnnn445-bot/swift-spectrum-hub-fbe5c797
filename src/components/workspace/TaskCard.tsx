@@ -12,11 +12,20 @@ interface TaskCardProps {
   onApplyReferenceImage?: (imageUrl: string) => void;
 }
 
+const ratioToAspect = (ratio?: string): string => {
+  const map: Record<string, string> = {
+    "1:1": "1/1", "2:3": "2/3", "3:2": "3/2",
+    "3:4": "3/4", "4:3": "4/3", "16:9": "16/9", "9:16": "9/16",
+  };
+  return map[ratio ?? ""] ?? "1/1";
+};
+
 const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskCardProps) => {
   const isGenerating = task.status === "generating" || task.status === "submitting";
   const isError = task.status === "error";
   const isSuccess = task.status === "success";
   const hasReferenceImages = (task.referenceImages?.length ?? 0) > 0;
+  const aspectRatio = ratioToAspect(task.ratio);
 
   const [promptExpanded, setPromptExpanded] = useState(false);
 
