@@ -55,71 +55,75 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-5 p-4">
         {/* 左侧：图片区域 — flex-[3] ≈ 60% */}
         <div className="flex-[3] min-w-0">
-          {/* ── 生成中骨架屏 ── */}
-          {isGenerating && task.count === 1 && (
-            <div className="w-full max-w-[340px] min-w-[240px]">
-              <Skeleton className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse" />
-            </div>
-          )}
-          {isGenerating && task.count > 1 && (
-            <div className="grid grid-cols-2 gap-2 w-full">
-              {Array.from({ length: task.count }).map((_, i) => (
-                <Skeleton
-                  key={i}
-                  className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse min-w-[80px]"
-                />
-              ))}
-            </div>
-          )}
-
-          {/* ── 成功图片 ── */}
-          {isSuccess && task.images.length === 1 && (
-            <div className="relative group overflow-hidden rounded-lg w-full max-w-[340px] min-w-[240px]">
-              <img
-                src={task.images[0]}
-                alt="生成结果"
-                className="w-full aspect-square object-cover"
-                loading="lazy"
-              />
-            </div>
-          )}
-          {isSuccess && task.images.length > 1 && (
-            <div className="grid grid-cols-2 gap-2 w-full">
-              {task.images.map((src, i) => (
-                <div key={i} className="relative group overflow-hidden rounded-lg min-w-[80px]">
+          {/* ── 单图：count === 1 ── */}
+          {task.count === 1 && (
+            <>
+              {isGenerating && (
+                <div className="w-full max-w-[340px] min-w-[240px]">
+                  <Skeleton className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse" />
+                </div>
+              )}
+              {isSuccess && task.images.length === 1 && (
+                <div className="relative group overflow-hidden rounded-lg w-full max-w-[340px] min-w-[240px]">
                   <img
-                    src={src}
-                    alt={`生成结果 ${i + 1}`}
+                    src={task.images[0]}
+                    alt="生成结果"
                     className="w-full aspect-square object-cover"
                     loading="lazy"
                   />
                 </div>
-              ))}
-            </div>
-          )}
-
-          {/* 错误状态 — 按 count 渲染失败占位 */}
-          {isError && task.count === 1 && (
-            <div className="w-full min-w-[240px] max-w-[340px] aspect-square flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20">
-              <div className="flex flex-col items-center gap-2 text-center px-6 py-4">
-                <AlertCircle className="h-8 w-8 text-destructive/70" />
-                <p className="text-sm text-destructive/80">{task.errorMessage || "生成失败"}</p>
-              </div>
-            </div>
-          )}
-          {isError && task.count > 1 && (
-            <div className="grid grid-cols-2 gap-2 w-full">
-              {Array.from({ length: task.count }).map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-square min-w-[80px] flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20"
-                >
-                  <div className="flex flex-col items-center gap-1.5 text-center px-3 py-2">
-                    <AlertCircle className="h-6 w-6 text-destructive/70" />
-                    <p className="text-xs text-destructive/80">{task.errorMessage || "生成失败"}</p>
+              )}
+              {isError && (
+                <div className="w-full min-w-[240px] max-w-[340px] aspect-square flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20">
+                  <div className="flex flex-col items-center gap-2 text-center px-6 py-4">
+                    <AlertCircle className="h-8 w-8 text-destructive/70" />
+                    <p className="text-sm text-destructive/80">{task.errorMessage || "生成失败"}</p>
                   </div>
                 </div>
-              ))}
+              )}
+            </>
+          )}
+
+          {/* ── 多图：count > 1 — 统一响应式网格，列数 2~4 由容器宽度决定 ── */}
+          {task.count > 1 && (
+            <div
+              className="w-full max-w-[480px]"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+                gap: "0.5rem",
+              }}
+            >
+              {isGenerating &&
+                Array.from({ length: task.count }).map((_, i) => (
+                  <Skeleton
+                    key={i}
+                    className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse"
+                  />
+                ))}
+              {isSuccess &&
+                task.images.map((src, i) => (
+                  <div key={i} className="relative group overflow-hidden rounded-lg">
+                    <img
+                      src={src}
+                      alt={`生成结果 ${i + 1}`}
+                      className="w-full aspect-square object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              {isError &&
+                Array.from({ length: task.count }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="aspect-square flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20"
+                  >
+                    <div className="flex flex-col items-center gap-1.5 text-center px-3 py-2">
+                      <AlertCircle className="h-6 w-6 text-destructive/70" />
+                      <p className="text-xs text-destructive/80">{task.errorMessage || "生成失败"}</p>
+                    </div>
+                  </div>
+                ))}
             </div>
           )}
         </div>
