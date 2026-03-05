@@ -118,7 +118,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                 </div>
               )}
               {isSuccess && task.images.length === 1 && (
-                <div className="relative group/img overflow-hidden rounded-lg w-full max-w-[340px] min-w-[240px]">
+                <div className="relative group/img overflow-hidden rounded-lg w-full max-w-[340px] min-w-[240px] cursor-pointer" onClick={() => onImageClick?.(task.id, 0)}>
                   <img
                     src={task.images[0]}
                     alt="生成结果"
