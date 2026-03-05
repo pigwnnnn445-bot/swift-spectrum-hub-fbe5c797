@@ -12,11 +12,20 @@ interface TaskCardProps {
   onApplyReferenceImage?: (imageUrl: string) => void;
 }
 
+const ratioToAspect = (ratio?: string): string => {
+  const map: Record<string, string> = {
+    "1:1": "1/1", "2:3": "2/3", "3:2": "3/2",
+    "3:4": "3/4", "4:3": "4/3", "16:9": "16/9", "9:16": "9/16",
+  };
+  return map[ratio ?? ""] ?? "1/1";
+};
+
 const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskCardProps) => {
   const isGenerating = task.status === "generating" || task.status === "submitting";
   const isError = task.status === "error";
   const isSuccess = task.status === "success";
   const hasReferenceImages = (task.referenceImages?.length ?? 0) > 0;
+  const aspectRatio = ratioToAspect(task.ratio);
 
   const [promptExpanded, setPromptExpanded] = useState(false);
 
@@ -60,7 +69,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
             <>
               {isGenerating && (
                 <div className="w-full max-w-[340px] min-w-[240px]">
-                  <Skeleton className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse" />
+                  <Skeleton className="w-full rounded-lg bg-workspace-chip animate-pulse" style={{ aspectRatio }} />
                 </div>
               )}
               {isSuccess && task.images.length === 1 && (
@@ -68,7 +77,8 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                   <img
                     src={task.images[0]}
                     alt="生成结果"
-                    className="w-full aspect-square object-cover"
+                    className="w-full object-cover"
+                    style={{ aspectRatio }}
                     loading="lazy"
                   />
                 </div>
@@ -98,7 +108,8 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                 Array.from({ length: task.count }).map((_, i) => (
                   <Skeleton
                     key={i}
-                    className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse"
+                    className="w-full rounded-lg bg-workspace-chip animate-pulse"
+                    style={{ aspectRatio }}
                   />
                 ))}
               {isSuccess &&
@@ -107,7 +118,8 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                     <img
                       src={src}
                       alt={`生成结果 ${i + 1}`}
-                      className="w-full aspect-square object-cover"
+                      className="w-full object-cover"
+                      style={{ aspectRatio }}
                       loading="lazy"
                     />
                   </div>
