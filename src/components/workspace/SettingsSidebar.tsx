@@ -28,6 +28,10 @@ interface SettingsSidebarProps {
   onStyleChange?: (styleId: number | null, styleName: string) => void;
   /** 通知父组件当前相似度 */
   onSimilarityChange?: (similarity: number) => void;
+  /** 受控：参考图列表 */
+  referenceImages?: string[];
+  /** 受控：参考图变更回调 */
+  onReferenceImagesChange?: (images: string[]) => void;
 }
 
 const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange, onRatioChange, onResolutionChange, onStyleChange, onSimilarityChange }: SettingsSidebarProps) => {

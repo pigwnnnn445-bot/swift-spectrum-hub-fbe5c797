@@ -11,6 +11,10 @@ const MIN_RESOLUTION = 300;
 
 interface UploadReferencePanelProps {
   model: ModelConfig;
+  /** 受控：当前参考图列表 */
+  images?: string[];
+  /** 受控：参考图变更回调 */
+  onImagesChange?: (images: string[]) => void;
 }
 
 const UploadReferencePanel = ({ model }: UploadReferencePanelProps) => {
