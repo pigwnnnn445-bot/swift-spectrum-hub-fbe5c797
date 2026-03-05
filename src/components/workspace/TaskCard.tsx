@@ -136,7 +136,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                     <TooltipTrigger asChild>
                       <button
                         onClick={handleCopyPrompt}
-                        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip/80 transition-colors duration-150 cursor-pointer"
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground/70 hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-all duration-150 cursor-pointer active:scale-95"
                       >
                         <Copy className="h-3.5 w-3.5" />
                       </button>
@@ -147,7 +147,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                     <TooltipTrigger asChild>
                       <button
                         onClick={handleApplyPrompt}
-                        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip/80 transition-colors duration-150 cursor-pointer"
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground/70 hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-all duration-150 cursor-pointer active:scale-95"
                       >
                         <ArrowUp className="h-3.5 w-3.5" />
                       </button>
@@ -224,7 +224,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                 {task.referenceImages!.map((src, i) => (
                   <div
                     key={i}
-                    className="group/ref relative h-9 w-9 overflow-hidden rounded-lg border border-workspace-border/40 transition-transform duration-150 hover:scale-[1.04]"
+                    className="group/ref relative h-9 w-9 overflow-hidden rounded-lg border border-workspace-border/40 transition-all duration-150 hover:scale-[1.04] hover:border-workspace-border/80 hover:shadow-sm"
                   >
                     <img
                       src={src}
@@ -233,18 +233,18 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                       loading="lazy"
                     />
                     {/* hover 操作 — 增强遮罩+圆形按钮底色 */}
-                    <div className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/60 opacity-0 group-hover/ref:opacity-100 transition-opacity duration-150">
+                    <div className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/65 opacity-0 group-hover/ref:opacity-100 transition-opacity duration-[140ms]">
                       <button
                         onClick={() => handleCopyImage(src)}
                         title="复制参考图"
-                        className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-white/90 hover:bg-white/30 hover:text-white transition-colors duration-150 cursor-pointer"
+                        className="flex h-5 w-5 items-center justify-center rounded-full bg-white/25 text-white hover:bg-white/40 transition-colors duration-150 cursor-pointer active:scale-90"
                       >
                         <Copy className="h-2.5 w-2.5" />
                       </button>
                       <button
                         onClick={() => handleApplyImage(src)}
                         title="应用为参考图"
-                        className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-white/90 hover:bg-white/30 hover:text-white transition-colors duration-150 cursor-pointer"
+                        className="flex h-5 w-5 items-center justify-center rounded-full bg-white/25 text-white hover:bg-white/40 transition-colors duration-150 cursor-pointer active:scale-90"
                       >
                         <ArrowUp className="h-2.5 w-2.5" />
                       </button>
