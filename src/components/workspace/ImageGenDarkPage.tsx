@@ -10,7 +10,7 @@ import { fetchModelsData } from "@/api/modelService";
 import { mockGenerate } from "@/api/mockGenerate";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
 import { getEnabledImageLikes } from "@/config/modelConfig";
-import type { GenerateTask } from "@/types/task";
+import type { GenerateTask, GenerationMode } from "@/types/task";
 import { toast } from "@/hooks/use-toast";
 
 const ImageGenDarkPage = () => {
@@ -30,6 +30,12 @@ const ImageGenDarkPage = () => {
   const promptInputRef = useRef<HTMLTextAreaElement | null>(null);
   // 参考图状态（用于"应用为参考图"回填）
   const [referenceImages, setReferenceImages] = useState<string[]>([]);
+  // Sidebar 参数追踪（用于构建任务快照）
+  const [sidebarRatio, setSidebarRatio] = useState("");
+  const [sidebarResolution, setSidebarResolution] = useState("");
+  const [sidebarStyleId, setSidebarStyleId] = useState<number | null>(null);
+  const [sidebarStyleName, setSidebarStyleName] = useState("");
+  const [sidebarSimilarity, setSidebarSimilarity] = useState(50);
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
@@ -79,21 +85,36 @@ const ImageGenDarkPage = () => {
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const count = imageCount;
 
+    const hasRefImages = referenceImages.length > 0;
+    const generationMode: GenerationMode = hasRefImages ? "image-to-image" : "text-to-image";
+
     const newTask: GenerateTask = {
       id: taskId,
       prompt: prompt.trim(),
       status: "submitting",
+      modelId: selectedModel.id,
       modelName: selectedModel.name,
       modelImage: selectedModel.image,
-      ratio: selectedModel.ratio?.[0] ?? "1:1",
-      resolution: selectedModel.resolution?.[0]?.resolution ?? "",
+      ratio: sidebarRatio || selectedModel.ratio?.[0] || "1:1",
+      resolution: sidebarResolution || selectedModel.resolution?.[0]?.resolution || "",
+      styleName: sidebarStyleName || undefined,
+      styleId: sidebarStyleId,
+      generationMode,
+      similarity: hasRefImages ? sidebarSimilarity : undefined,
       count,
       images: [],
+      referenceImages: hasRefImages ? [...referenceImages] : undefined,
       createdAt: Date.now(),
       requestPayload: {
         model_id: selectedModel.id,
         prompt: prompt.trim(),
         count,
+        ratio: sidebarRatio || selectedModel.ratio?.[0] || "1:1",
+        resolution: sidebarResolution || selectedModel.resolution?.[0]?.resolution || "",
+        style_id: sidebarStyleId,
+        generation_mode: generationMode,
+        similarity: hasRefImages ? sidebarSimilarity : undefined,
+        reference_images: hasRefImages ? [...referenceImages] : undefined,
       },
     };
 
@@ -217,6 +238,10 @@ const ImageGenDarkPage = () => {
         onExtraCostChange={handleExtraCostChange}
         imageCount={imageCount}
         onImageCountChange={setImageCount}
+        onRatioChange={setSidebarRatio}
+        onResolutionChange={setSidebarResolution}
+        onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
+        onSimilarityChange={setSidebarSimilarity}
       />
 
       <main className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>

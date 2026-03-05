@@ -20,15 +20,51 @@ interface SettingsSidebarProps {
   /** 生成图片数量 */
   imageCount: number;
   onImageCountChange: (count: number) => void;
+  /** 通知父组件当前比例 */
+  onRatioChange?: (ratio: string) => void;
+  /** 通知父组件当前分辨率 */
+  onResolutionChange?: (resolution: string) => void;
+  /** 通知父组件当前风格 */
+  onStyleChange?: (styleId: number | null, styleName: string) => void;
+  /** 通知父组件当前相似度 */
+  onSimilarityChange?: (similarity: number) => void;
 }
 
-const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange }: SettingsSidebarProps) => {
-  const [ratio, setRatio] = useState(selectedModel.ratio?.[0] ?? "");
-  const [selectedResolution, setSelectedResolution] = useState(selectedModel.resolution?.[0]?.resolution ?? "");
-  const [selectedStyleId, setSelectedStyleId] = useState<number | null>(
+const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange, onRatioChange, onResolutionChange, onStyleChange, onSimilarityChange }: SettingsSidebarProps) => {
+  const [ratio, setRatioLocal] = useState(selectedModel.ratio?.[0] ?? "");
+  const [selectedResolution, setSelectedResolutionLocal] = useState(selectedModel.resolution?.[0]?.resolution ?? "");
+  const [selectedStyleId, setSelectedStyleIdLocal] = useState<number | null>(
     selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource[0]?.id ?? null) : null
   );
-  const [similarity, setSimilarity] = useState(50);
+  const [similarity, setSimilarityLocal] = useState(50);
+
+  const setRatio = (v: string) => { setRatioLocal(v); onRatioChange?.(v); };
+  const setSelectedResolution = (v: string) => { setSelectedResolutionLocal(v); onResolutionChange?.(v); };
+  const setSelectedStyleId = (id: number | null) => {
+    setSelectedStyleIdLocal(id);
+    const allResources = selectedModel.style.flatMap(t => t.resource);
+    const found = allResources.find(r => r.id === id);
+    onStyleChange?.(id, found?.resource_name ?? "");
+  };
+  const setSimilarity = (v: number | ((prev: number) => number)) => {
+    setSimilarityLocal((prev) => {
+      const next = typeof v === "function" ? v(prev) : v;
+      onSimilarityChange?.(next);
+      return next;
+    });
+  };
+
+  // 初始化时通知父组件
+  useEffect(() => {
+    onRatioChange?.(selectedModel.ratio?.[0] ?? "");
+    onResolutionChange?.(selectedModel.resolution?.[0]?.resolution ?? "");
+    const initStyleId = selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource[0]?.id ?? null) : null;
+    const allRes = selectedModel.style.flatMap(t => t.resource);
+    const initStyle = allRes.find(r => r.id === initStyleId);
+    onStyleChange?.(initStyleId, initStyle?.resource_name ?? "");
+    onSimilarityChange?.(50);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 计算附加消耗并通知父组件
   useEffect(() => {
@@ -55,12 +91,19 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
 
   const handleModelChange = (model: ModelConfig) => {
     onModelChange(model);
-    setRatio(model.ratio?.[0] ?? "");
-    setSelectedResolution(model.resolution?.[0]?.resolution ?? "");
-    setSelectedStyleId(
-      model.style_flg === 1 ? (model.style[0]?.resource[0]?.id ?? null) : null
-    );
-    setSimilarity(50);
+    const newRatio = model.ratio?.[0] ?? "";
+    const newRes = model.resolution?.[0]?.resolution ?? "";
+    const newStyleId = model.style_flg === 1 ? (model.style[0]?.resource[0]?.id ?? null) : null;
+    setRatioLocal(newRatio);
+    setSelectedResolutionLocal(newRes);
+    setSelectedStyleIdLocal(newStyleId);
+    setSimilarityLocal(50);
+    onRatioChange?.(newRatio);
+    onResolutionChange?.(newRes);
+    const allRes = model.style.flatMap(t => t.resource);
+    const found = allRes.find(r => r.id === newStyleId);
+    onStyleChange?.(newStyleId, found?.resource_name ?? "");
+    onSimilarityChange?.(50);
   };
 
   const styleResources = selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource ?? []) : [];

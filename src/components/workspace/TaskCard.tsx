@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RotateCw, AlertCircle, ChevronDown, ChevronUp, Copy, ArrowUp, Image as ImageIcon } from "lucide-react";
+import { RotateCw, AlertCircle, ChevronDown, ChevronUp, Copy, ArrowUp, Image as ImageIcon, Palette } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import type { GenerateTask } from "@/types/task";
@@ -156,7 +156,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
             )}
           </div>
 
-          {/* B + C. 模型 + 比例标签 */}
+          {/* B + C. 模型 + 比例 + 风格标签 */}
           <div className="flex flex-wrap items-center gap-2">
             {task.modelName && (
               <span className="flex items-center gap-1.5 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
@@ -167,6 +167,22 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
             {task.ratio && (
               <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
                 □ {task.ratio}
+              </span>
+            )}
+            {task.styleName && (
+              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+                <Palette className="h-3 w-3" />
+                {task.styleName}
+              </span>
+            )}
+            {task.resolution && (
+              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+                {task.resolution}
+              </span>
+            )}
+            {task.similarity != null && task.generationMode === "image-to-image" && (
+              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+                相似度 {task.similarity}%
               </span>
             )}
             {isGenerating && (
