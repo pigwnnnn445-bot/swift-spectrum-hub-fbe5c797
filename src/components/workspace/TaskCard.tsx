@@ -62,11 +62,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
               Array.from({ length: task.count }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className={`aspect-square rounded-lg bg-workspace-chip animate-pulse ${
-                    task.count === 1
-                      ? "w-full max-w-[340px] min-w-[240px]"
-                      : "w-[120px] min-w-[80px]"
-                  }`}
+                  className="aspect-square rounded-lg bg-workspace-chip animate-pulse w-full max-w-[340px] min-w-[240px]"
                 />
               ))}
 
@@ -75,11 +71,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
               task.images.map((src, i) => (
                 <div
                   key={i}
-                  className={`relative group overflow-hidden rounded-lg ${
-                    task.images.length === 1
-                      ? "max-w-[340px] min-w-[240px]"
-                      : "w-[120px] min-w-[80px]"
-                  }`}
+                  className="relative group overflow-hidden rounded-lg max-w-[340px] min-w-[240px]"
                 >
                   <img
                     src={src}
