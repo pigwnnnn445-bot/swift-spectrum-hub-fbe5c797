@@ -109,6 +109,8 @@ const UploadZone = ({ multi, placeholder, images: controlledImages, onImagesChan
   const isControlled = controlledImages !== undefined && onImagesChange !== undefined;
   const [localImages, setLocalImages] = useState<string[]>([]);
   const images = isControlled ? controlledImages : localImages;
+  const addInputRef = useRef<HTMLInputElement | null>(null);
+  const replaceInputRef = useRef<HTMLInputElement | null>(null);
   const setImages = isControlled
     ? (updater: string[] | ((prev: string[]) => string[])) => {
         const next = typeof updater === "function" ? updater(controlledImages) : updater;
