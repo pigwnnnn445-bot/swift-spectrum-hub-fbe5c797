@@ -158,7 +158,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                     <TooltipProvider delayDuration={200}>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button onClick={() => { /* TODO: 局部重绘制 */ }} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                          <button onClick={() => onInpaint?.(task.images[0])} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
                             <Paintbrush className="h-3.5 w-3.5" />
                           </button>
                         </TooltipTrigger>
