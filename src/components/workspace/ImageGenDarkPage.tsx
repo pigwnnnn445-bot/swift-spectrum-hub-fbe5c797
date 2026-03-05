@@ -48,6 +48,10 @@ const ImageGenDarkPage = () => {
   // 局部重绘弹窗状态
   const [inpaintModalOpen, setInpaintModalOpen] = useState(false);
   const [inpaintImageUrl, setInpaintImageUrl] = useState("");
+  // 大图详情视图状态
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detailImageUrl, setDetailImageUrl] = useState("");
+  const [detailTask, setDetailTask] = useState<GenerateTask | null>(null);
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
