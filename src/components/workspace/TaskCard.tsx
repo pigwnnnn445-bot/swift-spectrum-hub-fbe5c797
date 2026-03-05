@@ -153,7 +153,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  {/* 底部右下角：局部重绘制 + 编辑图像 */}
+                  {/* 底部右下角：局部重绘 + 编辑图像 */}
                   <div className="absolute bottom-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
                     <TooltipProvider delayDuration={200}>
                       <Tooltip>
@@ -162,7 +162,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                             <Paintbrush className="h-3.5 w-3.5" />
                           </button>
                         </TooltipTrigger>
-                        <TooltipContent side="top">局部重绘制</TooltipContent>
+                        <TooltipContent side="top">局部重绘</TooltipContent>
                       </Tooltip>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -255,7 +255,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                    {/* 底部右下角：局部重绘制 + 编辑图像 */}
+                    {/* 底部右下角：局部重绘 + 编辑图像 */}
                     <div className="absolute bottom-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
                       <TooltipProvider delayDuration={200}>
                         <Tooltip>
@@ -264,7 +264,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                               <Paintbrush className="h-3.5 w-3.5" />
                             </button>
                           </TooltipTrigger>
-                          <TooltipContent side="top">局部重绘制</TooltipContent>
+                          <TooltipContent side="top">局部重绘</TooltipContent>
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger asChild>
