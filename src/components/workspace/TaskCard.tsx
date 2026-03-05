@@ -51,10 +51,11 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
   };
 
   return (
-    <div className="rounded-xl border border-workspace-border/60 bg-workspace-surface overflow-hidden">
-      <div className="flex flex-col lg:flex-row gap-4 p-4">
-        {/* 左侧：图片区域 */}
-        <div className="flex-1 min-w-0">
+    <div className="rounded-xl border border-workspace-border/60 bg-workspace-surface overflow-hidden min-h-[240px]">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-5 p-4">
+        {/* 左侧：图片区域 — flex-[3] ≈ 60% */}
+        <div className="flex-[3] min-w-0">
+          {/* 图片网格 */}
           <div
             className="grid gap-2"
             style={{
@@ -63,23 +64,27 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                   ? "1fr"
                   : task.count === 2
                   ? "1fr 1fr"
-                  : "repeat(auto-fill, minmax(180px, 1fr))",
+                  : "repeat(auto-fill, minmax(80px, 1fr))",
             }}
           >
+            {/* 生成中骨架屏 */}
             {isGenerating &&
               Array.from({ length: task.count }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse"
+                  className={`aspect-square w-full rounded-lg bg-workspace-chip animate-pulse ${
+                    task.count === 1 ? "max-w-[340px] min-w-[240px]" : "min-w-[80px]"
+                  }`}
                 />
               ))}
 
+            {/* 成功图片 */}
             {isSuccess &&
               task.images.map((src, i) => (
                 <div
                   key={i}
                   className={`relative group overflow-hidden rounded-lg ${
-                    task.count === 1 ? "max-w-md mx-auto w-full" : ""
+                    task.count === 1 ? "max-w-[340px] min-w-[240px]" : "min-w-[80px]"
                   }`}
                 >
                   <img
@@ -91,14 +96,17 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                 </div>
               ))}
 
+            {/* 错误状态 */}
             {isError && (
-              <div className="flex aspect-square items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20">
+              <div className={`flex aspect-square items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20 ${
+                task.count === 1 ? "max-w-[340px] min-w-[240px]" : ""
+              }`}>
                 <div className="flex flex-col items-center gap-2 text-center px-4">
                   <AlertCircle className="h-8 w-8 text-destructive/70" />
                   <p className="text-sm text-destructive/80">{task.errorMessage || "生成失败"}</p>
                   <button
                     onClick={() => onRetry?.(task.id)}
-                    className="mt-1 flex items-center gap-1.5 rounded-lg bg-workspace-chip px-3 py-1.5 text-xs font-medium text-workspace-surface-foreground hover:bg-workspace-chip-active/20 transition-colors"
+                    className="mt-1 flex items-center gap-1.5 rounded-lg bg-workspace-chip px-3 py-1.5 text-xs font-medium text-workspace-surface-foreground hover:bg-workspace-chip-active/20 transition-colors cursor-pointer"
                   >
                     <RotateCw className="h-3 w-3" />
                     重试
@@ -109,26 +117,26 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
           </div>
         </div>
 
-        {/* 右侧：任务信息 */}
-        <div className="w-full lg:w-[280px] shrink-0 flex flex-col gap-3">
-          {/* A. 提示词 + hover 操作 */}
-          <div className="group/prompt relative flex flex-col gap-1">
+        {/* 右侧：属性区 — flex-[2] ≈ 40%, min 280px, max 340px */}
+        <div className="w-full lg:flex-[2] lg:min-w-[280px] lg:max-w-[340px] shrink-0 flex flex-col">
+          {/* 1) 提示词区（主信息） */}
+          <div className="relative pb-[10px] mb-[10px] border-b border-workspace-border/40">
             <div className="relative">
               <p
-                className={`text-sm text-workspace-surface-foreground leading-relaxed pr-14 ${
+                className={`text-sm text-workspace-surface-foreground leading-relaxed pr-16 ${
                   promptExpanded ? "" : "line-clamp-6"
                 }`}
               >
                 {task.prompt}
               </p>
-              {/* hover 操作按钮 */}
+              {/* 操作按钮 — 常驻显示 */}
               <div className="absolute top-0 right-0 flex items-center gap-1">
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button
                         onClick={handleCopyPrompt}
-                        className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-colors"
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip/80 transition-colors duration-150 cursor-pointer"
                       >
                         <Copy className="h-3.5 w-3.5" />
                       </button>
@@ -139,7 +147,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                     <TooltipTrigger asChild>
                       <button
                         onClick={handleApplyPrompt}
-                        className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-colors"
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip/80 transition-colors duration-150 cursor-pointer"
                       >
                         <ArrowUp className="h-3.5 w-3.5" />
                       </button>
@@ -152,7 +160,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
             {task.prompt.length > 200 && (
               <button
                 onClick={() => setPromptExpanded((v) => !v)}
-                className="flex items-center gap-1 self-start text-xs text-muted-foreground hover:text-workspace-surface-foreground transition-colors"
+                className="mt-1 flex items-center gap-1 self-start text-xs text-muted-foreground hover:text-workspace-surface-foreground transition-colors cursor-pointer"
               >
                 {promptExpanded ? (
                   <>
@@ -167,56 +175,56 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
             )}
           </div>
 
-          {/* B + C. 模型 + 比例 + 风格标签 */}
-          <div className="flex flex-wrap items-center gap-2">
+          {/* 2) 核心参数标签区：模型 → 比例 → 风格 → 分辨率 → 生成中 */}
+          <div className="flex flex-wrap items-center gap-1.5">
             {task.modelName && (
-              <span className="flex items-center gap-1.5 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+              <span className="flex items-center gap-1.5 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground h-[26px]">
                 <img src={task.modelImage} alt="" className="h-4 w-4 rounded-full object-cover" />
                 {task.modelName}
               </span>
             )}
             {task.ratio && (
-              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground h-[26px]">
                 □ {task.ratio}
               </span>
             )}
             {task.styleName && (
-              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground h-[26px]">
                 <Palette className="h-3 w-3" />
                 {task.styleName}
               </span>
             )}
             {task.resolution && (
-              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground h-[26px]">
                 {task.resolution}
               </span>
             )}
             {task.similarity != null && task.generationMode === "image-to-image" && (
-              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+              <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground h-[26px]">
                 相似度 {task.similarity}%
               </span>
             )}
             {isGenerating && (
-              <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs text-primary">
+              <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs text-primary h-[26px]">
                 <RotateCw className="h-3 w-3 animate-spin" />
                 生成中...
               </span>
             )}
           </div>
 
-          {/* D + E. 图生图标签 + 参考图缩略图 */}
+          {/* 3) 图生图标签 + 参考图缩略图 */}
           {hasReferenceImages && (
-            <div className="flex flex-col gap-2">
-              <span className="inline-flex items-center gap-1 self-start rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground">
+            <div className="flex flex-col gap-1.5 mt-3">
+              <span className="inline-flex items-center gap-1 self-start rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground h-[26px]">
                 <ImageIcon className="h-3 w-3" />
                 图生图
               </span>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {task.referenceImages!.map((src, i) => (
                   <div
                     key={i}
-                    className="group/ref relative h-12 w-12 overflow-hidden rounded-lg border border-workspace-border/40"
+                    className="group/ref relative h-9 w-9 overflow-hidden rounded-lg border border-workspace-border/40 transition-transform duration-150 hover:scale-[1.04]"
                   >
                     <img
                       src={src}
@@ -224,21 +232,21 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                       className="h-full w-full object-cover"
                       loading="lazy"
                     />
-                    {/* hover 操作 */}
-                    <div className="absolute inset-0 flex items-center justify-center gap-1 bg-black/50 opacity-0 group-hover/ref:opacity-100 transition-opacity">
+                    {/* hover 操作 — 增强遮罩+圆形按钮底色 */}
+                    <div className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/60 opacity-0 group-hover/ref:opacity-100 transition-opacity duration-150">
                       <button
                         onClick={() => handleCopyImage(src)}
                         title="复制参考图"
-                        className="flex h-5 w-5 items-center justify-center rounded text-white/80 hover:text-white transition-colors"
+                        className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-white/90 hover:bg-white/30 hover:text-white transition-colors duration-150 cursor-pointer"
                       >
-                        <Copy className="h-3 w-3" />
+                        <Copy className="h-2.5 w-2.5" />
                       </button>
                       <button
                         onClick={() => handleApplyImage(src)}
                         title="应用为参考图"
-                        className="flex h-5 w-5 items-center justify-center rounded text-white/80 hover:text-white transition-colors"
+                        className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-white/90 hover:bg-white/30 hover:text-white transition-colors duration-150 cursor-pointer"
                       >
-                        <ArrowUp className="h-3 w-3" />
+                        <ArrowUp className="h-2.5 w-2.5" />
                       </button>
                     </div>
                   </div>
