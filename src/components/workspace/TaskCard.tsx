@@ -12,6 +12,7 @@ interface TaskCardProps {
   onApplyReferenceImage?: (imageUrl: string) => void;
   onEditImage?: (imageUrl: string, task: GenerateTask) => void;
   onInpaint?: (imageUrl: string) => void;
+  onImageClick?: (taskId: string, imageIndex: number) => void;
 }
 
 const ratioToAspect = (ratio?: string): string => {
@@ -22,7 +23,7 @@ const ratioToAspect = (ratio?: string): string => {
   return map[ratio ?? ""] ?? "1/1";
 };
 
-const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage, onInpaint }: TaskCardProps) => {
+const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage, onInpaint, onImageClick }: TaskCardProps) => {
   const isGenerating = task.status === "generating" || task.status === "submitting";
   const isError = task.status === "error";
   const isSuccess = task.status === "success";
@@ -117,7 +118,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                 </div>
               )}
               {isSuccess && task.images.length === 1 && (
-                <div className="relative group/img overflow-hidden rounded-lg w-full max-w-[340px] min-w-[240px]">
+                <div className="relative group/img overflow-hidden rounded-lg w-full max-w-[340px] min-w-[240px] cursor-pointer" onClick={() => onImageClick?.(task.id, 0)}>
                   <img
                     src={task.images[0]}
                     alt="生成结果"
@@ -219,7 +220,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                 ))}
               {isSuccess &&
                 task.images.map((src, i) => (
-                  <div key={i} className="relative group/img overflow-hidden rounded-lg">
+                  <div key={i} className="relative group/img overflow-hidden rounded-lg cursor-pointer" onClick={() => onImageClick?.(task.id, i)}>
                     <img
                       src={src}
                       alt={`生成结果 ${i + 1}`}
