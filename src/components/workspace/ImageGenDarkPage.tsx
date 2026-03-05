@@ -40,6 +40,7 @@ const ImageGenDarkPage = () => {
   // 编辑图像弹窗状态
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingImageUrl, setEditingImageUrl] = useState("");
+  const [editingTask, setEditingTask] = useState<GenerateTask | null>(null);
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
