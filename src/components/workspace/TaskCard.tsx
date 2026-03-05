@@ -69,7 +69,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
             <>
               {isGenerating && (
                 <div className="w-full max-w-[340px] min-w-[240px]">
-                  <Skeleton className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse" />
+                  <Skeleton className="w-full rounded-lg bg-workspace-chip animate-pulse" style={{ aspectRatio }} />
                 </div>
               )}
               {isSuccess && task.images.length === 1 && (
