@@ -191,7 +191,9 @@ const EditImageModal = ({
             value={editPrompt}
             onChange={(e) => setEditPrompt(e.target.value)}
             placeholder="您可以尝试输入：将图像中人物的衣服颜色调整为红色，或将图像中的人物戴上圣诞帽"
-            className="w-full min-h-[120px] max-h-[200px] resize-none rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/40 transition-colors"
+            rows={1}
+            className="w-full resize-none rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/40 transition-colors"
+            style={{ minHeight: 120, maxHeight: MAX_HEIGHT, overflowY: "hidden" }}
           />
         </div>
 
