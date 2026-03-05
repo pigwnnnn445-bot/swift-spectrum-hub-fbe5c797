@@ -162,7 +162,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                             <Paintbrush className="h-3.5 w-3.5" />
                           </button>
                         </TooltipTrigger>
-                        <TooltipContent side="top">局部重绘制</TooltipContent>
+                        <TooltipContent side="top">局部重绘</TooltipContent>
                       </Tooltip>
                       <Tooltip>
                         <TooltipTrigger asChild>
