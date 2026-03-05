@@ -30,7 +30,7 @@ interface SettingsSidebarProps {
   onSimilarityChange?: (similarity: number) => void;
 }
 
-const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange }: SettingsSidebarProps) => {
+const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange, onRatioChange, onResolutionChange, onStyleChange, onSimilarityChange }: SettingsSidebarProps) => {
   const [ratio, setRatio] = useState(selectedModel.ratio?.[0] ?? "");
   const [selectedResolution, setSelectedResolution] = useState(selectedModel.resolution?.[0]?.resolution ?? "");
   const [selectedStyleId, setSelectedStyleId] = useState<number | null>(
