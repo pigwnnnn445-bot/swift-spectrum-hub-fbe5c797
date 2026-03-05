@@ -109,6 +109,8 @@ const ModelDetailPage = () => {
             <Flag label="放大图片" value={model.enlarge_picture_flg} />
             <Flag label="重新生成" value={model.regenerate_flg} />
             <Flag label="移除背景" value={model.remove_background_flg} />
+            <Flag label="局部重绘" value={model.inpaint_flg} />
+            <Flag label="编辑图像" value={model.edit_image_flg} />
           </CardContent>
         </Card>
 
@@ -221,6 +223,8 @@ const ModelDetailPage = () => {
             <PriceField label="重新生成" price={model.regenerate_price} />
             <PriceField label="移除背景" price={model.remove_background_price} />
             <PriceField label="参考图上传" price={model.image_reference_price} />
+            <PriceField label="局部重绘" price={model.inpaint_price} />
+            <PriceField label="编辑图像" price={model.edit_image_price} />
           </CardContent>
         </Card>
       </div>

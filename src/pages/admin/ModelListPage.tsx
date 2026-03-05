@@ -57,6 +57,8 @@ const ModelListPage = () => {
               <TableHead className="text-center">分辨率</TableHead>
               <TableHead className="text-center">风格</TableHead>
               <TableHead className="text-center">参考图</TableHead>
+              <TableHead className="text-center">局部重绘</TableHead>
+              <TableHead className="text-center">编辑图像</TableHead>
               <TableHead className="text-center">生成数量</TableHead>
               <TableHead className="text-center">状态</TableHead>
               <TableHead className="w-[80px]">操作</TableHead>
@@ -82,6 +84,8 @@ const ModelListPage = () => {
                 <TableCell className="text-center"><FlagBadge value={model.resolution_flg} /></TableCell>
                 <TableCell className="text-center"><FlagBadge value={model.style_flg} /></TableCell>
                 <TableCell className="text-center"><FlagBadge value={model.image_reference_flg} /></TableCell>
+                <TableCell className="text-center"><FlagBadge value={model.inpaint_flg} /></TableCell>
+                <TableCell className="text-center"><FlagBadge value={model.edit_image_flg} /></TableCell>
                 <TableCell className="text-center text-sm">
                   {model.image_num > 0 ? `最多${model.image_num}` : "—"}
                 </TableCell>

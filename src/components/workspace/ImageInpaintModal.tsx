@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Move, Paintbrush, Eraser, Undo2, Redo2, Trash2, ZoomIn, ZoomOut, Zap, Minus, Plus } from "lucide-react";
+import { X, Move, Paintbrush, Eraser, Undo2, Redo2, Trash2, ZoomIn, ZoomOut, Zap, Minus, Plus, Coins } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -19,6 +19,8 @@ export interface InpaintPayload {
 interface Props {
   open: boolean;
   imageUrl: string;
+  /** 本次局部重绘消耗的积分价格 */
+  price?: number;
   onClose: () => void;
   onGenerate: (payload: InpaintPayload) => void;
 }
@@ -48,7 +50,7 @@ function buildInpaintPayload(
 }
 
 /* ─── component ─── */
-const ImageInpaintModal = ({ open, imageUrl, onClose, onGenerate }: Props) => {
+const ImageInpaintModal = ({ open, imageUrl, price = 0, onClose, onGenerate }: Props) => {
   /* state */
   const [activeTool, setActiveTool] = useState<ActiveTool>("brush");
   const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH);
@@ -512,10 +514,15 @@ const ImageInpaintModal = ({ open, imageUrl, onClose, onGenerate }: Props) => {
             <Button
               onClick={handleGenerate}
               disabled={isSubmitting}
-              className="shrink-0 gap-1.5"
+              className="shrink-0 gap-2 px-4"
             >
-              <Zap className="h-4 w-4" />
-              发送
+              <span>发送</span>
+              {price > 0 && (
+                <span className="flex items-center gap-1 text-primary-foreground/80 text-xs">
+                  <Coins className="h-3.5 w-3.5" />
+                  {price}
+                </span>
+              )}
             </Button>
           </div>
         </div>
