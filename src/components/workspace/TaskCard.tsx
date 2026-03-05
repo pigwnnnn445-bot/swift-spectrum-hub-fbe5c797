@@ -122,9 +122,10 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                   <img
                     src={task.images[0]}
                     alt="生成结果"
-                    className="w-full object-cover"
+                    className="w-full object-cover cursor-pointer"
                     style={{ aspectRatio }}
                     loading="lazy"
+                    onClick={() => onImageClick?.(task.images[0], task, 0)}
                   />
                   <div className="absolute top-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
                     <TooltipProvider delayDuration={200}>
