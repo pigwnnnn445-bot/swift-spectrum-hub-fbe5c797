@@ -332,6 +332,12 @@ const ImageGenDarkPage = () => {
           </div>
         )}
       </main>
+
+      <EditImageModal
+        open={editModalOpen}
+        imageUrl={editingImageUrl}
+        onClose={() => setEditModalOpen(false)}
+      />
     </div>
   );
 };
