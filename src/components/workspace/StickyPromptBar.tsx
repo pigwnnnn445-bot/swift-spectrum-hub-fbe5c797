@@ -41,8 +41,8 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isGenerating, 
               onChange={(e) => onPromptChange(e.target.value)}
               placeholder="输入您的提示词，比如：可爱的猫"
               rows={1}
-              className="prompt-textarea flex-1 resize-none bg-transparent px-5 py-3 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/40 focus:outline-none"
-              style={{ maxHeight: 240, minHeight: 60 }}
+            className="prompt-textarea flex-1 resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/40 focus:outline-none"
+              style={{ maxHeight: 220, minHeight: 100 }}
             />
             <button
               disabled={!prompt.trim() || isGenerating}
