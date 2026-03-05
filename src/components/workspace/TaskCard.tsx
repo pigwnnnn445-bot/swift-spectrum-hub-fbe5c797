@@ -21,7 +21,7 @@ const ratioToAspect = (ratio?: string): string => {
   return map[ratio ?? ""] ?? "1/1";
 };
 
-const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskCardProps) => {
+const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage }: TaskCardProps) => {
   const isGenerating = task.status === "generating" || task.status === "submitting";
   const isError = task.status === "error";
   const isSuccess = task.status === "success";
