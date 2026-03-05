@@ -62,11 +62,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
               Array.from({ length: task.count }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className={`aspect-square rounded-lg bg-workspace-chip animate-pulse ${
-                    task.count === 1
-                      ? "w-full max-w-[340px] min-w-[240px]"
-                      : "w-[120px] min-w-[80px]"
-                  }`}
+                  className="aspect-square rounded-lg bg-workspace-chip animate-pulse w-full max-w-[340px] min-w-[240px]"
                 />
               ))}
 
