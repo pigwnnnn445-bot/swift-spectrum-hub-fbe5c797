@@ -141,7 +141,7 @@ const ImageInpaintModal = ({ open, imageUrl, onClose, onGenerate }: Props) => {
     ctx.clearRect(0, 0, cw, ch);
 
     // compute scaled image size to fit container, then apply zoom
-    const baseScale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight, 1);
+    const baseScale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight);
     const scale = baseScale * zoom;
     const iw = img.naturalWidth * scale;
     const ih = img.naturalHeight * scale;
@@ -172,7 +172,7 @@ const ImageInpaintModal = ({ open, imageUrl, onClose, onGenerate }: Props) => {
     if (!dc || !img || !container) return null;
     const cw = container.clientWidth;
     const ch = container.clientHeight;
-    const baseScale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight, 1);
+    const baseScale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight);
     const scale = baseScale * zoom;
     const iw = img.naturalWidth * scale;
     const ih = img.naturalHeight * scale;
@@ -353,7 +353,7 @@ const ImageInpaintModal = ({ open, imageUrl, onClose, onGenerate }: Props) => {
     if (!img || !container) return brushSize / 2;
     const cw = container.clientWidth;
     const ch = container.clientHeight;
-    const baseScale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight, 1);
+    const baseScale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight);
     return (brushSize / 2) * baseScale * zoom;
   })();
 
