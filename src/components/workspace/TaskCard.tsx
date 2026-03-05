@@ -347,7 +347,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                 </TooltipProvider>
               </div>
             </div>
-            {task.prompt.length > 200 && (
+            {(isTruncated || promptExpanded) && (
               <button
                 onClick={() => setPromptExpanded((v) => !v)}
                 className="mt-1 flex items-center gap-1 self-start text-xs text-muted-foreground hover:text-workspace-surface-foreground transition-colors cursor-pointer"
