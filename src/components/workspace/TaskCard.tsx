@@ -108,7 +108,8 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                 Array.from({ length: task.count }).map((_, i) => (
                   <Skeleton
                     key={i}
-                    className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse"
+                    className="w-full rounded-lg bg-workspace-chip animate-pulse"
+                    style={{ aspectRatio }}
                   />
                 ))}
               {isSuccess &&
