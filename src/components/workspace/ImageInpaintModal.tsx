@@ -19,6 +19,8 @@ export interface InpaintPayload {
 interface Props {
   open: boolean;
   imageUrl: string;
+  /** 本次局部重绘消耗的积分价格 */
+  price?: number;
   onClose: () => void;
   onGenerate: (payload: InpaintPayload) => void;
 }
