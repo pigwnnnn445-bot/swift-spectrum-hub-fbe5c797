@@ -120,9 +120,14 @@ const EditImageModal = ({
       setDropdownOpen(false);
       const snapshotModel = models.find((m) => m.id === task.modelId);
       setSelectedModel(snapshotModel || models[0] || null);
-      setTimeout(() => textareaRef.current?.focus(), 100);
+      setTimeout(() => {
+        textareaRef.current?.focus();
+        resizeTextarea();
+      }, 100);
     }
-  }, [open, task, models]);
+  }, [open, task, models, resizeTextarea]);
+
+  useEffect(() => { resizeTextarea(); }, [editPrompt, resizeTextarea]);
 
   // Esc to close
   useEffect(() => {
