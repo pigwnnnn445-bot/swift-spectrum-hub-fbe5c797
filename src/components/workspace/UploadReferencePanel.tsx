@@ -65,6 +65,8 @@ const UploadReferencePanel = ({ model, images: controlledImages, onImagesChange 
           <UploadZone
             multi={item.more_image_flg === 1}
             placeholder="单击或拖动图像即可上传"
+            images={controlledImages}
+            onImagesChange={onImagesChange}
           />
         </div>
       ))}

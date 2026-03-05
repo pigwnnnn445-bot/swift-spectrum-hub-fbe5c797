@@ -213,6 +213,8 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
               <UploadReferencePanel
                 key={selectedModel.id}
                 model={selectedModel}
+                images={referenceImages}
+                onImagesChange={onReferenceImagesChange}
               />
             </Section>
           )}
