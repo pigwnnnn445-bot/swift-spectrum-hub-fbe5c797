@@ -11,6 +11,7 @@ interface TaskCardProps {
   onApplyPrompt?: (prompt: string) => void;
   onApplyReferenceImage?: (imageUrl: string) => void;
   onEditImage?: (imageUrl: string, task: GenerateTask) => void;
+  onInpaint?: (imageUrl: string) => void;
 }
 
 const ratioToAspect = (ratio?: string): string => {
