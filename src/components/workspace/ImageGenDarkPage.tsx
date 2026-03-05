@@ -7,6 +7,8 @@ import StickyPromptBar from "./StickyPromptBar";
 import TopNavBar from "./TopNavBar";
 import TaskList from "./TaskList";
 import EditImageModal from "./EditImageModal";
+import ImageInpaintModal from "./ImageInpaintModal";
+import type { InpaintPayload } from "./ImageInpaintModal";
 import { fetchModelsData } from "@/api/modelService";
 import { mockGenerate } from "@/api/mockGenerate";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
