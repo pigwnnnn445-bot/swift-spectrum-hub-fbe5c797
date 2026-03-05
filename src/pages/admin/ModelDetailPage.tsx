@@ -109,6 +109,8 @@ const ModelDetailPage = () => {
             <Flag label="放大图片" value={model.enlarge_picture_flg} />
             <Flag label="重新生成" value={model.regenerate_flg} />
             <Flag label="移除背景" value={model.remove_background_flg} />
+            <Flag label="局部重绘" value={model.inpaint_flg} />
+            <Flag label="编辑图像" value={model.edit_image_flg} />
           </CardContent>
         </Card>
 
