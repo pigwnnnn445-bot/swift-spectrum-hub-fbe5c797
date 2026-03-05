@@ -515,7 +515,7 @@ const ImageInpaintModal = ({ open, imageUrl, onClose, onGenerate }: Props) => {
               className="shrink-0 gap-1.5"
             >
               <Zap className="h-4 w-4" />
-              Regenerate
+              发送
             </Button>
           </div>
         </div>
