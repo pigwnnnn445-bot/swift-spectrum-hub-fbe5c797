@@ -56,25 +56,13 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
         {/* 左侧：图片区域 — flex-[3] ≈ 60% */}
         <div className="flex-[3] min-w-0">
           {/* 图片网格 */}
-          <div
-            className="grid gap-2"
-            style={{
-              gridTemplateColumns:
-                task.count <= 1
-                  ? "1fr"
-                  : task.count === 2
-                  ? "1fr 1fr"
-                  : "repeat(auto-fill, minmax(80px, 1fr))",
-            }}
-          >
+          <div className="flex flex-wrap gap-2">
             {/* 生成中骨架屏 */}
             {isGenerating &&
               Array.from({ length: task.count }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className={`aspect-square w-full rounded-lg bg-workspace-chip animate-pulse ${
-                    task.count === 1 ? "max-w-[340px] min-w-[240px]" : "min-w-[80px]"
-                  }`}
+                  className="aspect-square w-full max-w-[340px] min-w-[240px] rounded-lg bg-workspace-chip animate-pulse"
                 />
               ))}
 
@@ -83,9 +71,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
               task.images.map((src, i) => (
                 <div
                   key={i}
-                  className={`relative group overflow-hidden rounded-lg ${
-                    task.count === 1 ? "max-w-[340px] min-w-[240px]" : "min-w-[80px]"
-                  }`}
+                  className="relative group overflow-hidden rounded-lg max-w-[340px] min-w-[240px]"
                 >
                   <img
                     src={src}
