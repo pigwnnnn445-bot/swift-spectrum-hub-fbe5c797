@@ -148,7 +148,7 @@ const ImageGenDarkPage = () => {
         )
       );
     }
-  }, [selectedModel, prompt, isSubmitting, isCooldown]);
+  }, [selectedModel, prompt, isSubmitting, isCooldown, imageCount, referenceImages, sidebarRatio, sidebarResolution, sidebarStyleId, sidebarStyleName, sidebarSimilarity]);
 
   // ── 重试任务 ──
   const handleRetry = useCallback(async (taskId: string) => {
