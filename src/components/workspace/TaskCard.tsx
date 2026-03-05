@@ -220,7 +220,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                 ))}
               {isSuccess &&
                 task.images.map((src, i) => (
-                  <div key={i} className="relative group/img overflow-hidden rounded-lg">
+                  <div key={i} className="relative group/img overflow-hidden rounded-lg cursor-pointer" onClick={() => onImageClick?.(task.id, i)}>
                     <img
                       src={src}
                       alt={`生成结果 ${i + 1}`}
