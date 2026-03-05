@@ -10,6 +10,7 @@ interface TaskCardProps {
   onRetry?: (taskId: string) => void;
   onApplyPrompt?: (prompt: string) => void;
   onApplyReferenceImage?: (imageUrl: string) => void;
+  onEditImage?: (imageUrl: string) => void;
 }
 
 const ratioToAspect = (ratio?: string): string => {
