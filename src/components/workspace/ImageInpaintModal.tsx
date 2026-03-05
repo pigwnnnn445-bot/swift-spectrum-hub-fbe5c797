@@ -367,7 +367,7 @@ const ImageInpaintModal = ({ open, imageUrl, onClose, onGenerate }: Props) => {
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <DialogContent
-        className="max-w-4xl w-[95vw] h-[90vh] max-h-[90vh] flex flex-col p-0 gap-0 bg-workspace-surface border-workspace-border overflow-hidden"
+        className="max-w-4xl w-[95vw] h-[90vh] max-h-[90vh] flex flex-col p-0 gap-0 bg-workspace-surface border-workspace-border overflow-hidden [&>button[class*='absolute']]:hidden"
         onPointerDownOutside={() => onClose()}
       >
         <DialogTitle className="sr-only">区域重绘</DialogTitle>
