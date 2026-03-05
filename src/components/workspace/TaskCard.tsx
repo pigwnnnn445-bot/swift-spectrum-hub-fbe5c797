@@ -87,10 +87,10 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
           {/* ── 多图：count > 1 — 统一响应式网格，列数 2~4 由容器宽度决定 ── */}
           {task.count > 1 && (
             <div
-              className="w-full max-w-[480px]"
+              className="w-full"
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fill, minmax(max(120px, calc(25% - 6px)), 1fr))",
                 gap: "0.5rem",
               }}
             >
