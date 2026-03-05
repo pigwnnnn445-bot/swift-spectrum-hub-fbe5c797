@@ -117,10 +117,15 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                 </div>
               )}
               {isError && (
-                <div className="w-full min-w-[240px] max-w-[340px] flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20" style={{ aspectRatio }}>
+                <div className="relative group/img w-full min-w-[240px] max-w-[340px] flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20" style={{ aspectRatio }}>
                   <div className="flex flex-col items-center gap-2 text-center px-6 py-4">
                     <AlertCircle className="h-8 w-8 text-destructive/70" />
                     <p className="text-sm text-destructive/80">{task.errorMessage || "生成失败"}</p>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150 rounded-lg">
+                    <button onClick={() => onRetry?.(task.id)} title="重试" className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/40 transition-colors cursor-pointer active:scale-90">
+                      <RotateCw className="h-4 w-4" />
+                    </button>
                   </div>
                 </div>
               )}
