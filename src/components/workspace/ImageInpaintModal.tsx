@@ -353,7 +353,7 @@ const ImageInpaintModal = ({ open, imageUrl, onClose, onGenerate }: Props) => {
     if (!img || !container) return brushSize / 2;
     const cw = container.clientWidth;
     const ch = container.clientHeight;
-    const baseScale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight, 1);
+    const baseScale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight);
     return (brushSize / 2) * baseScale * zoom;
   })();
 
