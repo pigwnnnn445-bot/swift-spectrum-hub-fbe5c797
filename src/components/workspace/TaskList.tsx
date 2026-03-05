@@ -27,6 +27,7 @@ const TaskList = ({ tasks, onRetry, onApplyPrompt, onApplyReferenceImage, onEdit
             onApplyPrompt={onApplyPrompt}
             onApplyReferenceImage={onApplyReferenceImage}
             onEditImage={onEditImage}
+            onInpaint={onInpaint}
           />
         ))}
       </div>
