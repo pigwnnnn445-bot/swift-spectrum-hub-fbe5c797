@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RotateCw, AlertCircle, ChevronDown, ChevronUp, Copy, ArrowUp, Image as ImageIcon, Palette, Download } from "lucide-react";
+import { RotateCw, AlertCircle, ChevronDown, ChevronUp, Copy, ArrowUp, Image as ImageIcon, Palette, Download, Paintbrush, PenLine } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
@@ -134,6 +134,27 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                       </Tooltip>
                     </TooltipProvider>
                   </div>
+                  {/* 底部右下角：局部重绘制 + 编辑图像 */}
+                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
+                    <TooltipProvider delayDuration={200}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button onClick={() => { /* TODO: 局部重绘制 */ }} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                            <Paintbrush className="h-3.5 w-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">局部重绘制</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button onClick={() => { /* TODO: 编辑图像 */ }} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                            <PenLine className="h-3.5 w-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">编辑图像</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                 </div>
               )}
               {isError && (
@@ -212,6 +233,27 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                             </button>
                           </TooltipTrigger>
                           <TooltipContent side="bottom">重新生成图片</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    {/* 底部右下角：局部重绘制 + 编辑图像 */}
+                    <div className="absolute bottom-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
+                      <TooltipProvider delayDuration={200}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button onClick={() => { /* TODO: 局部重绘制 */ }} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                              <Paintbrush className="h-3.5 w-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">局部重绘制</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button onClick={() => { /* TODO: 编辑图像 */ }} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                              <PenLine className="h-3.5 w-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">编辑图像</TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     </div>
