@@ -382,6 +382,18 @@ const ImageGenDarkPage = () => {
           });
         }}
       />
+
+      <ImageInpaintModal
+        open={inpaintModalOpen}
+        imageUrl={inpaintImageUrl}
+        onClose={() => { setInpaintModalOpen(false); setInpaintImageUrl(""); }}
+        onGenerate={(payload: InpaintPayload) => {
+          // TODO: 接入真实局部重绘接口
+          setInpaintModalOpen(false);
+          toast({ title: "局部重绘已提交（占位）" });
+          console.log("[Inpaint payload]", payload);
+        }}
+      />
     </div>
   );
 };
