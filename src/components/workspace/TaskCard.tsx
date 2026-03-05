@@ -59,6 +59,31 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
     onApplyReferenceImage?.(url);
   };
 
+  const handleCopyResultImage = async (url: string) => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+      toast({ title: "图片已复制" });
+    } catch {
+      toast({ title: "复制失败，浏览器可能不支持复制图片", variant: "destructive" });
+    }
+  };
+
+  const handleDownloadImage = async (url: string, index: number) => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `generated-${task.id}-${index + 1}.png`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch {
+      toast({ title: "下载失败，请重试", variant: "destructive" });
+    }
+  };
+
   return (
     <div className="rounded-xl border border-workspace-border/60 bg-workspace-surface overflow-hidden">
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-5 p-4">
