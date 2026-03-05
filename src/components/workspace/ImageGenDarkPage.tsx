@@ -6,6 +6,7 @@ import MasonryGallery from "./MasonryGallery";
 import StickyPromptBar from "./StickyPromptBar";
 import TopNavBar from "./TopNavBar";
 import TaskList from "./TaskList";
+import EditImageModal from "./EditImageModal";
 import { fetchModelsData } from "@/api/modelService";
 import { mockGenerate } from "@/api/mockGenerate";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
@@ -36,6 +37,9 @@ const ImageGenDarkPage = () => {
   const [sidebarStyleId, setSidebarStyleId] = useState<number | null>(null);
   const [sidebarStyleName, setSidebarStyleName] = useState("");
   const [sidebarSimilarity, setSidebarSimilarity] = useState(50);
+  // 编辑图像弹窗状态
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingImageUrl, setEditingImageUrl] = useState("");
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
@@ -316,7 +320,7 @@ const ImageGenDarkPage = () => {
         )}
 
         {/* 任务列表 */}
-        <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} />
+        <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} onEditImage={(url) => { setEditingImageUrl(url); setEditModalOpen(true); }} />
 
         {/* 灵感画廊：进入创作模式后隐藏 */}
         {!hasEnteredCreationMode && (
@@ -328,6 +332,12 @@ const ImageGenDarkPage = () => {
           </div>
         )}
       </main>
+
+      <EditImageModal
+        open={editModalOpen}
+        imageUrl={editingImageUrl}
+        onClose={() => setEditModalOpen(false)}
+      />
     </div>
   );
 };
