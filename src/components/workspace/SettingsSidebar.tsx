@@ -20,6 +20,14 @@ interface SettingsSidebarProps {
   /** 生成图片数量 */
   imageCount: number;
   onImageCountChange: (count: number) => void;
+  /** 通知父组件当前比例 */
+  onRatioChange?: (ratio: string) => void;
+  /** 通知父组件当前分辨率 */
+  onResolutionChange?: (resolution: string) => void;
+  /** 通知父组件当前风格 */
+  onStyleChange?: (styleId: number | null, styleName: string) => void;
+  /** 通知父组件当前相似度 */
+  onSimilarityChange?: (similarity: number) => void;
 }
 
 const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange }: SettingsSidebarProps) => {
