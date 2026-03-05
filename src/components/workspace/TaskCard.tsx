@@ -55,24 +55,38 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-5 p-4">
         {/* 左侧：图片区域 — flex-[3] ≈ 60% */}
         <div className="flex-[3] min-w-0">
-          {/* 图片网格 */}
-          <div className="flex flex-wrap gap-2">
-            {/* 生成中骨架屏 — 单图大尺寸，多图小缩略图 */}
-            {isGenerating &&
-              Array.from({ length: task.count }).map((_, i) => (
+          {/* ── 生成中骨架屏 ── */}
+          {isGenerating && task.count === 1 && (
+            <div className="w-full max-w-[340px] min-w-[240px]">
+              <Skeleton className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse" />
+            </div>
+          )}
+          {isGenerating && task.count > 1 && (
+            <div className="grid grid-cols-2 gap-2 w-full">
+              {Array.from({ length: task.count }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="aspect-square rounded-lg bg-workspace-chip animate-pulse w-full max-w-[340px] min-w-[240px]"
+                  className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse min-w-[80px]"
                 />
               ))}
+            </div>
+          )}
 
-            {/* 成功图片 — 单图大尺寸，多图小缩略图 */}
-            {isSuccess &&
-              task.images.map((src, i) => (
-                <div
-                  key={i}
-                  className="relative group overflow-hidden rounded-lg max-w-[340px] min-w-[240px]"
-                >
+          {/* ── 成功图片 ── */}
+          {isSuccess && task.images.length === 1 && (
+            <div className="relative group overflow-hidden rounded-lg w-full max-w-[340px] min-w-[240px]">
+              <img
+                src={task.images[0]}
+                alt="生成结果"
+                className="w-full aspect-square object-cover"
+                loading="lazy"
+              />
+            </div>
+          )}
+          {isSuccess && task.images.length > 1 && (
+            <div className="grid grid-cols-2 gap-2 w-full">
+              {task.images.map((src, i) => (
+                <div key={i} className="relative group overflow-hidden rounded-lg min-w-[80px]">
                   <img
                     src={src}
                     alt={`生成结果 ${i + 1}`}
@@ -81,24 +95,25 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                   />
                 </div>
               ))}
+            </div>
+          )}
 
-            {/* 错误状态 — 横向可读，不使用 aspect-square */}
-            {isError && (
-              <div className="w-full min-w-[240px] max-w-[340px] min-h-[160px] flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20">
-                <div className="flex flex-col items-center gap-2 text-center px-6 py-4">
-                  <AlertCircle className="h-8 w-8 text-destructive/70" />
-                  <p className="text-sm text-destructive/80">{task.errorMessage || "生成失败"}</p>
-                  <button
-                    onClick={() => onRetry?.(task.id)}
-                    className="mt-1 flex items-center gap-1.5 rounded-lg bg-workspace-chip px-3 py-1.5 text-xs font-medium text-workspace-surface-foreground hover:bg-workspace-chip-active/20 transition-colors cursor-pointer"
-                  >
-                    <RotateCw className="h-3 w-3" />
-                    重试
-                  </button>
-                </div>
+          {/* 错误状态 — 横向可读 */}
+          {isError && (
+            <div className="w-full min-w-[240px] max-w-[340px] min-h-[160px] flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20">
+              <div className="flex flex-col items-center gap-2 text-center px-6 py-4">
+                <AlertCircle className="h-8 w-8 text-destructive/70" />
+                <p className="text-sm text-destructive/80">{task.errorMessage || "生成失败"}</p>
+                <button
+                  onClick={() => onRetry?.(task.id)}
+                  className="mt-1 flex items-center gap-1.5 rounded-lg bg-workspace-chip px-3 py-1.5 text-xs font-medium text-workspace-surface-foreground hover:bg-workspace-chip-active/20 transition-colors cursor-pointer"
+                >
+                  <RotateCw className="h-3 w-3" />
+                  重试
+                </button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* 右侧：属性区 — flex-[2] ≈ 40%, min 280px, max 340px */}
