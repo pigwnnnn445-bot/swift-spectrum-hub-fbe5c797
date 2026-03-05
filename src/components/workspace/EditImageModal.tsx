@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { X, Zap, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -103,6 +103,16 @@ const EditImageModal = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const MAX_HEIGHT = 280;
+
+  const resizeTextarea = useCallback(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, MAX_HEIGHT) + "px";
+    el.style.overflowY = el.scrollHeight > MAX_HEIGHT ? "auto" : "hidden";
+  }, []);
+
   // Reset on open — set default model from task snapshot
   useEffect(() => {
     if (open && task) {
@@ -110,9 +120,14 @@ const EditImageModal = ({
       setDropdownOpen(false);
       const snapshotModel = models.find((m) => m.id === task.modelId);
       setSelectedModel(snapshotModel || models[0] || null);
-      setTimeout(() => textareaRef.current?.focus(), 100);
+      setTimeout(() => {
+        textareaRef.current?.focus();
+        resizeTextarea();
+      }, 100);
     }
-  }, [open, task, models]);
+  }, [open, task, models, resizeTextarea]);
+
+  useEffect(() => { resizeTextarea(); }, [editPrompt, resizeTextarea]);
 
   // Esc to close
   useEffect(() => {
@@ -176,7 +191,9 @@ const EditImageModal = ({
             value={editPrompt}
             onChange={(e) => setEditPrompt(e.target.value)}
             placeholder="您可以尝试输入：将图像中人物的衣服颜色调整为红色，或将图像中的人物戴上圣诞帽"
-            className="w-full min-h-[120px] max-h-[200px] resize-none rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/40 transition-colors"
+            rows={1}
+            className="w-full resize-none rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/40 transition-colors"
+            style={{ minHeight: 120, maxHeight: MAX_HEIGHT, overflowY: "hidden" }}
           />
         </div>
 
