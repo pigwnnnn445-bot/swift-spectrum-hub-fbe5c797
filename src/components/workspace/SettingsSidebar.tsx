@@ -34,7 +34,7 @@ interface SettingsSidebarProps {
   onReferenceImagesChange?: (images: string[]) => void;
 }
 
-const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange, onRatioChange, onResolutionChange, onStyleChange, onSimilarityChange }: SettingsSidebarProps) => {
+const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange, onRatioChange, onResolutionChange, onStyleChange, onSimilarityChange, referenceImages, onReferenceImagesChange }: SettingsSidebarProps) => {
   const [ratio, setRatioLocal] = useState(selectedModel.ratio?.[0] ?? "");
   const [selectedResolution, setSelectedResolutionLocal] = useState(selectedModel.resolution?.[0]?.resolution ?? "");
   const [selectedStyleId, setSelectedStyleIdLocal] = useState<number | null>(

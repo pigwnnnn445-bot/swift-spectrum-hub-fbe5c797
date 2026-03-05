@@ -17,7 +17,7 @@ interface UploadReferencePanelProps {
   onImagesChange?: (images: string[]) => void;
 }
 
-const UploadReferencePanel = ({ model }: UploadReferencePanelProps) => {
+const UploadReferencePanel = ({ model, images: controlledImages, onImagesChange }: UploadReferencePanelProps) => {
   const enabledLikes = getEnabledImageLikes(model);
   const isTyped = hasTypedUpload(model);
 
