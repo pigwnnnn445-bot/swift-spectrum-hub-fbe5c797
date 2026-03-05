@@ -12,6 +12,7 @@ interface TaskCardProps {
   onApplyReferenceImage?: (imageUrl: string) => void;
   onEditImage?: (imageUrl: string, task: GenerateTask) => void;
   onInpaint?: (imageUrl: string) => void;
+  onImageClick?: (imageUrl: string, task: GenerateTask, imageIndex: number) => void;
 }
 
 const ratioToAspect = (ratio?: string): string => {
@@ -22,7 +23,7 @@ const ratioToAspect = (ratio?: string): string => {
   return map[ratio ?? ""] ?? "1/1";
 };
 
-const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage, onInpaint }: TaskCardProps) => {
+const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage, onInpaint, onImageClick }: TaskCardProps) => {
   const isGenerating = task.status === "generating" || task.status === "submitting";
   const isError = task.status === "error";
   const isSuccess = task.status === "success";
@@ -121,9 +122,10 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                   <img
                     src={task.images[0]}
                     alt="生成结果"
-                    className="w-full object-cover"
+                    className="w-full object-cover cursor-pointer"
                     style={{ aspectRatio }}
                     loading="lazy"
+                    onClick={() => onImageClick?.(task.images[0], task, 0)}
                   />
                   <div className="absolute top-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
                     <TooltipProvider delayDuration={200}>
@@ -223,9 +225,10 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                     <img
                       src={src}
                       alt={`生成结果 ${i + 1}`}
-                      className="w-full object-cover"
+                      className="w-full object-cover cursor-pointer"
                       style={{ aspectRatio }}
                       loading="lazy"
+                      onClick={() => onImageClick?.(src, task, i)}
                     />
                     <div className="absolute top-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
                       <TooltipProvider delayDuration={200}>

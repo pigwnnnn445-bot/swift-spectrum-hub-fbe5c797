@@ -8,7 +8,9 @@ import TopNavBar from "./TopNavBar";
 import TaskList from "./TaskList";
 import EditImageModal from "./EditImageModal";
 import ImageInpaintModal from "./ImageInpaintModal";
+import ImageDetailWorkspace from "./ImageDetailWorkspace";
 import type { InpaintPayload } from "./ImageInpaintModal";
+import type { ComposerPayload } from "./ImageEditComposer";
 import { fetchModelsData } from "@/api/modelService";
 import { mockGenerate } from "@/api/mockGenerate";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
@@ -46,6 +48,10 @@ const ImageGenDarkPage = () => {
   // 局部重绘弹窗状态
   const [inpaintModalOpen, setInpaintModalOpen] = useState(false);
   const [inpaintImageUrl, setInpaintImageUrl] = useState("");
+  // 大图详情视图状态
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detailImageUrl, setDetailImageUrl] = useState("");
+  const [detailTask, setDetailTask] = useState<GenerateTask | null>(null);
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
@@ -262,10 +268,60 @@ const ImageGenDarkPage = () => {
     toast({ title: "参考图已添加" });
   }, [selectedModel, referenceImages]);
 
+  // ── 点击成功图片打开详情视图 ──
+  const handleImageClick = useCallback((imageUrl: string, task: GenerateTask) => {
+    setDetailImageUrl(imageUrl);
+    setDetailTask(task);
+    setDetailOpen(true);
+  }, []);
+
+  // ── 详情视图 Generate 回调 ──
+  const handleDetailGenerate = useCallback((payload: ComposerPayload) => {
+    setDetailOpen(false);
+    setDetailTask(null);
+    const newTaskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const newTask: GenerateTask = {
+      id: newTaskId,
+      prompt: payload.editPrompt,
+      status: "submitting",
+      modelId: payload.model.id,
+      modelName: payload.model.name,
+      modelImage: payload.model.image,
+      ratio: payload.ratio,
+      resolution: payload.resolution,
+      styleName: payload.styleName || undefined,
+      styleId: payload.styleId,
+      generationMode: "text-to-image",
+      similarity: payload.similarity,
+      count: 1,
+      images: [],
+      createdAt: Date.now(),
+      requestPayload: {
+        model_id: payload.model.id,
+        prompt: payload.editPrompt,
+        count: 1,
+        ratio: payload.ratio,
+        resolution: payload.resolution,
+        style_id: payload.styleId,
+      },
+    };
+    setHasEnteredCreationMode(true);
+    setTasks((prev) => [newTask, ...prev]);
+    setTasks((prev) => prev.map((t) => (t.id === newTaskId ? { ...t, status: "generating" as const } : t)));
+    mockGenerate(1).then((result) => {
+      setTasks((prev) => prev.map((t) => {
+        if (t.id !== newTaskId) return t;
+        if (result.success) return { ...t, status: "success" as const, images: result.images ?? [] };
+        return { ...t, status: "error" as const, errorMessage: result.errorMessage };
+      }));
+    }).catch(() => {
+      setTasks((prev) => prev.map((t) => t.id === newTaskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t));
+    });
+  }, []);
+
   if (!selectedModel) return null;
 
   const totalCost = selectedModel.price + extraCost;
-  
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
@@ -326,7 +382,7 @@ const ImageGenDarkPage = () => {
         )}
 
         {/* 任务列表 */}
-        <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }} onInpaint={(url) => { setInpaintImageUrl(url); setInpaintModalOpen(true); }} />
+        <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }} onInpaint={(url) => { setInpaintImageUrl(url); setInpaintModalOpen(true); }} onImageClick={handleImageClick} />
 
         {/* 灵感画廊：进入创作模式后隐藏 */}
         {!hasEnteredCreationMode && (
@@ -394,6 +450,18 @@ const ImageGenDarkPage = () => {
           console.log("[Inpaint payload]", payload);
         }}
       />
+
+      {/* 大图详情视图 */}
+      {detailOpen && detailTask && (
+        <ImageDetailWorkspace
+          initialImageUrl={detailImageUrl}
+          initialTask={detailTask}
+          tasks={tasks}
+          models={models}
+          onGenerate={handleDetailGenerate}
+          onClose={() => { setDetailOpen(false); setDetailTask(null); }}
+        />
+      )}
     </div>
   );
 };
