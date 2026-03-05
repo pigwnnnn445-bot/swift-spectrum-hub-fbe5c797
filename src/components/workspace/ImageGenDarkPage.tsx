@@ -7,6 +7,8 @@ import StickyPromptBar from "./StickyPromptBar";
 import TopNavBar from "./TopNavBar";
 import TaskList from "./TaskList";
 import EditImageModal from "./EditImageModal";
+import ImageInpaintModal from "./ImageInpaintModal";
+import type { InpaintPayload } from "./ImageInpaintModal";
 import { fetchModelsData } from "@/api/modelService";
 import { mockGenerate } from "@/api/mockGenerate";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
@@ -41,6 +43,9 @@ const ImageGenDarkPage = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingImageUrl, setEditingImageUrl] = useState("");
   const [editingTask, setEditingTask] = useState<GenerateTask | null>(null);
+  // 局部重绘弹窗状态
+  const [inpaintModalOpen, setInpaintModalOpen] = useState(false);
+  const [inpaintImageUrl, setInpaintImageUrl] = useState("");
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
@@ -321,7 +326,7 @@ const ImageGenDarkPage = () => {
         )}
 
         {/* 任务列表 */}
-        <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }} />
+        <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }} onInpaint={(url) => { setInpaintImageUrl(url); setInpaintModalOpen(true); }} />
 
         {/* 灵感画廊：进入创作模式后隐藏 */}
         {!hasEnteredCreationMode && (
@@ -375,6 +380,18 @@ const ImageGenDarkPage = () => {
           }).catch(() => {
             setTasks((prev) => prev.map((t) => t.id === newTaskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t));
           });
+        }}
+      />
+
+      <ImageInpaintModal
+        open={inpaintModalOpen}
+        imageUrl={inpaintImageUrl}
+        onClose={() => { setInpaintModalOpen(false); setInpaintImageUrl(""); }}
+        onGenerate={(payload: InpaintPayload) => {
+          // TODO: 接入真实局部重绘接口
+          setInpaintModalOpen(false);
+          toast({ title: "局部重绘已提交（占位）" });
+          console.log("[Inpaint payload]", payload);
         }}
       />
     </div>
