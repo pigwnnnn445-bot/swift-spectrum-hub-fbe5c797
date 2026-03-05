@@ -6,7 +6,7 @@ interface TaskListProps {
   onRetry?: (taskId: string) => void;
   onApplyPrompt?: (prompt: string) => void;
   onApplyReferenceImage?: (imageUrl: string) => void;
-  onEditImage?: (imageUrl: string) => void;
+  onEditImage?: (imageUrl: string, task: GenerateTask) => void;
 }
 
 const TaskList = ({ tasks, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage }: TaskListProps) => {
