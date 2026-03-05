@@ -382,7 +382,7 @@ const ImageGenDarkPage = () => {
         )}
 
         {/* 任务列表 */}
-        <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }} onInpaint={(url) => { setInpaintImageUrl(url); setInpaintModalOpen(true); }} />
+        <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }} onInpaint={(url) => { setInpaintImageUrl(url); setInpaintModalOpen(true); }} onImageClick={handleImageClick} />
 
         {/* 灵感画廊：进入创作模式后隐藏 */}
         {!hasEnteredCreationMode && (
