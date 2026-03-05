@@ -136,7 +136,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                     <TooltipTrigger asChild>
                       <button
                         onClick={handleCopyPrompt}
-                        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip/80 transition-colors duration-150 cursor-pointer"
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground/70 hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-all duration-150 cursor-pointer active:scale-95"
                       >
                         <Copy className="h-3.5 w-3.5" />
                       </button>
@@ -147,7 +147,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                     <TooltipTrigger asChild>
                       <button
                         onClick={handleApplyPrompt}
-                        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-workspace-surface-foreground hover:bg-workspace-chip/80 transition-colors duration-150 cursor-pointer"
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground/70 hover:text-workspace-surface-foreground hover:bg-workspace-chip transition-all duration-150 cursor-pointer active:scale-95"
                       >
                         <ArrowUp className="h-3.5 w-3.5" />
                       </button>
