@@ -31,6 +31,8 @@ const UploadReferencePanel = ({ model, images: controlledImages, onImagesChange 
           key="simple"
           multi={true}
           placeholder="将图片拖至此处或单击上传"
+          images={controlledImages}
+          onImagesChange={onImagesChange}
         />
       </div>
     );
