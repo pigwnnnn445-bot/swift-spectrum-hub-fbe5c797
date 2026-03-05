@@ -120,6 +120,7 @@ const ImageGenDarkPage = () => {
 
     // 插入到列表顶部
     setHasEnteredCreationMode(true);
+    setPrompt("");
     setTasks((prev) => [newTask, ...prev]);
 
     // 切换为 generating
