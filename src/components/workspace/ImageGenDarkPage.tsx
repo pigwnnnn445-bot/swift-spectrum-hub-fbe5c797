@@ -268,10 +268,60 @@ const ImageGenDarkPage = () => {
     toast({ title: "参考图已添加" });
   }, [selectedModel, referenceImages]);
 
+  // ── 点击成功图片打开详情视图 ──
+  const handleImageClick = useCallback((imageUrl: string, task: GenerateTask) => {
+    setDetailImageUrl(imageUrl);
+    setDetailTask(task);
+    setDetailOpen(true);
+  }, []);
+
+  // ── 详情视图 Generate 回调 ──
+  const handleDetailGenerate = useCallback((payload: ComposerPayload) => {
+    setDetailOpen(false);
+    setDetailTask(null);
+    const newTaskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const newTask: GenerateTask = {
+      id: newTaskId,
+      prompt: payload.editPrompt,
+      status: "submitting",
+      modelId: payload.model.id,
+      modelName: payload.model.name,
+      modelImage: payload.model.image,
+      ratio: payload.ratio,
+      resolution: payload.resolution,
+      styleName: payload.styleName || undefined,
+      styleId: payload.styleId,
+      generationMode: "text-to-image",
+      similarity: payload.similarity,
+      count: 1,
+      images: [],
+      createdAt: Date.now(),
+      requestPayload: {
+        model_id: payload.model.id,
+        prompt: payload.editPrompt,
+        count: 1,
+        ratio: payload.ratio,
+        resolution: payload.resolution,
+        style_id: payload.styleId,
+      },
+    };
+    setHasEnteredCreationMode(true);
+    setTasks((prev) => [newTask, ...prev]);
+    setTasks((prev) => prev.map((t) => (t.id === newTaskId ? { ...t, status: "generating" as const } : t)));
+    mockGenerate(1).then((result) => {
+      setTasks((prev) => prev.map((t) => {
+        if (t.id !== newTaskId) return t;
+        if (result.success) return { ...t, status: "success" as const, images: result.images ?? [] };
+        return { ...t, status: "error" as const, errorMessage: result.errorMessage };
+      }));
+    }).catch(() => {
+      setTasks((prev) => prev.map((t) => t.id === newTaskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t));
+    });
+  }, []);
+
   if (!selectedModel) return null;
 
   const totalCost = selectedModel.price + extraCost;
-  
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
