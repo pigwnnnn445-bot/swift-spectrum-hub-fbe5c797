@@ -7,9 +7,10 @@ interface TaskListProps {
   onApplyPrompt?: (prompt: string) => void;
   onApplyReferenceImage?: (imageUrl: string) => void;
   onEditImage?: (imageUrl: string, task: GenerateTask) => void;
+  onInpaint?: (imageUrl: string) => void;
 }
 
-const TaskList = ({ tasks, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage }: TaskListProps) => {
+const TaskList = ({ tasks, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage, onInpaint }: TaskListProps) => {
   if (tasks.length === 0) return null;
 
   return (
