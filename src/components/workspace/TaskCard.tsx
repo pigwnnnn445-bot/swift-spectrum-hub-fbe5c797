@@ -106,12 +106,15 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                     style={{ aspectRatio }}
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
-                    <button onClick={() => handleCopyResultImage(task.images[0])} title="复制图片" className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/40 transition-colors cursor-pointer active:scale-90">
-                      <Copy className="h-4 w-4" />
+                  <div className="absolute top-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
+                    <button onClick={() => handleCopyResultImage(task.images[0])} title="复制图片" className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                      <Copy className="h-3.5 w-3.5" />
                     </button>
-                    <button onClick={() => handleDownloadImage(task.images[0], 0)} title="下载图片" className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/40 transition-colors cursor-pointer active:scale-90">
-                      <Download className="h-4 w-4" />
+                    <button onClick={() => handleDownloadImage(task.images[0], 0)} title="下载图片" className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                      <Download className="h-3.5 w-3.5" />
+                    </button>
+                    <button onClick={() => onRetry?.(task.id)} title="重试" className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                      <RotateCw className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 </div>
@@ -160,12 +163,15 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                       style={{ aspectRatio }}
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
-                      <button onClick={() => handleCopyResultImage(src)} title="复制图片" className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/40 transition-colors cursor-pointer active:scale-90">
-                        <Copy className="h-4 w-4" />
+                    <div className="absolute top-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
+                      <button onClick={() => handleCopyResultImage(src)} title="复制图片" className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                        <Copy className="h-3.5 w-3.5" />
                       </button>
-                      <button onClick={() => handleDownloadImage(src, i)} title="下载图片" className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/40 transition-colors cursor-pointer active:scale-90">
-                        <Download className="h-4 w-4" />
+                      <button onClick={() => handleDownloadImage(src, i)} title="下载图片" className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                        <Download className="h-3.5 w-3.5" />
+                      </button>
+                      <button onClick={() => onRetry?.(task.id)} title="重试" className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                        <RotateCw className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   </div>
