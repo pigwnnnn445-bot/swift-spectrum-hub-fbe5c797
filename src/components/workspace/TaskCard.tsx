@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { RotateCw, AlertCircle, ChevronDown, ChevronUp, Copy, ArrowUp, Image as ImageIcon, Palette, Download, Paintbrush, PenLine } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -29,6 +29,23 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
   const aspectRatio = ratioToAspect(task.ratio);
 
   const [promptExpanded, setPromptExpanded] = useState(false);
+  const [isTruncated, setIsTruncated] = useState(false);
+  const promptRef = useRef<HTMLParagraphElement>(null);
+
+  const checkTruncation = useCallback(() => {
+    const el = promptRef.current;
+    if (!el || promptExpanded) return;
+    setIsTruncated(el.scrollHeight > el.clientHeight + 1);
+  }, [promptExpanded]);
+
+  useEffect(() => {
+    checkTruncation();
+    const el = promptRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(checkTruncation);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [checkTruncation, task.prompt]);
 
   const handleCopyPrompt = async () => {
     try {
@@ -295,6 +312,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
           <div className="relative pb-[10px] mb-[10px] border-b border-workspace-border/40">
             <div className="relative">
               <p
+                ref={promptRef}
                 className={`text-sm text-workspace-surface-foreground leading-relaxed pr-16 ${
                   promptExpanded ? "" : "line-clamp-6"
                 }`}
@@ -329,7 +347,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                 </TooltipProvider>
               </div>
             </div>
-            {task.prompt.length > 200 && (
+            {(isTruncated || promptExpanded) && (
               <button
                 onClick={() => setPromptExpanded((v) => !v)}
                 className="mt-1 flex items-center gap-1 self-start text-xs text-muted-foreground hover:text-workspace-surface-foreground transition-colors cursor-pointer"
