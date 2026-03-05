@@ -169,6 +169,10 @@ export const mockModelsData: ModelsData = {
       regenerate_price: 0,
       remove_background_flg: 0,
       remove_background_price: 0,
+      inpaint_flg: 0,
+      inpaint_price: 0,
+      edit_image_flg: 0,
+      edit_image_price: 0,
       show_flg: 0,
     },
     {
