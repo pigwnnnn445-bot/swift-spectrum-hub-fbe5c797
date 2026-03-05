@@ -60,7 +60,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
   };
 
   return (
-    <div className="rounded-xl border border-workspace-border/60 bg-workspace-surface overflow-hidden min-h-[240px]">
+    <div className="rounded-xl border border-workspace-border/60 bg-workspace-surface overflow-hidden">
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-5 p-4">
         {/* 左侧：图片区域 — flex-[3] ≈ 60% */}
         <div className="flex-[3] min-w-0">
