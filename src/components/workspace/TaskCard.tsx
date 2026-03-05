@@ -118,7 +118,8 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                     <img
                       src={src}
                       alt={`生成结果 ${i + 1}`}
-                      className="w-full aspect-square object-cover"
+                      className="w-full object-cover"
+                      style={{ aspectRatio }}
                       loading="lazy"
                     />
                   </div>
