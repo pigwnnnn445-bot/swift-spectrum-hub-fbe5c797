@@ -84,7 +84,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                 </div>
               )}
               {isError && (
-                <div className="w-full min-w-[240px] max-w-[340px] aspect-square flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20">
+                <div className="w-full min-w-[240px] max-w-[340px] flex items-center justify-center rounded-lg bg-destructive/10 border border-destructive/20" style={{ aspectRatio }}>
                   <div className="flex flex-col items-center gap-2 text-center px-6 py-4">
                     <AlertCircle className="h-8 w-8 text-destructive/70" />
                     <p className="text-sm text-destructive/80">{task.errorMessage || "生成失败"}</p>
