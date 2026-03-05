@@ -126,6 +126,14 @@ export interface ModelConfig {
   remove_background_flg: number;
   remove_background_price: number;
 
+  /** 局部重绘（Inpaint） */
+  inpaint_flg: number;
+  inpaint_price: number;
+
+  /** 编辑图像 */
+  edit_image_flg: number;
+  edit_image_price: number;
+
   /** 展示标志（后端控制） */
   show_flg: number;
 }
