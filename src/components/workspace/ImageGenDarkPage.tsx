@@ -151,20 +151,50 @@ const ImageGenDarkPage = () => {
     }
   }, [selectedModel, prompt, isSubmitting, isCooldown, imageCount, referenceImages, sidebarRatio, sidebarResolution, sidebarStyleId, sidebarStyleName, sidebarSimilarity]);
 
-  // ── 重试任务 ──
+  // ── 重试任务（从快照新建，count=1，原任务保留） ──
   const handleRetry = useCallback(async (taskId: string) => {
-    const task = tasks.find((t) => t.id === taskId);
-    if (!task) return;
+    const originTask = tasks.find((t) => t.id === taskId);
+    if (!originTask) return;
 
+    const newTaskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const retryCount = 1;
+
+    const newTask: GenerateTask = {
+      id: newTaskId,
+      prompt: originTask.prompt,
+      status: "submitting",
+      modelId: originTask.modelId,
+      modelName: originTask.modelName,
+      modelImage: originTask.modelImage,
+      ratio: originTask.ratio,
+      resolution: originTask.resolution,
+      styleName: originTask.styleName,
+      styleId: originTask.styleId,
+      generationMode: originTask.generationMode,
+      similarity: originTask.similarity,
+      count: retryCount,
+      images: [],
+      referenceImages: originTask.referenceImages ? [...originTask.referenceImages] : undefined,
+      createdAt: Date.now(),
+      requestPayload: {
+        ...originTask.requestPayload,
+        count: retryCount,
+      },
+    };
+
+    setHasEnteredCreationMode(true);
+    setTasks((prev) => [newTask, ...prev]);
+
+    // 切换为 generating
     setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, status: "generating" as const, errorMessage: undefined } : t))
+      prev.map((t) => (t.id === newTaskId ? { ...t, status: "generating" as const } : t))
     );
 
     try {
-      const result = await mockGenerate(task.count);
+      const result = await mockGenerate(retryCount);
       setTasks((prev) =>
         prev.map((t) => {
-          if (t.id !== taskId) return t;
+          if (t.id !== newTaskId) return t;
           if (result.success) {
             return { ...t, status: "success" as const, images: result.images ?? [] };
           }
@@ -174,7 +204,7 @@ const ImageGenDarkPage = () => {
     } catch {
       setTasks((prev) =>
         prev.map((t) =>
-          t.id === taskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t
+          t.id === newTaskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t
         )
       );
     }
