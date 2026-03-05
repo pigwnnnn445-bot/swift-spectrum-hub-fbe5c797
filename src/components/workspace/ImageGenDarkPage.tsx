@@ -30,6 +30,12 @@ const ImageGenDarkPage = () => {
   const promptInputRef = useRef<HTMLTextAreaElement | null>(null);
   // 参考图状态（用于"应用为参考图"回填）
   const [referenceImages, setReferenceImages] = useState<string[]>([]);
+  // Sidebar 参数追踪（用于构建任务快照）
+  const [sidebarRatio, setSidebarRatio] = useState("");
+  const [sidebarResolution, setSidebarResolution] = useState("");
+  const [sidebarStyleId, setSidebarStyleId] = useState<number | null>(null);
+  const [sidebarStyleName, setSidebarStyleName] = useState("");
+  const [sidebarSimilarity, setSidebarSimilarity] = useState(50);
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
