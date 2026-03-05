@@ -55,24 +55,38 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-5 p-4">
         {/* 左侧：图片区域 — flex-[3] ≈ 60% */}
         <div className="flex-[3] min-w-0">
-          {/* 图片网格 */}
-          <div className="flex flex-wrap gap-2">
-            {/* 生成中骨架屏 — 单图大尺寸，多图小缩略图 */}
-            {isGenerating &&
-              Array.from({ length: task.count }).map((_, i) => (
+          {/* ── 生成中骨架屏 ── */}
+          {isGenerating && task.count === 1 && (
+            <div className="w-full max-w-[340px] min-w-[240px]">
+              <Skeleton className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse" />
+            </div>
+          )}
+          {isGenerating && task.count > 1 && (
+            <div className="grid grid-cols-2 gap-2 w-full">
+              {Array.from({ length: task.count }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="aspect-square rounded-lg bg-workspace-chip animate-pulse w-full max-w-[340px] min-w-[240px]"
+                  className="aspect-square w-full rounded-lg bg-workspace-chip animate-pulse min-w-[80px]"
                 />
               ))}
+            </div>
+          )}
 
-            {/* 成功图片 — 单图大尺寸，多图小缩略图 */}
-            {isSuccess &&
-              task.images.map((src, i) => (
-                <div
-                  key={i}
-                  className="relative group overflow-hidden rounded-lg max-w-[340px] min-w-[240px]"
-                >
+          {/* ── 成功图片 ── */}
+          {isSuccess && task.images.length === 1 && (
+            <div className="relative group overflow-hidden rounded-lg w-full max-w-[340px] min-w-[240px]">
+              <img
+                src={task.images[0]}
+                alt="生成结果"
+                className="w-full aspect-square object-cover"
+                loading="lazy"
+              />
+            </div>
+          )}
+          {isSuccess && task.images.length > 1 && (
+            <div className="grid grid-cols-2 gap-2 w-full">
+              {task.images.map((src, i) => (
+                <div key={i} className="relative group overflow-hidden rounded-lg min-w-[80px]">
                   <img
                     src={src}
                     alt={`生成结果 ${i + 1}`}
@@ -81,6 +95,8 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage }: TaskC
                   />
                 </div>
               ))}
+            </div>
+          )}
 
             {/* 错误状态 — 横向可读，不使用 aspect-square */}
             {isError && (
