@@ -114,6 +114,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     <div className="border-t border-workspace-border bg-workspace-panel px-4 py-3 space-y-3">
       {/* Textarea */}
       <textarea
+        ref={textareaRef}
         value={editPrompt}
         onChange={(e) => setEditPrompt(e.target.value)}
         placeholder="描述您想要修复的内容。如果为空，则结果将基于原始图像自动编辑。"
