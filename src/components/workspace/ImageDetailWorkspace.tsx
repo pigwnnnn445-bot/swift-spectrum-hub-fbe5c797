@@ -144,6 +144,10 @@ const ImageDetailWorkspace = ({
                   imageCount: 1,
                 });
               }}
+              onDelete={onDeleteImage ? () => {
+                onDeleteImage(selectedTask.id, selectedImageIndex);
+                onClose();
+              } : undefined}
             />
           </div>
         </div>
