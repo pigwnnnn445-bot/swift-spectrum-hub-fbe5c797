@@ -9,6 +9,7 @@ import TaskList from "./TaskList";
 import EditImageModal from "./EditImageModal";
 import ImageInpaintModal from "./ImageInpaintModal";
 import ImageDetailWorkspace from "./ImageDetailWorkspace";
+import AssetGalleryView from "./AssetGalleryView";
 import type { InpaintPayload } from "./ImageInpaintModal";
 import type { ComposerPayload } from "./ImageEditComposer";
 import { fetchModelsData } from "@/api/modelService";
