@@ -167,6 +167,9 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           }
         });
       },
+      openInpaint() {
+        setInpaintOpen(true);
+      },
     }));
 
     // Initialize / reset on task change
