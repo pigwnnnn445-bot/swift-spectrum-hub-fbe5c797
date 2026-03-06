@@ -185,6 +185,8 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
       </div>
     </div>
   );
-};
+});
+
+ImageEditComposer.displayName = "ImageEditComposer";
 
 export default ImageEditComposer;

@@ -130,6 +130,7 @@ const ImageDetailWorkspace = ({
 
       {/* Bottom composer */}
       <ImageEditComposer
+        ref={composerRef}
         key={`${selectedTask.id}-${selectedImageIndex}`}
         task={selectedTask}
         models={models}
