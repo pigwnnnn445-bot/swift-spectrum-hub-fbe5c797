@@ -1,9 +1,14 @@
 import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus } from "lucide-react";
+import { toast } from "sonner";
 import ModelSelector from "./ModelSelector";
 import StyleSelector from "./StyleSelector";
-import UploadReferencePanel from "./UploadReferencePanel";
-import { hasTypedUpload } from "@/config/modelConfig";
+import DetailUploadReferencePanel, {
+  getTotalImageCount,
+  getSubmittableReference,
+  type ReferenceByType,
+} from "./DetailUploadReferencePanel";
+import { getOrderedEnabledImageLikes } from "@/config/modelConfig";
 import type { ModelConfig } from "@/config/modelConfig";
 import type { GenerateTask } from "@/types/task";
 import { cn } from "@/lib/utils";
@@ -16,6 +21,7 @@ export interface ComposerPayload {
   styleId: number | null;
   styleName: string;
   similarity: number;
+  referenceByType: ReturnType<typeof getSubmittableReference>;
 }
 
 export interface ImageEditComposerHandle {
@@ -53,7 +59,7 @@ function EntryPopover({
   return (
     <div
       ref={ref}
-      className="absolute left-0 bottom-full mb-2 z-50 min-w-[200px] max-w-[320px] rounded-xl border border-workspace-border bg-workspace-panel shadow-lg p-2 workspace-scroll max-h-[360px] overflow-y-auto"
+      className="absolute left-0 bottom-full mb-2 z-50 min-w-[200px] max-w-[340px] rounded-xl border border-workspace-border bg-workspace-panel shadow-lg p-3 workspace-scroll max-h-[420px] overflow-y-auto"
     >
       {children}
     </div>
@@ -99,7 +105,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const [resolution, setResolution] = useState("");
     const [styleId, setStyleId] = useState<number | null>(null);
     const [similarity, setSimilarity] = useState(50);
-    const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+    const [referenceByType, setReferenceByType] = useState<ReferenceByType>({});
 
     // Popover toggles
     const [ratioOpen, setRatioOpen] = useState(false);
@@ -120,10 +126,10 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
       },
     }));
 
-    // Initialize / reset on task change (key already forces remount, but belt-and-suspenders)
+    // Initialize / reset on task change
     useEffect(() => {
       setEditPrompt("");
-      setUploadedImages([]);
+      setReferenceByType({});
       const m = models.find((m) => m.id === task.modelId) ?? models[0] ?? null;
       setSelectedModel(m);
       if (m) initParamsFromModel(m, task);
@@ -150,12 +156,21 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
 
     const handleModelChange = (model: ModelConfig) => {
       setSelectedModel(model);
-      setUploadedImages([]);
+      setReferenceByType({});
       initParamsFromModel(model, task);
     };
 
     const handleSubmit = () => {
       if (!selectedModel || !editPrompt.trim()) return;
+
+      // Required check
+      const enabledLikes = getOrderedEnabledImageLikes(selectedModel);
+      const isRequired = enabledLikes.some((item) => item.is_required === 1);
+      if (isRequired && getTotalImageCount(referenceByType) < 1) {
+        toast.error("请先上传参考图");
+        return;
+      }
+
       const allRes = selectedModel.style.flatMap((t) => t.resource);
       const styleName = allRes.find((r) => r.id === styleId)?.resource_name ?? "";
       onGenerate({
@@ -166,6 +181,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
         styleId,
         styleName,
         similarity,
+        referenceByType: getSubmittableReference(referenceByType),
       });
     };
 
@@ -174,12 +190,14 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const showRatio = selectedModel.ratio_flg === 1 && selectedModel.ratio.length > 0;
     const showResolution = selectedModel.resolution_flg === 1 && selectedModel.resolution.length > 0;
     const showStyle = selectedModel.style_flg === 1 && selectedModel.style.length > 0;
-    const showUpload = hasTypedUpload(selectedModel) || selectedModel.image_reference_flg === 1;
+    const enabledLikes = getOrderedEnabledImageLikes(selectedModel);
+    const showUpload = enabledLikes.length > 0 || selectedModel.image_reference_flg === 1;
     const showModel = models.length > 1;
 
     const styleResources = selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource ?? []) : [];
     const currentStyleName = styleResources.find((r) => r.id === styleId)?.resource_name ?? "自动";
-    const uploadLabel = uploadedImages.length > 0 ? `已上传(${uploadedImages.length})` : "上传图片";
+    const totalUploaded = getTotalImageCount(referenceByType);
+    const uploadLabel = totalUploaded > 0 ? `已上传(${totalUploaded})` : "上传图片";
     const totalCost = selectedModel.price;
 
     return (
@@ -286,15 +304,15 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
               <EntryButton
                 icon={ImagePlus}
                 label={uploadLabel}
-                active={uploadOpen || uploadedImages.length > 0}
+                active={uploadOpen || totalUploaded > 0}
                 onClick={() => { setUploadOpen(!uploadOpen); setRatioOpen(false); setResolutionOpen(false); setStyleOpen(false); }}
               />
               <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
-                <div className="min-w-[240px]">
-                  <UploadReferencePanel
+                <div className="min-w-[280px]">
+                  <DetailUploadReferencePanel
                     model={selectedModel}
-                    images={uploadedImages}
-                    onImagesChange={setUploadedImages}
+                    value={referenceByType}
+                    onChange={setReferenceByType}
                   />
                 </div>
               </EntryPopover>
