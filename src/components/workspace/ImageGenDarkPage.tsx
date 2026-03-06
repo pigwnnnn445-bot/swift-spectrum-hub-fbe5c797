@@ -516,6 +516,56 @@ const ImageGenDarkPage = () => {
           tasks={tasks}
           models={models}
           onGenerate={handleDetailGenerate}
+          onInpaintGenerate={(payload: InpaintPayload, originTask: GenerateTask) => {
+            // Close detail view first
+            setDetailOpen(false);
+            setDetailTask(null);
+
+            const newTaskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+            const newTask: GenerateTask = {
+              id: newTaskId,
+              prompt: payload.prompt,
+              status: "submitting",
+              modelId: originTask.modelId,
+              modelName: originTask.modelName,
+              modelImage: originTask.modelImage,
+              ratio: originTask.ratio,
+              resolution: originTask.resolution,
+              styleName: originTask.styleName,
+              styleId: originTask.styleId,
+              generationMode: "image-to-image",
+              similarity: originTask.similarity,
+              count: 1,
+              images: [],
+              referenceImages: originTask.referenceImages ? [...originTask.referenceImages] : undefined,
+              baseImage: payload.baseImageUrl,
+              maskData: payload.maskDataUrl,
+              createdAt: Date.now(),
+              requestPayload: {
+                ...originTask.requestPayload,
+                prompt: payload.prompt,
+                count: 1,
+                generation_mode: "image-to-image",
+                base_image: payload.baseImageUrl,
+                mask_data: payload.maskDataUrl,
+              },
+            };
+
+            setHasEnteredCreationMode(true);
+            setTasks((prev) => [newTask, ...prev]);
+            setTasks((prev) => prev.map((t) => (t.id === newTaskId ? { ...t, status: "generating" as const } : t)));
+
+            mockGenerate(1).then((result) => {
+              setTasks((prev) => prev.map((t) => {
+                if (t.id !== newTaskId) return t;
+                if (result.success) return { ...t, status: "success" as const, images: result.images ?? [] };
+                return { ...t, status: "error" as const, errorMessage: result.errorMessage };
+              }));
+            }).catch(() => {
+              setTasks((prev) => prev.map((t) => t.id === newTaskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t));
+            });
+          }}
           onClose={() => { setDetailOpen(false); setDetailTask(null); }}
         />
       )}

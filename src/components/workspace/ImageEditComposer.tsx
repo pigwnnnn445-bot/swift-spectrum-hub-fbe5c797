@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from "react";
-import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus, Minus, Plus, Zap, Hash } from "lucide-react";
+import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus, Minus, Plus, Zap, Hash, PaintBucket } from "lucide-react";
+import ImageInpaintModal from "./ImageInpaintModal";
+import type { InpaintPayload } from "./ImageInpaintModal";
 import { toast } from "sonner";
 import ModelSelector from "./ModelSelector";
 import StyleSelector from "./StyleSelector";
@@ -36,8 +38,12 @@ export interface ImageEditComposerHandle {
 
 interface ImageEditComposerProps {
   task: GenerateTask;
+  /** Current detail image URL (for inpaint baseImage) */
+  currentImageUrl?: string;
   models: ModelConfig[];
   onGenerate: (payload: ComposerPayload) => void;
+  /** Called when inpaint modal sends; parent should create task & close detail */
+  onInpaintGenerate?: (payload: InpaintPayload, task: GenerateTask) => void;
 }
 
 /* ── tiny popover wrapper ─────────────────────── */
@@ -127,7 +133,7 @@ function EntryButton({
 }
 
 const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerProps>(
-  ({ task, models, onGenerate }, ref) => {
+  ({ task, currentImageUrl, models, onGenerate, onInpaintGenerate }, ref) => {
     const [editPrompt, setEditPrompt] = useState("");
     const [mode, setMode] = useState<"edit" | "new">("edit");
     const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
@@ -147,6 +153,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const [styleOpen, setStyleOpen] = useState(false);
     const [uploadOpen, setUploadOpen] = useState(false);
     const [countOpen, setCountOpen] = useState(false);
+    const [inpaintOpen, setInpaintOpen] = useState(false);
 
     useImperativeHandle(ref, () => ({
       applyPrompt(text: string) {
@@ -483,6 +490,16 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             </div>
           )}
 
+          {/* Inpaint button */}
+          {currentImageUrl && onInpaintGenerate && (
+            <EntryButton
+              icon={PaintBucket}
+              label="局部重绘"
+              active={inpaintOpen}
+              onClick={() => setInpaintOpen(true)}
+            />
+          )}
+
           {/* Spacer */}
           <div className="flex-1" />
 
@@ -497,6 +514,24 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             <span className="text-white/70">{totalCost}</span>
           </button>
         </div>
+
+        {/* Inpaint modal */}
+        {currentImageUrl && onInpaintGenerate && (
+          <ImageInpaintModal
+            open={inpaintOpen}
+            imageUrl={currentImageUrl}
+            onClose={() => { setInpaintOpen(false); setMode("edit"); }}
+            onGenerate={(payload: InpaintPayload) => {
+              if (!payload.maskDataUrl) {
+                toast.error("请先涂抹需要修改的区域");
+                return;
+              }
+              setInpaintOpen(false);
+              setMode("edit");
+              onInpaintGenerate(payload, task);
+            }}
+          />
+        )}
       </div>
     );
   }

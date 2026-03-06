@@ -5,6 +5,7 @@ import ImageHistoryRail from "./ImageHistoryRail";
 import ImageEditComposer from "./ImageEditComposer";
 import type { HistoryImageItem } from "./ImageHistoryRail";
 import type { ComposerPayload, ImageEditComposerHandle } from "./ImageEditComposer";
+import type { InpaintPayload } from "./ImageInpaintModal";
 import type { GenerateTask } from "@/types/task";
 import type { ModelConfig } from "@/config/modelConfig";
 
@@ -21,6 +22,8 @@ interface ImageDetailWorkspaceProps {
   models: ModelConfig[];
   /** Called when Generate is clicked */
   onGenerate: (payload: ComposerPayload) => void;
+  /** Called when inpaint Generate is clicked from detail; parent creates task & closes detail */
+  onInpaintGenerate?: (payload: InpaintPayload, task: GenerateTask) => void;
   /** Called to close this view */
   onClose: () => void;
 }
@@ -56,6 +59,7 @@ const ImageDetailWorkspace = ({
   tasks,
   models,
   onGenerate,
+  onInpaintGenerate,
   onClose,
 }: ImageDetailWorkspaceProps) => {
   const [selectedImageUrl, setSelectedImageUrl] = useState(initialImageUrl);
@@ -133,8 +137,12 @@ const ImageDetailWorkspace = ({
         ref={composerRef}
         key={`${selectedTask.id}-${selectedImageIndex}`}
         task={selectedTask}
+        currentImageUrl={selectedImageUrl}
         models={models}
         onGenerate={onGenerate}
+        onInpaintGenerate={onInpaintGenerate ? (payload, task) => {
+          onInpaintGenerate(payload, task);
+        } : undefined}
       />
     </div>
   );
