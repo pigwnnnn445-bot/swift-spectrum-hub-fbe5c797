@@ -51,6 +51,7 @@ function formatDate(ts: number): string {
 
 const ImageDetailWorkspace = ({
   initialImageUrl,
+  initialImageIndex,
   initialTask,
   tasks,
   models,
@@ -59,16 +60,19 @@ const ImageDetailWorkspace = ({
 }: ImageDetailWorkspaceProps) => {
   const [selectedImageUrl, setSelectedImageUrl] = useState(initialImageUrl);
   const [selectedTask, setSelectedTask] = useState(initialTask);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(initialImageIndex);
 
   // When initial props change (shouldn't normally), sync
   useEffect(() => {
     setSelectedImageUrl(initialImageUrl);
     setSelectedTask(initialTask);
-  }, [initialImageUrl, initialTask]);
+    setSelectedImageIndex(initialImageIndex);
+  }, [initialImageUrl, initialTask, initialImageIndex]);
 
   const handleHistorySelect = useCallback((item: HistoryImageItem) => {
     setSelectedImageUrl(item.imageUrl);
     setSelectedTask(item.task);
+    setSelectedImageIndex(item.imageIndex);
   }, []);
 
   const fileName = useMemo(() => {
