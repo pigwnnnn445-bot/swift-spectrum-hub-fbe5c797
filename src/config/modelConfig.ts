@@ -62,12 +62,14 @@ export interface ImageLikeOption {
   image_like_flg: number;
   /** 是否必填 */
   is_required?: number;
-  /** 参考类型标识：1=人物，3=风格，4=图像 */
+  /** 参考类型标识：1=人物，2=面部，3=风格，4=整图 */
   like_type: number;
   /** 是否支持多张上传 */
   more_image_flg: number;
   /** 是否仅支持单张上传 */
   one_image_flg: number;
+  /** 是否支持相似度调节：1=支持，0=不支持 */
+  similarity_flg?: number;
 }
 
 /** 模型完整配置 */
