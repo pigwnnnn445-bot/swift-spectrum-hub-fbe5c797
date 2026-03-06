@@ -393,7 +393,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={styleOpen}
                 onClick={() => { setStyleOpen(!styleOpen); setRatioOpen(false); setResolutionOpen(false); setCountOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="w-[260px] min-w-[260px]">
+              <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
                 <p className="text-sm text-muted-foreground mb-3">风格</p>
                 <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
                   {styleResources.map((res) => {
