@@ -8,7 +8,16 @@ import DetailUploadReferencePanel, {
   getSubmittableReference,
   type ReferenceByType,
 } from "./DetailUploadReferencePanel";
-import { getOrderedEnabledImageLikes } from "@/config/modelConfig";
+import {
+  getOrderedEnabledImageLikes,
+  getModelCapabilities,
+  getDefaultRatio,
+  getDefaultResolution,
+  getDefaultStyleId,
+  getStyleNameById,
+  getStyleResources,
+  DEFAULT_SIMILARITY,
+} from "@/config/modelConfig";
 import type { ModelConfig } from "@/config/modelConfig";
 import type { GenerateTask } from "@/types/task";
 import { cn } from "@/lib/utils";
