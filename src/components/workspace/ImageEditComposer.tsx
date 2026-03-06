@@ -26,7 +26,7 @@ export interface ComposerPayload {
   styleId: number | null;
   styleName: string;
   similarity: number;
-  referenceByType: ReturnType<typeof getSubmittableReference>;
+  referenceImages: string[];
 }
 
 export interface ImageEditComposerHandle {
