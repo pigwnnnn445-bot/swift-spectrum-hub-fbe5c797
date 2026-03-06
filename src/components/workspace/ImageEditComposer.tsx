@@ -306,7 +306,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
               />
               <EntryPopover open={ratioOpen} onClose={() => setRatioOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
                 <p className="text-sm text-muted-foreground mb-3">比例</p>
-                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
+                <div className="flex flex-col gap-0.5 overflow-y-auto overscroll-contain workspace-scroll" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
                   {selectedModel.ratio.map((opt) => {
                     const isSelected = ratio === opt;
                     return (
@@ -340,7 +340,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
               />
               <EntryPopover open={resolutionOpen} onClose={() => setResolutionOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
                 <p className="text-sm text-muted-foreground mb-3">分辨率</p>
-                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
+                <div className="flex flex-col gap-0.5 overflow-y-auto overscroll-contain workspace-scroll" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
                   {selectedModel.resolution.map((r) => {
                     const isSelected = resolution === r.resolution;
                     return (
@@ -374,7 +374,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
               />
               <EntryPopover open={countOpen} onClose={() => setCountOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
                 <p className="text-sm text-muted-foreground mb-3">生图数量</p>
-                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
+                <div className="flex flex-col gap-0.5 overflow-y-auto overscroll-contain workspace-scroll" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
                   {[1, 2, 3, 4].map((n) => {
                     const isSelected = imageCount === n;
                     return (
@@ -408,7 +408,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
               />
               <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
                 <p className="text-sm text-muted-foreground mb-3">风格</p>
-                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
+                <div className="flex flex-col gap-0.5 overflow-y-auto overscroll-contain workspace-scroll" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
                   {styleResources.map((res) => {
                     const isSelected = styleId === res.id;
                     return (
@@ -453,7 +453,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 onClick={() => { setUploadOpen(!uploadOpen); setRatioOpen(false); setResolutionOpen(false); setCountOpen(false); setStyleOpen(false); }}
               />
               <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
-                <div className="min-w-[280px] space-y-4">
+                <div className="min-w-[280px] space-y-4 overflow-y-auto overscroll-contain" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
                   <div className="space-y-2.5">
                     <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
                       上传参考图
