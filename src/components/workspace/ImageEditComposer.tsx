@@ -339,16 +339,44 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 onClick={() => { setUploadOpen(!uploadOpen); setRatioOpen(false); setResolutionOpen(false); setStyleOpen(false); }}
               />
               <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
-                <div className="min-w-[280px] space-y-2.5">
-                  <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
-                    上传参考图
-                  </h3>
-                  <UploadReferencePanel
-                    key={selectedModel.id}
-                    model={selectedModel}
-                    images={referenceImages}
-                    onImagesChange={setReferenceImages}
-                  />
+                <div className="min-w-[280px] space-y-4">
+                  <div className="space-y-2.5">
+                    <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
+                      上传参考图
+                    </h3>
+                    <UploadReferencePanel
+                      key={selectedModel.id}
+                      model={selectedModel}
+                      images={referenceImages}
+                      onImagesChange={setReferenceImages}
+                    />
+                  </div>
+
+                  {/* 相似度 */}
+                  {caps.showSimilarity && (
+                    <div className="space-y-2.5">
+                      <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50 text-center">
+                        相似度
+                      </h3>
+                      <div className="flex items-center justify-center gap-4">
+                        <button
+                          onClick={() => setSimilarity((prev) => Math.max(0, prev - 1))}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
+                        >
+                          <Minus className="h-4 w-4 text-workspace-panel-foreground" />
+                        </button>
+                        <span className="min-w-[2.5rem] text-center text-sm font-medium text-workspace-panel-foreground">
+                          {similarity}
+                        </span>
+                        <button
+                          onClick={() => setSimilarity((prev) => Math.min(100, prev + 1))}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
+                        >
+                          <Plus className="h-4 w-4 text-workspace-panel-foreground" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </EntryPopover>
             </div>
