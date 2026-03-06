@@ -325,7 +325,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={resolutionOpen}
                 onClick={() => { setResolutionOpen(!resolutionOpen); setRatioOpen(false); setCountOpen(false); setStyleOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={resolutionOpen} onClose={() => setResolutionOpen(false)} className="w-[260px] min-w-[260px]">
+              <EntryPopover open={resolutionOpen} onClose={() => setResolutionOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
                 <p className="text-sm text-muted-foreground mb-3">分辨率</p>
                 <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
                   {selectedModel.resolution.map((r) => {
