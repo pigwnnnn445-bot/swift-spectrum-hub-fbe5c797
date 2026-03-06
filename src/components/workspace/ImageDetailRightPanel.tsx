@@ -114,7 +114,7 @@ const ImageDetailRightPanel = ({ task, imageUrl, onApplyPrompt, onOpenInpaint, o
                         <AlertDialogCancel>取消</AlertDialogCancel>
                         <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">删除</AlertDialogAction>
                       </AlertDialogFooter>
-                    </AlertDialogPrimitiveContent>
+                    </AlertDialogPrimitive.Content>
                   </AlertDialogPortal>
                 </AlertDialog>
               </>
