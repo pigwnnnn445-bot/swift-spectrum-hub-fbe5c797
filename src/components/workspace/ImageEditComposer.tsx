@@ -321,6 +321,36 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             </div>
           )}
 
+          {/* Image Count entry */}
+          {caps.showImageCount && (
+            <div className="relative">
+              <EntryButton
+                icon={Hash}
+                label={`${imageCount}张`}
+                active={countOpen}
+                onClick={() => { setCountOpen(!countOpen); setRatioOpen(false); setResolutionOpen(false); setStyleOpen(false); setUploadOpen(false); }}
+              />
+              <EntryPopover open={countOpen} onClose={() => setCountOpen(false)}>
+                <div className="flex flex-wrap gap-1.5 p-1">
+                  {[1, 2, 3, 4].map((n) => (
+                    <button
+                      key={n}
+                      onClick={() => { setImageCount(n); setCountOpen(false); }}
+                      className={cn(
+                        "rounded-lg px-3 py-1.5 text-xs font-medium border transition-all cursor-pointer",
+                        imageCount === n
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-workspace-chip/50 text-workspace-panel-foreground/80 border-workspace-border hover:bg-workspace-chip"
+                      )}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </EntryPopover>
+            </div>
+          )}
+
           {/* Style entry */}
           {caps.showStyle && (
             <div className="relative">
@@ -328,7 +358,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 icon={Palette}
                 label={currentStyleName}
                 active={styleOpen}
-                onClick={() => { setStyleOpen(!styleOpen); setRatioOpen(false); setResolutionOpen(false); setUploadOpen(false); }}
+                onClick={() => { setStyleOpen(!styleOpen); setRatioOpen(false); setResolutionOpen(false); setCountOpen(false); setUploadOpen(false); }}
               />
               <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="rounded-2xl p-4 w-[260px] min-w-[260px] !max-h-none !overflow-visible">
                 <p className="text-sm text-muted-foreground mb-3">风格</p>
