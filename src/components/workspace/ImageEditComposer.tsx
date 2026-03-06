@@ -106,6 +106,7 @@ function EntryButton({
 const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerProps>(
   ({ task, models, onGenerate }, ref) => {
     const [editPrompt, setEditPrompt] = useState("");
+    const [mode, setMode] = useState<"edit" | "new">("edit");
     const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
