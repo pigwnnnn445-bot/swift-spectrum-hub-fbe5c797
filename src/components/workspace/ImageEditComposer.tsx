@@ -135,7 +135,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     // Initialize / reset on task change
     useEffect(() => {
       setEditPrompt("");
-      setReferenceByType({});
+      setReferenceImages([]);
       const m = models.find((m) => m.id === task.modelId) ?? models[0] ?? null;
       setSelectedModel(m);
       if (m) initParamsFromModel(m, task);
