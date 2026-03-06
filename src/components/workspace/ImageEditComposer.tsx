@@ -324,14 +324,21 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={styleOpen}
                 onClick={() => { setStyleOpen(!styleOpen); setRatioOpen(false); setResolutionOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="rounded-2xl p-4 w-[260px] min-w-[260px]">
-                <p className="text-sm text-muted-foreground mb-3">Style</p>
-                <div className="flex flex-col gap-0.5">
+              <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="rounded-2xl p-4 w-[260px] min-w-[260px] !max-h-none !overflow-visible">
+                <p className="text-sm text-muted-foreground mb-3">风格</p>
+                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
                   {styleResources.map((res) => {
                     const isSelected = styleId === res.id;
                     return (
                       <button
                         key={res.id}
+                        ref={(el) => {
+                          if (isSelected && el && styleOpen) {
+                            requestAnimationFrame(() => {
+                              el.scrollIntoView({ block: "center", behavior: "instant" });
+                            });
+                          }
+                        }}
                         onClick={() => { setStyleId(res.id); setStyleOpen(false); }}
                         className={cn(
                           "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left",
