@@ -137,8 +137,12 @@ const ImageDetailWorkspace = ({
         ref={composerRef}
         key={`${selectedTask.id}-${selectedImageIndex}`}
         task={selectedTask}
+        currentImageUrl={selectedImageUrl}
         models={models}
         onGenerate={onGenerate}
+        onInpaintGenerate={onInpaintGenerate ? (payload, task) => {
+          onInpaintGenerate(payload, task);
+        } : undefined}
       />
     </div>
   );
