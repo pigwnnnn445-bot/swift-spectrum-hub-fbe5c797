@@ -71,10 +71,6 @@ const ImageDetailWorkspace = ({
     composerRef.current?.applyPrompt(prompt);
   }, []);
 
-  const handleOpenInpaint = useCallback(() => {
-    composerRef.current?.openInpaint();
-  }, []);
-
   // When initial props change (shouldn't normally), sync
   useEffect(() => {
     setSelectedImageUrl(initialImageUrl);
