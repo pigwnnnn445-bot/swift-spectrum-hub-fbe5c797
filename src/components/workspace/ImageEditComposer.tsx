@@ -182,8 +182,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
         return;
       }
 
-      const allRes = selectedModel.style.flatMap((t) => t.resource);
-      const styleName = allRes.find((r) => r.id === styleId)?.resource_name ?? "";
+      const styleName = getStyleNameById(selectedModel, styleId);
       onGenerate({
         editPrompt: editPrompt.trim(),
         model: selectedModel,
@@ -198,14 +197,10 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
 
     if (!selectedModel) return null;
 
-    const showRatio = selectedModel.ratio_flg === 1 && selectedModel.ratio.length > 0;
-    const showResolution = selectedModel.resolution_flg === 1 && selectedModel.resolution.length > 0;
-    const showStyle = selectedModel.style_flg === 1 && selectedModel.style.length > 0;
-    const enabledLikes = getOrderedEnabledImageLikes(selectedModel);
-    const showUpload = enabledLikes.length > 0 || selectedModel.image_reference_flg === 1;
+    const caps = getModelCapabilities(selectedModel);
     const showModel = models.length > 1;
 
-    const styleResources = selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource ?? []) : [];
+    const styleResources = getStyleResources(selectedModel);
     const currentStyleName = styleResources.find((r) => r.id === styleId)?.resource_name ?? "自动";
     const totalUploaded = getTotalImageCount(referenceByType);
     const uploadLabel = totalUploaded > 0 ? `已上传(${totalUploaded})` : "上传图片";
