@@ -471,6 +471,8 @@ const ImageGenDarkPage = () => {
         )}
       </main>
 
+      <BackToTopButton scrollContainerRef={mainScrollRef} />
+
       <EditImageModal
         open={editModalOpen}
         imageUrl={editingImageUrl}
