@@ -34,6 +34,7 @@ export interface ComposerPayload {
 
 export interface ImageEditComposerHandle {
   applyPrompt: (text: string) => void;
+  openInpaint: () => void;
 }
 
 interface ImageEditComposerProps {
@@ -165,6 +166,9 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             el.setSelectionRange(text.length, text.length);
           }
         });
+      },
+      openInpaint() {
+        setInpaintOpen(true);
       },
     }));
 
