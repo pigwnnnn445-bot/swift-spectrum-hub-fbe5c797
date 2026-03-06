@@ -6,7 +6,15 @@ import OptionChipGroup from "./OptionChipGroup";
 import UploadReferencePanel from "./UploadReferencePanel";
 import StyleSelector from "./StyleSelector";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
-import { hasTypedUpload } from "@/config/modelConfig";
+import {
+  getModelCapabilities,
+  getDefaultRatio,
+  getDefaultResolution,
+  getDefaultStyleId,
+  getStyleNameById,
+  getStyleResources,
+  DEFAULT_SIMILARITY,
+} from "@/config/modelConfig";
 
 interface SettingsSidebarProps {
   open: boolean;
