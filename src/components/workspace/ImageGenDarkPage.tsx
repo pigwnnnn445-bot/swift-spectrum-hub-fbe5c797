@@ -337,11 +337,17 @@ const ImageGenDarkPage = () => {
           onBack={() => setViewMode("gen")}
           onImageClick={handleImageClick}
           onDeleteImage={(taskId, imageIndex) => {
-            setTasks((prev) => prev.map((t) => {
-              if (t.id !== taskId) return t;
-              const newImages = t.images.filter((_, i) => i !== imageIndex);
-              return { ...t, images: newImages };
-            }));
+            setTasks((prev) => prev
+              .map((t) => {
+                if (t.id !== taskId) return t;
+                const newImages = t.images.filter((_, i) => i !== imageIndex);
+                return { ...t, images: newImages };
+              })
+              .filter((t) => !(t.status === "success" && t.images.length === 0))
+            );
+          }}
+          onDeleteTask={(taskId) => {
+            setTasks((prev) => prev.filter((t) => t.id !== taskId));
           }}
         />
         {/* 大图详情视图（复用） */}
