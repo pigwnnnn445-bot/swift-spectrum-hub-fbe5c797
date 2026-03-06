@@ -164,7 +164,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
 
     const handleModelChange = (model: ModelConfig) => {
       setSelectedModel(model);
-      setReferenceByType({});
+      setReferenceImages([]);
       initParamsFromModel(model, task);
     };
 
