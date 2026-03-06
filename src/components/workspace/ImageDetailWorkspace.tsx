@@ -122,7 +122,26 @@ const ImageDetailWorkspace = ({
 
           {/* Right attributes panel */}
           <div className="w-[280px] shrink-0 border-l border-workspace-border p-4 overflow-y-auto workspace-scroll hidden lg:block">
-            <ImageDetailRightPanel task={selectedTask} onApplyPrompt={handleApplyPrompt} onOpenInpaint={onInpaintGenerate ? handleOpenInpaint : undefined} />
+            <ImageDetailRightPanel
+              task={selectedTask}
+              imageUrl={selectedImageUrl}
+              onApplyPrompt={handleApplyPrompt}
+              onOpenInpaint={onInpaintGenerate ? handleOpenInpaint : undefined}
+              onRegenerate={() => {
+                const model = models.find(m => m.id === selectedTask.modelId) || models[0];
+                onGenerate({
+                  editPrompt: selectedTask.prompt,
+                  model,
+                  ratio: selectedTask.ratio || "1:1",
+                  resolution: selectedTask.resolution || "",
+                  styleId: selectedTask.styleId ?? null,
+                  styleName: selectedTask.styleName || "",
+                  similarity: selectedTask.similarity ?? 50,
+                  referenceImages: selectedTask.referenceImages || [],
+                  imageCount: 1,
+                });
+              }}
+            />
           </div>
         </div>
 
