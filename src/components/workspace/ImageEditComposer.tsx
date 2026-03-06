@@ -256,7 +256,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           )}
 
           {/* Resolution entry */}
-          {showResolution && (
+          {caps.showResolution && (
             <div className="relative">
               <EntryButton
                 icon={ScanLine}
