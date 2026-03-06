@@ -514,7 +514,7 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClos
               ref={promptRef}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="描述您想要修改的内容。如果为空，则结果将基于原始图像自动编辑。"
+              placeholder="基于原始图像自动编辑"
               className="flex-1 rounded-lg border border-workspace-border/60 bg-workspace-panel px-3 py-2 text-sm text-workspace-surface-foreground placeholder:text-muted-foreground/60 resize-none focus:outline-none focus:ring-1 focus:ring-primary/40 workspace-scroll"
               style={{ minHeight: 40, maxHeight: 160 }}
               rows={1}
