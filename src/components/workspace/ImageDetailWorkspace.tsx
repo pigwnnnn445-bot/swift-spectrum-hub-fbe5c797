@@ -132,7 +132,7 @@ const ImageDetailWorkspace = ({
                 onGenerate({
                   editPrompt: selectedTask.prompt,
                   model,
-                  ratio: selectedTask.ratio || model.defaultRatio || "1:1",
+                  ratio: selectedTask.ratio || "1:1",
                   resolution: selectedTask.resolution || "",
                   styleId: selectedTask.styleId ?? null,
                   styleName: selectedTask.styleName || "",
