@@ -404,7 +404,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 icon={ImagePlus}
                 label={uploadLabel}
                 active={uploadOpen || totalUploaded > 0}
-                onClick={() => { setUploadOpen(!uploadOpen); setRatioOpen(false); setResolutionOpen(false); setStyleOpen(false); }}
+                onClick={() => { setUploadOpen(!uploadOpen); setRatioOpen(false); setResolutionOpen(false); setCountOpen(false); setStyleOpen(false); }}
               />
               <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
                 <div className="min-w-[280px] space-y-4">
