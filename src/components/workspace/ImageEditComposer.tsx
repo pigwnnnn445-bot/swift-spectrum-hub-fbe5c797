@@ -168,6 +168,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
       }
 
       setSimilarity(t.similarity ?? DEFAULT_SIMILARITY);
+      setImageCount(t.count >= 1 && t.count <= 4 ? t.count : 1);
     };
 
     const handleModelChange = (model: ModelConfig) => {
