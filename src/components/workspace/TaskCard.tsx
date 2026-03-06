@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { RotateCw, AlertCircle, ChevronDown, ChevronUp, Copy, ArrowUp, Image as ImageIcon, Palette, Download, Paintbrush, PenLine } from "lucide-react";
+import { RotateCw, AlertCircle, Copy, Download, Paintbrush, PenLine } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
+import TaskAttributePanel from "./TaskAttributePanel";
 import type { GenerateTask } from "@/types/task";
 
 interface TaskCardProps {
