@@ -419,7 +419,7 @@ const ImageGenDarkPage = () => {
         onReferenceImagesChange={setReferenceImages}
       />
 
-      <main className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>
+      <main ref={mainScrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>
         <div className="sticky top-0 z-50 flex items-center">
           <button
             onClick={() => setSidebarOpen(true)}
