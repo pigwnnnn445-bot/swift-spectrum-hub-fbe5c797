@@ -359,7 +359,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={countOpen}
                 onClick={() => { setCountOpen(!countOpen); setRatioOpen(false); setResolutionOpen(false); setStyleOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={countOpen} onClose={() => setCountOpen(false)} className="w-[260px] min-w-[260px]">
+              <EntryPopover open={countOpen} onClose={() => setCountOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
                 <p className="text-sm text-muted-foreground mb-3">生图数量</p>
                 <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
                   {[1, 2, 3, 4].map((n) => {
