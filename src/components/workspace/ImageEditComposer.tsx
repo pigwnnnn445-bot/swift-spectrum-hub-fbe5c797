@@ -8,7 +8,16 @@ import DetailUploadReferencePanel, {
   getSubmittableReference,
   type ReferenceByType,
 } from "./DetailUploadReferencePanel";
-import { getOrderedEnabledImageLikes } from "@/config/modelConfig";
+import {
+  getOrderedEnabledImageLikes,
+  getModelCapabilities,
+  getDefaultRatio,
+  getDefaultResolution,
+  getDefaultStyleId,
+  getStyleNameById,
+  getStyleResources,
+  DEFAULT_SIMILARITY,
+} from "@/config/modelConfig";
 import type { ModelConfig } from "@/config/modelConfig";
 import type { GenerateTask } from "@/types/task";
 import { cn } from "@/lib/utils";
@@ -137,21 +146,23 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     }, [task.id]);
 
     const initParamsFromModel = (model: ModelConfig, t: GenerateTask) => {
+      const defRatio = getDefaultRatio(model);
       const ratioOptions = model.ratio_flg === 1 ? model.ratio : [];
-      setRatio(ratioOptions.includes(t.ratio) ? t.ratio : ratioOptions[0] ?? "1:1");
+      setRatio(ratioOptions.includes(t.ratio) ? t.ratio : defRatio);
 
+      const defRes = getDefaultResolution(model);
       const resOptions = model.resolution_flg === 1 ? model.resolution.map((r) => r.resolution) : [];
-      setResolution(resOptions.includes(t.resolution) ? t.resolution : resOptions[0] ?? "");
+      setResolution(resOptions.includes(t.resolution) ? t.resolution : defRes);
 
       if (model.style_flg === 1 && model.style.length > 0) {
         const allRes = model.style.flatMap((tab) => tab.resource);
         const found = allRes.find((r) => r.id === t.styleId);
-        setStyleId(found ? t.styleId ?? null : allRes[0]?.id ?? null);
+        setStyleId(found ? t.styleId ?? null : getDefaultStyleId(model));
       } else {
         setStyleId(null);
       }
 
-      setSimilarity(t.similarity ?? 50);
+      setSimilarity(t.similarity ?? DEFAULT_SIMILARITY);
     };
 
     const handleModelChange = (model: ModelConfig) => {
@@ -171,8 +182,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
         return;
       }
 
-      const allRes = selectedModel.style.flatMap((t) => t.resource);
-      const styleName = allRes.find((r) => r.id === styleId)?.resource_name ?? "";
+      const styleName = getStyleNameById(selectedModel, styleId);
       onGenerate({
         editPrompt: editPrompt.trim(),
         model: selectedModel,
@@ -187,14 +197,10 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
 
     if (!selectedModel) return null;
 
-    const showRatio = selectedModel.ratio_flg === 1 && selectedModel.ratio.length > 0;
-    const showResolution = selectedModel.resolution_flg === 1 && selectedModel.resolution.length > 0;
-    const showStyle = selectedModel.style_flg === 1 && selectedModel.style.length > 0;
-    const enabledLikes = getOrderedEnabledImageLikes(selectedModel);
-    const showUpload = enabledLikes.length > 0 || selectedModel.image_reference_flg === 1;
+    const caps = getModelCapabilities(selectedModel);
     const showModel = models.length > 1;
 
-    const styleResources = selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource ?? []) : [];
+    const styleResources = getStyleResources(selectedModel);
     const currentStyleName = styleResources.find((r) => r.id === styleId)?.resource_name ?? "自动";
     const totalUploaded = getTotalImageCount(referenceByType);
     const uploadLabel = totalUploaded > 0 ? `已上传(${totalUploaded})` : "上传图片";
@@ -220,7 +226,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           )}
 
           {/* Ratio entry */}
-          {showRatio && (
+          {caps.showRatio && (
             <div className="relative">
               <EntryButton
                 icon={Proportions}
@@ -250,7 +256,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           )}
 
           {/* Resolution entry */}
-          {showResolution && (
+          {caps.showResolution && (
             <div className="relative">
               <EntryButton
                 icon={ScanLine}
@@ -280,7 +286,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           )}
 
           {/* Style entry */}
-          {showStyle && (
+          {caps.showStyle && (
             <div className="relative">
               <EntryButton
                 icon={Palette}
@@ -299,7 +305,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           )}
 
           {/* Upload entry */}
-          {showUpload && (
+          {caps.showUpload && (
             <div className="relative">
               <EntryButton
                 icon={ImagePlus}

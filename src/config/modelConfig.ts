@@ -193,3 +193,58 @@ export function getEnabledImageLikes(model: ModelConfig): ImageLikeOption[] {
 export function hasTypedUpload(model: ModelConfig): boolean {
   return getEnabledImageLikes(model).length > 0;
 }
+
+// ─── 共享能力判断 & 默认值函数 ───────────────────────────
+
+/** 模型能力开关集合 */
+export interface ModelCapabilities {
+  showRatio: boolean;
+  showResolution: boolean;
+  showStyle: boolean;
+  showUpload: boolean;
+  showImageCount: boolean;
+  showSimilarity: boolean;
+}
+
+/** 统一判断模型支持哪些配置区块 */
+export function getModelCapabilities(model: ModelConfig): ModelCapabilities {
+  const enabledLikes = getOrderedEnabledImageLikes(model);
+  return {
+    showRatio: model.ratio_flg === 1 && model.ratio.length > 0,
+    showResolution: model.resolution_flg === 1 && model.resolution.length > 0,
+    showStyle: model.style_flg === 1 && model.style.length > 0,
+    showUpload: enabledLikes.length > 0 || model.image_reference_flg === 1,
+    showImageCount: model.image_num > 0,
+    showSimilarity: hasTypedUpload(model),
+  };
+}
+
+/** 默认比例 */
+export function getDefaultRatio(model: ModelConfig): string {
+  return model.ratio_flg === 1 ? (model.ratio[0] ?? "") : "";
+}
+
+/** 默认分辨率 */
+export function getDefaultResolution(model: ModelConfig): string {
+  return model.resolution_flg === 1 ? (model.resolution[0]?.resolution ?? "") : "";
+}
+
+/** 默认风格 ID */
+export function getDefaultStyleId(model: ModelConfig): number | null {
+  return model.style_flg === 1 ? (model.style[0]?.resource[0]?.id ?? null) : null;
+}
+
+/** 根据 styleId 获取风格名称 */
+export function getStyleNameById(model: ModelConfig, styleId: number | null): string {
+  if (styleId == null) return "";
+  const allRes = model.style.flatMap((t) => t.resource);
+  return allRes.find((r) => r.id === styleId)?.resource_name ?? "";
+}
+
+/** 获取首个 tab 的风格资源列表 */
+export function getStyleResources(model: ModelConfig): StyleResource[] {
+  return model.style_flg === 1 ? (model.style[0]?.resource ?? []) : [];
+}
+
+/** 默认相似度 */
+export const DEFAULT_SIMILARITY = 50;
