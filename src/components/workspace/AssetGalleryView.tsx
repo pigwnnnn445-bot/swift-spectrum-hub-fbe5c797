@@ -100,21 +100,19 @@ const AssetCard = ({
 }) => {
   return (
     <div
-      className="group relative cursor-pointer overflow-hidden rounded-lg border border-border bg-workspace-panel transition-shadow hover:shadow-lg"
+      className="group relative mb-3 inline-block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-workspace-panel break-inside-avoid transition-shadow hover:shadow-lg"
       onClick={() => onClick(item.url, item.task, item.imageIndex)}
     >
-      <div className="aspect-square">
-        <img
-          src={item.url}
-          alt={item.task.prompt}
-          className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
-          loading="lazy"
-        />
-      </div>
+      <img
+        src={item.url}
+        alt={item.task.prompt}
+        className="w-full h-auto block transition-transform duration-200 group-hover:scale-105"
+        loading="lazy"
+      />
       {/* Hover overlay */}
-      <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+      <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none">
         <div className="w-full p-2.5">
-          <p className="line-clamp-3 text-xs leading-relaxed text-white/90">
+          <p className="line-clamp-4 text-xs leading-relaxed text-white/90">
             {item.task.prompt}
           </p>
           <div className="mt-1.5 flex items-center gap-2 text-[10px] text-white/60">
