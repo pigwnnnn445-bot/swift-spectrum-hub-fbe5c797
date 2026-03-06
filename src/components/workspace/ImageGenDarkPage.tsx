@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Menu } from "lucide-react";
 import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
+import MobileParamBar from "./MobileParamBar";
 import MasonryGallery from "./MasonryGallery";
 import StickyPromptBar from "./StickyPromptBar";
 import TopNavBar from "./TopNavBar";
@@ -444,6 +445,20 @@ const ImageGenDarkPage = () => {
           promptInputRef={promptInputRef}
         />
 
+        {/* 移动端参数选择栏（sm 以下显示） */}
+        <MobileParamBar
+          selectedModel={selectedModel}
+          models={models}
+          onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+          imageCount={imageCount}
+          onImageCountChange={setImageCount}
+          onRatioChange={setSidebarRatio}
+          onResolutionChange={setSidebarResolution}
+          onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
+          onSimilarityChange={setSidebarSimilarity}
+          referenceImages={referenceImages}
+          onReferenceImagesChange={setReferenceImages}
+        />
         {/* 吸顶输入条：进入创作模式后由 HeroPromptBar 吸顶，无需 StickyPromptBar */}
         {!hasEnteredCreationMode && (
           <div className="sticky top-[41px] z-40">
