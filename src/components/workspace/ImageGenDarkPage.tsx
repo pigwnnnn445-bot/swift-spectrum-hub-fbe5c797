@@ -9,6 +9,7 @@ import TaskList from "./TaskList";
 import EditImageModal from "./EditImageModal";
 import ImageInpaintModal from "./ImageInpaintModal";
 import ImageDetailWorkspace from "./ImageDetailWorkspace";
+import AssetGalleryView from "./AssetGalleryView";
 import type { InpaintPayload } from "./ImageInpaintModal";
 import type { ComposerPayload } from "./ImageEditComposer";
 import { fetchModelsData } from "@/api/modelService";
@@ -53,6 +54,8 @@ const ImageGenDarkPage = () => {
   const [detailImageUrl, setDetailImageUrl] = useState("");
   const [detailTask, setDetailTask] = useState<GenerateTask | null>(null);
   const [detailImageIndex, setDetailImageIndex] = useState(0);
+  // 视图模式：gen=生成页 | assets=资产管理
+  const [viewMode, setViewMode] = useState<"gen" | "assets">("gen");
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
@@ -325,6 +328,57 @@ const ImageGenDarkPage = () => {
 
   const totalCost = selectedModel.price + extraCost;
 
+  // 资产管理视图
+  if (viewMode === "assets") {
+    return (
+      <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
+        <AssetGalleryView
+          tasks={tasks}
+          onBack={() => setViewMode("gen")}
+          onImageClick={handleImageClick}
+        />
+        {/* 大图详情视图（复用） */}
+        {detailOpen && detailTask && (
+          <ImageDetailWorkspace
+            initialImageUrl={detailImageUrl}
+            initialImageIndex={detailImageIndex}
+            initialTask={detailTask}
+            tasks={tasks}
+            models={models}
+            onGenerate={handleDetailGenerate}
+            onInpaintGenerate={(payload: InpaintPayload, originTask: GenerateTask) => {
+              setDetailOpen(false);
+              setDetailTask(null);
+              setViewMode("gen");
+              const newTaskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+              const newTask: GenerateTask = {
+                id: newTaskId, prompt: payload.prompt, status: "submitting",
+                modelId: originTask.modelId, modelName: originTask.modelName, modelImage: originTask.modelImage,
+                ratio: originTask.ratio, resolution: originTask.resolution,
+                styleName: originTask.styleName, styleId: originTask.styleId,
+                generationMode: "image-to-image", similarity: originTask.similarity,
+                count: 1, images: [],
+                referenceImages: originTask.referenceImages ? [...originTask.referenceImages] : undefined,
+                baseImage: payload.baseImageUrl, maskData: payload.maskDataUrl,
+                createdAt: Date.now(),
+                requestPayload: { ...originTask.requestPayload, prompt: payload.prompt, count: 1, generation_mode: "image-to-image", base_image: payload.baseImageUrl, mask_data: payload.maskDataUrl },
+              };
+              setHasEnteredCreationMode(true);
+              setTasks((prev) => [newTask, ...prev]);
+              setTasks((prev) => prev.map((t) => (t.id === newTaskId ? { ...t, status: "generating" as const } : t)));
+              mockGenerate(1).then((result) => {
+                setTasks((prev) => prev.map((t) => { if (t.id !== newTaskId) return t; if (result.success) return { ...t, status: "success" as const, images: result.images ?? [] }; return { ...t, status: "error" as const, errorMessage: result.errorMessage }; }));
+              }).catch(() => {
+                setTasks((prev) => prev.map((t) => t.id === newTaskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t));
+              });
+            }}
+            onClose={() => { setDetailOpen(false); setDetailTask(null); }}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-workspace-panel">
       <SettingsSidebar
@@ -354,7 +408,7 @@ const ImageGenDarkPage = () => {
             <Menu className="h-4 w-4 text-foreground" />
           </button>
           <div className="flex-1 min-w-0">
-            <TopNavBar />
+            <TopNavBar onOpenAssets={() => setViewMode("assets")} />
           </div>
         </div>
 
