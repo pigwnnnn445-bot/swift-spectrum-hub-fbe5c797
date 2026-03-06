@@ -63,12 +63,33 @@ function EntryPopover({
     return () => document.removeEventListener("mousedown", handler);
   }, [open, onClose]);
 
+  // Clamp to viewport on open & resize
+  useEffect(() => {
+    if (!open || !ref.current) return;
+    const clamp = () => {
+      const el = ref.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.right > window.innerWidth) {
+        el.style.left = "auto";
+        el.style.right = "0";
+      }
+      if (rect.left < 0) {
+        el.style.left = "0";
+        el.style.right = "auto";
+      }
+    };
+    requestAnimationFrame(clamp);
+    window.addEventListener("resize", clamp);
+    return () => window.removeEventListener("resize", clamp);
+  }, [open]);
+
   if (!open) return null;
   return (
     <div
       ref={ref}
       className={cn(
-        "absolute left-0 bottom-full mb-2 z-50 min-w-[200px] max-w-[340px] rounded-xl border border-workspace-border bg-workspace-panel shadow-lg p-3 workspace-scroll max-h-[420px] overflow-y-auto",
+        "absolute left-0 bottom-full mb-2 z-50 rounded-2xl border border-workspace-border bg-workspace-panel shadow-lg p-4 max-w-[calc(100vw-2rem)]",
         extraClassName
       )}
     >
