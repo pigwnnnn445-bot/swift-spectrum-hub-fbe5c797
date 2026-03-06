@@ -174,7 +174,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
       // Required check
       const enabledLikes = getOrderedEnabledImageLikes(selectedModel);
       const isRequired = enabledLikes.some((item) => item.is_required === 1);
-      if (isRequired && getTotalImageCount(referenceByType) < 1) {
+      if (isRequired && referenceImages.length < 1) {
         toast.error("请先上传参考图");
         return;
       }
@@ -188,7 +188,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
         styleId,
         styleName,
         similarity,
-        referenceByType: getSubmittableReference(referenceByType),
+        referenceImages,
       });
     };
 
