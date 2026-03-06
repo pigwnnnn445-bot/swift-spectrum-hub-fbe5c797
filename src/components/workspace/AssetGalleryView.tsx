@@ -71,7 +71,7 @@ const AssetGalleryView = ({ tasks, onBack, onImageClick }: AssetGalleryViewProps
             <p className="text-sm">{assets.length === 0 ? "暂无生成图片" : "未找到匹配结果"}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 2xl:columns-6" style={{ columnGap: 12 }}>
             {filtered.map((item, i) => (
               <AssetCard key={`${item.task.id}-${item.imageIndex}-${i}`} item={item} onClick={onImageClick} />
             ))}
