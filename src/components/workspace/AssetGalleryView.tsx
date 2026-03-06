@@ -16,7 +16,7 @@ interface AssetGalleryViewProps {
   onDeleteImage?: (taskId: string, imageIndex: number) => void;
 }
 
-const AssetGalleryView = ({ tasks, onBack, onImageClick }: AssetGalleryViewProps) => {
+const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage }: AssetGalleryViewProps) => {
   const [search, setSearch] = useState("");
 
   const assets = useMemo<AssetImage[]>(() => {
