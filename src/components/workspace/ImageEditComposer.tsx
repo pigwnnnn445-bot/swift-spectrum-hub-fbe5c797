@@ -153,6 +153,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const [styleOpen, setStyleOpen] = useState(false);
     const [uploadOpen, setUploadOpen] = useState(false);
     const [countOpen, setCountOpen] = useState(false);
+    const [inpaintOpen, setInpaintOpen] = useState(false);
 
     useImperativeHandle(ref, () => ({
       applyPrompt(text: string) {
