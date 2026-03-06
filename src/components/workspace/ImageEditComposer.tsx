@@ -209,15 +209,40 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
 
     return (
       <div className="border-t border-workspace-border bg-workspace-panel px-4 py-3 space-y-3">
-        {/* Textarea */}
-        <textarea
-          ref={textareaRef}
-          value={editPrompt}
-          onChange={(e) => setEditPrompt(e.target.value)}
-          placeholder="输入您的提示词，比如，可爱的猫"
-          className="w-full resize-none rounded-lg border border-workspace-border bg-workspace-surface px-3 py-2 text-sm text-workspace-surface-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary min-h-[60px] max-h-[120px] prompt-textarea"
-          rows={2}
-        />
+        {/* Mode segmented tabs */}
+        <div className="flex items-center gap-1 rounded-lg bg-workspace-chip/30 p-0.5 w-fit">
+          {([["edit", "编辑"], ["new", "新作品"]] as const).map(([value, label]) => (
+            <button
+              key={value}
+              onClick={() => setMode(value)}
+              className={cn(
+                "rounded-md px-3.5 py-1.5 text-xs font-medium transition-all cursor-pointer",
+                mode === value
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-workspace-panel-foreground/70 hover:text-workspace-panel-foreground"
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Textarea with inline mode badge */}
+        <div className="relative w-full rounded-lg border border-workspace-border bg-workspace-surface focus-within:ring-1 focus-within:ring-primary">
+          <div className="flex items-start gap-2 px-3 pt-2">
+            <span className="shrink-0 inline-flex items-center rounded-md bg-primary/15 text-primary px-2 py-0.5 text-xs font-medium select-none mt-px">
+              {mode === "edit" ? "编辑" : "新作品"}
+            </span>
+          </div>
+          <textarea
+            ref={textareaRef}
+            value={editPrompt}
+            onChange={(e) => setEditPrompt(e.target.value)}
+            placeholder="输入您的提示词，比如，可爱的猫"
+            className="w-full resize-none bg-transparent px-3 pb-2 pt-1.5 text-sm text-workspace-surface-foreground placeholder:text-muted-foreground focus:outline-none min-h-[44px] max-h-[100px] prompt-textarea"
+            rows={2}
+          />
+        </div>
 
         {/* Controls row */}
         <div className="flex items-center gap-2 flex-wrap">
