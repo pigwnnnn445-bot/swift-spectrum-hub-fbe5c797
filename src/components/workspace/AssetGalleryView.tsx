@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Search, Copy, Download, Trash2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 import type { GenerateTask } from "@/types/task";
 
 interface AssetImage {
