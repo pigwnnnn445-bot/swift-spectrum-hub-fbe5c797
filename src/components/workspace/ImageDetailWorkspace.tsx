@@ -91,6 +91,55 @@ const ImageDetailWorkspace = ({
     setSelectedImageIndex(item.imageIndex);
   }, []);
 
+  // Build flat history list (same logic as ImageHistoryRail)
+  const allImages = useMemo<HistoryImageItem[]>(() => {
+    const items: HistoryImageItem[] = [];
+    for (const task of tasks) {
+      if (task.status === "success" && task.images.length > 0) {
+        task.images.forEach((url, idx) => {
+          items.push({ imageUrl: url, task, imageIndex: idx });
+        });
+      }
+    }
+    return items;
+  }, [tasks]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.repeat) return;
+
+      const isArrowPrev = e.key === "ArrowLeft" || e.key === "ArrowUp";
+      const isArrowNext = e.key === "ArrowRight" || e.key === "ArrowDown";
+      if (!isArrowPrev && !isArrowNext) return;
+
+      // Skip if focus is in an input element
+      const el = document.activeElement;
+      if (el) {
+        const tag = el.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+        if ((el as HTMLElement).contentEditable === "true") return;
+      }
+
+      // Skip if any Radix popover/dialog/select is open
+      if (document.querySelector("[data-state=\"open\"]")) return;
+
+      const currentIdx = allImages.findIndex(
+        (item) => item.imageUrl === selectedImageUrl && item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex
+      );
+      if (currentIdx === -1) return;
+
+      const nextIdx = isArrowNext ? currentIdx + 1 : currentIdx - 1;
+      if (nextIdx < 0 || nextIdx >= allImages.length) return;
+
+      e.preventDefault();
+      handleHistorySelect(allImages[nextIdx]);
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [allImages, selectedImageUrl, selectedTask.id, selectedImageIndex, handleHistorySelect]);
+
   const fileName = useMemo(() => {
     const date = formatDate(selectedTask.createdAt);
     const summary = summarizePrompt(selectedTask.prompt);
