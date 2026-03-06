@@ -114,7 +114,7 @@ const ImageDetailWorkspace = ({
 
           {/* Right attributes panel */}
           <div className="w-[280px] shrink-0 border-l border-workspace-border p-4 overflow-y-auto workspace-scroll hidden lg:block">
-            <ImageDetailRightPanel task={selectedTask} />
+            <ImageDetailRightPanel task={selectedTask} onApplyPrompt={handleApplyPrompt} />
           </div>
         </div>
 
