@@ -295,13 +295,13 @@ const ImageGenDarkPage = () => {
       styleId: payload.styleId,
       generationMode: "text-to-image",
       similarity: payload.similarity,
-      count: 1,
+      count: payload.imageCount ?? 1,
       images: [],
       createdAt: Date.now(),
       requestPayload: {
         model_id: payload.model.id,
         prompt: payload.editPrompt,
-        count: 1,
+        count: payload.imageCount ?? 1,
         ratio: payload.ratio,
         resolution: payload.resolution,
         style_id: payload.styleId,
@@ -310,7 +310,7 @@ const ImageGenDarkPage = () => {
     setHasEnteredCreationMode(true);
     setTasks((prev) => [newTask, ...prev]);
     setTasks((prev) => prev.map((t) => (t.id === newTaskId ? { ...t, status: "generating" as const } : t)));
-    mockGenerate(1).then((result) => {
+    mockGenerate(payload.imageCount ?? 1).then((result) => {
       setTasks((prev) => prev.map((t) => {
         if (t.id !== newTaskId) return t;
         if (result.success) return { ...t, status: "success" as const, images: result.images ?? [] };

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from "react";
-import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus, Minus, Plus, Zap } from "lucide-react";
+import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus, Minus, Plus, Zap, Hash } from "lucide-react";
 import { toast } from "sonner";
 import ModelSelector from "./ModelSelector";
 import StyleSelector from "./StyleSelector";
@@ -27,6 +27,7 @@ export interface ComposerPayload {
   styleName: string;
   similarity: number;
   referenceImages: string[];
+  imageCount: number;
 }
 
 export interface ImageEditComposerHandle {
@@ -117,12 +118,14 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const [styleId, setStyleId] = useState<number | null>(null);
     const [similarity, setSimilarity] = useState(50);
     const [referenceImages, setReferenceImages] = useState<string[]>([]);
+    const [imageCount, setImageCount] = useState(1);
 
     // Popover toggles
     const [ratioOpen, setRatioOpen] = useState(false);
     const [resolutionOpen, setResolutionOpen] = useState(false);
     const [styleOpen, setStyleOpen] = useState(false);
     const [uploadOpen, setUploadOpen] = useState(false);
+    const [countOpen, setCountOpen] = useState(false);
 
     useImperativeHandle(ref, () => ({
       applyPrompt(text: string) {
@@ -165,11 +168,13 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
       }
 
       setSimilarity(t.similarity ?? DEFAULT_SIMILARITY);
+      setImageCount(t.count >= 1 && t.count <= 4 ? t.count : 1);
     };
 
     const handleModelChange = (model: ModelConfig) => {
       setSelectedModel(model);
       setReferenceImages([]);
+      setImageCount(1);
       initParamsFromModel(model, task);
     };
 
@@ -194,6 +199,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
         styleName,
         similarity,
         referenceImages,
+        imageCount,
       });
     };
 
@@ -262,7 +268,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 icon={Proportions}
                 label={ratio}
                 active={ratioOpen}
-                onClick={() => { setRatioOpen(!ratioOpen); setResolutionOpen(false); setStyleOpen(false); setUploadOpen(false); }}
+                onClick={() => { setRatioOpen(!ratioOpen); setResolutionOpen(false); setCountOpen(false); setStyleOpen(false); setUploadOpen(false); }}
               />
               <EntryPopover open={ratioOpen} onClose={() => setRatioOpen(false)}>
                 <div className="flex flex-wrap gap-1.5 p-1">
@@ -292,7 +298,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 icon={ScanLine}
                 label={resolution}
                 active={resolutionOpen}
-                onClick={() => { setResolutionOpen(!resolutionOpen); setRatioOpen(false); setStyleOpen(false); setUploadOpen(false); }}
+                onClick={() => { setResolutionOpen(!resolutionOpen); setRatioOpen(false); setCountOpen(false); setStyleOpen(false); setUploadOpen(false); }}
               />
               <EntryPopover open={resolutionOpen} onClose={() => setResolutionOpen(false)}>
                 <div className="flex flex-wrap gap-1.5 p-1">
@@ -315,6 +321,36 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             </div>
           )}
 
+          {/* Image Count entry */}
+          {caps.showImageCount && (
+            <div className="relative">
+              <EntryButton
+                icon={Hash}
+                label={`${imageCount}张`}
+                active={countOpen}
+                onClick={() => { setCountOpen(!countOpen); setRatioOpen(false); setResolutionOpen(false); setStyleOpen(false); setUploadOpen(false); }}
+              />
+              <EntryPopover open={countOpen} onClose={() => setCountOpen(false)}>
+                <div className="flex flex-wrap gap-1.5 p-1">
+                  {[1, 2, 3, 4].map((n) => (
+                    <button
+                      key={n}
+                      onClick={() => { setImageCount(n); setCountOpen(false); }}
+                      className={cn(
+                        "rounded-lg px-3 py-1.5 text-xs font-medium border transition-all cursor-pointer",
+                        imageCount === n
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-workspace-chip/50 text-workspace-panel-foreground/80 border-workspace-border hover:bg-workspace-chip"
+                      )}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </EntryPopover>
+            </div>
+          )}
+
           {/* Style entry */}
           {caps.showStyle && (
             <div className="relative">
@@ -322,7 +358,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 icon={Palette}
                 label={currentStyleName}
                 active={styleOpen}
-                onClick={() => { setStyleOpen(!styleOpen); setRatioOpen(false); setResolutionOpen(false); setUploadOpen(false); }}
+                onClick={() => { setStyleOpen(!styleOpen); setRatioOpen(false); setResolutionOpen(false); setCountOpen(false); setUploadOpen(false); }}
               />
               <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="rounded-2xl p-4 w-[260px] min-w-[260px] !max-h-none !overflow-visible">
                 <p className="text-sm text-muted-foreground mb-3">风格</p>
@@ -368,7 +404,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 icon={ImagePlus}
                 label={uploadLabel}
                 active={uploadOpen || totalUploaded > 0}
-                onClick={() => { setUploadOpen(!uploadOpen); setRatioOpen(false); setResolutionOpen(false); setStyleOpen(false); }}
+                onClick={() => { setUploadOpen(!uploadOpen); setRatioOpen(false); setResolutionOpen(false); setCountOpen(false); setStyleOpen(false); }}
               />
               <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
                 <div className="min-w-[280px] space-y-4">
