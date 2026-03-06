@@ -207,9 +207,10 @@ export const mockModelsData: ModelsData = {
       ],
       style_price: 0,
       image_like: [
-        { image_like_flg: 0, like_type: 4, more_image_flg: 1, one_image_flg: 0 },
-        { image_like_flg: 1, like_type: 1, more_image_flg: 0, one_image_flg: 1 },
-        { image_like_flg: 1, like_type: 3, more_image_flg: 1, one_image_flg: 0 },
+        { image_like_flg: 1, like_type: 4, more_image_flg: 1, one_image_flg: 1, similarity_flg: 1, is_required: 1 },
+        { image_like_flg: 1, like_type: 1, more_image_flg: 0, one_image_flg: 1, similarity_flg: 0, is_required: 0 },
+        { image_like_flg: 1, like_type: 2, more_image_flg: 0, one_image_flg: 1, similarity_flg: 1, is_required: 0 },
+        { image_like_flg: 1, like_type: 3, more_image_flg: 1, one_image_flg: 0, similarity_flg: 1, is_required: 0 },
       ],
       image_like_flg: 0,
       image_num: 0,
