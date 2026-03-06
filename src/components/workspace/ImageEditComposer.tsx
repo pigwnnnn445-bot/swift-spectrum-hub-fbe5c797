@@ -306,7 +306,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
               />
               <EntryPopover open={ratioOpen} onClose={() => setRatioOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
                 <p className="text-sm text-muted-foreground mb-3">比例</p>
-                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
+                <div className="flex flex-col gap-0.5 overflow-y-auto overscroll-contain workspace-scroll" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
                   {selectedModel.ratio.map((opt) => {
                     const isSelected = ratio === opt;
                     return (
