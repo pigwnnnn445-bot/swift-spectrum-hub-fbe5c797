@@ -49,9 +49,16 @@ function isRequired(enabledLikes: ImageLikeOption[]): boolean {
   return enabledLikes.some((item) => item.is_required === 1);
 }
 
-function defaultModeForType(item: ImageLikeOption): "single" | "multi" {
-  if (item.one_image_flg === 1) return "single";
-  return "multi";
+/** 生效参考场景：image_like_flg===1 且至少支持单图或多图之一 */
+function getEffectiveTypes(model: ModelConfig): ImageLikeOption[] {
+  return getOrderedEnabledImageLikes(model).filter(
+    (t) => t.one_image_flg === 1 || t.more_image_flg === 1
+  );
+}
+
+/** more_image_flg=1 → multi；否则 single */
+function uploadModeForType(item: ImageLikeOption): "single" | "multi" {
+  return item.more_image_flg === 1 ? "multi" : "single";
 }
 
 function getOrCreateState(
@@ -63,7 +70,7 @@ function getOrCreateState(
     current[key] ?? {
       images: [],
       similarity: SIMILARITY_DEFAULT,
-      uploadMode: defaultModeForType(item),
+      uploadMode: uploadModeForType(item),
     }
   );
 }
