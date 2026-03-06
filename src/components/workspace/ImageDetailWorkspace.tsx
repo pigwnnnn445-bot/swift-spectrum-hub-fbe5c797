@@ -61,6 +61,11 @@ const ImageDetailWorkspace = ({
   const [selectedImageUrl, setSelectedImageUrl] = useState(initialImageUrl);
   const [selectedTask, setSelectedTask] = useState(initialTask);
   const [selectedImageIndex, setSelectedImageIndex] = useState(initialImageIndex);
+  const composerRef = useRef<ImageEditComposerHandle>(null);
+
+  const handleApplyPrompt = useCallback((prompt: string) => {
+    composerRef.current?.applyPrompt(prompt);
+  }, []);
 
   // When initial props change (shouldn't normally), sync
   useEffect(() => {
