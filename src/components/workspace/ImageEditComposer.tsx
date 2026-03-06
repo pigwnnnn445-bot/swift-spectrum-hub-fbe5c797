@@ -211,7 +211,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
       <div className="border-t border-workspace-border bg-workspace-panel px-4 py-3 space-y-3">
         {/* Mode segmented tabs */}
         <div className="flex items-center gap-1 rounded-lg bg-workspace-chip/30 p-0.5 w-fit">
-          {([["edit", "编辑"], ["new", "新作品"]] as const).map(([value, label]) => (
+          {([["edit", "编辑图像"], ["new", "新作品"]] as const).map(([value, label]) => (
             <button
               key={value}
               onClick={() => setMode(value)}
@@ -234,7 +234,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
         >
           <div className="flex items-start gap-2 px-3 pt-2 pb-0">
             <span className="shrink-0 inline-flex items-center rounded-md bg-primary/15 text-primary px-2 py-0.5 text-xs font-medium select-none mt-0.5">
-              {mode === "edit" ? "编辑" : "新作品"}
+              {mode === "edit" ? "编辑图像" : "新作品"}
             </span>
             <textarea
               ref={textareaRef}
