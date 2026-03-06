@@ -36,7 +36,7 @@ export const mockModelsData: ModelsData = {
       style_flg: 0,
       style: [],
       style_price: 0,
-      image_like: [{ image_like_flg: 0, is_required: 0, like_type: 4, more_image_flg: 1, one_image_flg: 0 }],
+      image_like: [{ image_like_flg: 0, is_required: 0, like_type: 4, more_image_flg: 1, one_image_flg: 0, similarity_flg: 0 }],
       image_like_flg: 0,
       image_num: 1,
       image_reference_flg: 1,
