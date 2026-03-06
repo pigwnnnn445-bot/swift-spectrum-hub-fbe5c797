@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import { ArrowLeft, Search, Copy, Download, Trash2, AlertTriangle } from "lucide-react";
+import BackToTopButton from "./BackToTopButton";
 import { toast } from "@/hooks/use-toast";
 import type { GenerateTask } from "@/types/task";
 
