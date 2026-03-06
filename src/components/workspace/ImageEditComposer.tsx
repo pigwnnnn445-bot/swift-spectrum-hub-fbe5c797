@@ -490,6 +490,16 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             </div>
           )}
 
+          {/* Inpaint button */}
+          {currentImageUrl && onInpaintGenerate && (
+            <EntryButton
+              icon={PaintBucket}
+              label="局部重绘"
+              active={inpaintOpen}
+              onClick={() => setInpaintOpen(true)}
+            />
+          )}
+
           {/* Spacer */}
           <div className="flex-1" />
 
@@ -504,6 +514,24 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             <span className="text-white/70">{totalCost}</span>
           </button>
         </div>
+
+        {/* Inpaint modal */}
+        {currentImageUrl && onInpaintGenerate && (
+          <ImageInpaintModal
+            open={inpaintOpen}
+            imageUrl={currentImageUrl}
+            onClose={() => { setInpaintOpen(false); setMode("edit"); }}
+            onGenerate={(payload: InpaintPayload) => {
+              if (!payload.maskDataUrl) {
+                toast.error("请先涂抹需要修改的区域");
+                return;
+              }
+              setInpaintOpen(false);
+              setMode("edit");
+              onInpaintGenerate(payload, task);
+            }}
+          />
+        )}
       </div>
     );
   }
