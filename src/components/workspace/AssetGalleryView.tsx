@@ -22,6 +22,7 @@ interface AssetGalleryViewProps {
 
 const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDeleteTask }: AssetGalleryViewProps) => {
   const [search, setSearch] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const assets = useMemo<AssetItem[]>(() => {
     const list: AssetItem[] = [];
