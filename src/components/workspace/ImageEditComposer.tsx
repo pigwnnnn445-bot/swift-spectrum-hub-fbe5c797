@@ -378,6 +378,32 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                       </div>
                     </div>
                   )}
+
+                  {/* 步数 */}
+                  {caps.showSimilarity && (
+                    <div className="space-y-2.5">
+                      <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50 text-center">
+                        步数
+                      </h3>
+                      <div className="flex items-center justify-center gap-4">
+                        <button
+                          onClick={() => setSteps((prev) => Math.max(1, prev - 1))}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
+                        >
+                          <Minus className="h-4 w-4 text-workspace-panel-foreground" />
+                        </button>
+                        <span className="min-w-[2.5rem] text-center text-sm font-medium text-workspace-panel-foreground">
+                          {steps}
+                        </span>
+                        <button
+                          onClick={() => setSteps((prev) => Math.min(100, prev + 1))}
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
+                        >
+                          <Plus className="h-4 w-4 text-workspace-panel-foreground" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </EntryPopover>
             </div>
