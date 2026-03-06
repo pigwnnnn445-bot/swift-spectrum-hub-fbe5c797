@@ -43,20 +43,16 @@ interface SettingsSidebarProps {
 }
 
 const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, providers, onExtraCostChange, imageCount, onImageCountChange, onRatioChange, onResolutionChange, onStyleChange, onSimilarityChange, referenceImages, onReferenceImagesChange }: SettingsSidebarProps) => {
-  const [ratio, setRatioLocal] = useState(selectedModel.ratio?.[0] ?? "");
-  const [selectedResolution, setSelectedResolutionLocal] = useState(selectedModel.resolution?.[0]?.resolution ?? "");
-  const [selectedStyleId, setSelectedStyleIdLocal] = useState<number | null>(
-    selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource[0]?.id ?? null) : null
-  );
-  const [similarity, setSimilarityLocal] = useState(50);
+  const [ratio, setRatioLocal] = useState(getDefaultRatio(selectedModel));
+  const [selectedResolution, setSelectedResolutionLocal] = useState(getDefaultResolution(selectedModel));
+  const [selectedStyleId, setSelectedStyleIdLocal] = useState<number | null>(getDefaultStyleId(selectedModel));
+  const [similarity, setSimilarityLocal] = useState(DEFAULT_SIMILARITY);
 
   const setRatio = (v: string) => { setRatioLocal(v); onRatioChange?.(v); };
   const setSelectedResolution = (v: string) => { setSelectedResolutionLocal(v); onResolutionChange?.(v); };
   const setSelectedStyleId = (id: number | null) => {
     setSelectedStyleIdLocal(id);
-    const allResources = selectedModel.style.flatMap(t => t.resource);
-    const found = allResources.find(r => r.id === id);
-    onStyleChange?.(id, found?.resource_name ?? "");
+    onStyleChange?.(id, getStyleNameById(selectedModel, id));
   };
   const setSimilarity = (v: number | ((prev: number) => number)) => {
     setSimilarityLocal((prev) => {
@@ -68,13 +64,13 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
 
   // 初始化时通知父组件
   useEffect(() => {
-    onRatioChange?.(selectedModel.ratio?.[0] ?? "");
-    onResolutionChange?.(selectedModel.resolution?.[0]?.resolution ?? "");
-    const initStyleId = selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource[0]?.id ?? null) : null;
-    const allRes = selectedModel.style.flatMap(t => t.resource);
-    const initStyle = allRes.find(r => r.id === initStyleId);
-    onStyleChange?.(initStyleId, initStyle?.resource_name ?? "");
-    onSimilarityChange?.(50);
+    const initRatio = getDefaultRatio(selectedModel);
+    const initRes = getDefaultResolution(selectedModel);
+    const initStyleId = getDefaultStyleId(selectedModel);
+    onRatioChange?.(initRatio);
+    onResolutionChange?.(initRes);
+    onStyleChange?.(initStyleId, getStyleNameById(selectedModel, initStyleId));
+    onSimilarityChange?.(DEFAULT_SIMILARITY);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -103,22 +99,21 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
 
   const handleModelChange = (model: ModelConfig) => {
     onModelChange(model);
-    const newRatio = model.ratio?.[0] ?? "";
-    const newRes = model.resolution?.[0]?.resolution ?? "";
-    const newStyleId = model.style_flg === 1 ? (model.style[0]?.resource[0]?.id ?? null) : null;
+    const newRatio = getDefaultRatio(model);
+    const newRes = getDefaultResolution(model);
+    const newStyleId = getDefaultStyleId(model);
     setRatioLocal(newRatio);
     setSelectedResolutionLocal(newRes);
     setSelectedStyleIdLocal(newStyleId);
-    setSimilarityLocal(50);
+    setSimilarityLocal(DEFAULT_SIMILARITY);
     onRatioChange?.(newRatio);
     onResolutionChange?.(newRes);
-    const allRes = model.style.flatMap(t => t.resource);
-    const found = allRes.find(r => r.id === newStyleId);
-    onStyleChange?.(newStyleId, found?.resource_name ?? "");
-    onSimilarityChange?.(50);
+    onStyleChange?.(newStyleId, getStyleNameById(model, newStyleId));
+    onSimilarityChange?.(DEFAULT_SIMILARITY);
   };
 
-  const styleResources = selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource ?? []) : [];
+  const caps = getModelCapabilities(selectedModel);
+  const styleResources = getStyleResources(selectedModel);
 
   return (
     <>
