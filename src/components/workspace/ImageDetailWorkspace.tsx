@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
 import ImageDetailRightPanel from "./ImageDetailRightPanel";
 import ImageHistoryRail from "./ImageHistoryRail";
 import ImageEditComposer from "./ImageEditComposer";
 import type { HistoryImageItem } from "./ImageHistoryRail";
-import type { ComposerPayload } from "./ImageEditComposer";
+import type { ComposerPayload, ImageEditComposerHandle } from "./ImageEditComposer";
 import type { GenerateTask } from "@/types/task";
 import type { ModelConfig } from "@/config/modelConfig";
 
@@ -61,6 +61,11 @@ const ImageDetailWorkspace = ({
   const [selectedImageUrl, setSelectedImageUrl] = useState(initialImageUrl);
   const [selectedTask, setSelectedTask] = useState(initialTask);
   const [selectedImageIndex, setSelectedImageIndex] = useState(initialImageIndex);
+  const composerRef = useRef<ImageEditComposerHandle>(null);
+
+  const handleApplyPrompt = useCallback((prompt: string) => {
+    composerRef.current?.applyPrompt(prompt);
+  }, []);
 
   // When initial props change (shouldn't normally), sync
   useEffect(() => {
@@ -109,7 +114,7 @@ const ImageDetailWorkspace = ({
 
           {/* Right attributes panel */}
           <div className="w-[280px] shrink-0 border-l border-workspace-border p-4 overflow-y-auto workspace-scroll hidden lg:block">
-            <ImageDetailRightPanel task={selectedTask} />
+            <ImageDetailRightPanel task={selectedTask} onApplyPrompt={handleApplyPrompt} />
           </div>
         </div>
 
@@ -125,6 +130,7 @@ const ImageDetailWorkspace = ({
 
       {/* Bottom composer */}
       <ImageEditComposer
+        ref={composerRef}
         key={`${selectedTask.id}-${selectedImageIndex}`}
         task={selectedTask}
         models={models}

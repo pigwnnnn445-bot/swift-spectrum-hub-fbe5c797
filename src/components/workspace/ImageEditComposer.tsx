@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useImperativeHandle, forwardRef } from "react";
 import { Coins } from "lucide-react";
 import ModelSelector from "./ModelSelector";
 import RatioSelector from "./RatioSelector";
@@ -18,15 +18,33 @@ export interface ComposerPayload {
   similarity: number;
 }
 
+export interface ImageEditComposerHandle {
+  applyPrompt: (text: string) => void;
+}
+
 interface ImageEditComposerProps {
   task: GenerateTask;
   models: ModelConfig[];
   onGenerate: (payload: ComposerPayload) => void;
 }
 
-const ImageEditComposer = ({ task, models, onGenerate }: ImageEditComposerProps) => {
+const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerProps>(({ task, models, onGenerate }, ref) => {
   const [editPrompt, setEditPrompt] = useState("");
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    applyPrompt(text: string) {
+      setEditPrompt(text);
+      requestAnimationFrame(() => {
+        const el = textareaRef.current;
+        if (el) {
+          el.focus();
+          el.setSelectionRange(text.length, text.length);
+        }
+      });
+    },
+  }));
   const [ratio, setRatio] = useState("");
   const [resolution, setResolution] = useState("");
   const [styleId, setStyleId] = useState<number | null>(null);
@@ -96,6 +114,7 @@ const ImageEditComposer = ({ task, models, onGenerate }: ImageEditComposerProps)
     <div className="border-t border-workspace-border bg-workspace-panel px-4 py-3 space-y-3">
       {/* Textarea */}
       <textarea
+        ref={textareaRef}
         value={editPrompt}
         onChange={(e) => setEditPrompt(e.target.value)}
         placeholder="描述您想要修复的内容。如果为空，则结果将基于原始图像自动编辑。"
@@ -166,6 +185,8 @@ const ImageEditComposer = ({ task, models, onGenerate }: ImageEditComposerProps)
       </div>
     </div>
   );
-};
+});
+
+ImageEditComposer.displayName = "ImageEditComposer";
 
 export default ImageEditComposer;
