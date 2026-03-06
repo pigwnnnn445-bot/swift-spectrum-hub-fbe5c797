@@ -109,6 +109,17 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const [styleOpen, setStyleOpen] = useState(false);
     const [uploadOpen, setUploadOpen] = useState(false);
 
+    // Refs for outside-click (each wraps trigger + popover)
+    const ratioRef = useRef<HTMLDivElement>(null);
+    const resolutionRef = useRef<HTMLDivElement>(null);
+    const styleRef = useRef<HTMLDivElement>(null);
+    const uploadRef = useRef<HTMLDivElement>(null);
+
+    useOutsideClose(ratioRef, ratioOpen, () => setRatioOpen(false));
+    useOutsideClose(resolutionRef, resolutionOpen, () => setResolutionOpen(false));
+    useOutsideClose(styleRef, styleOpen, () => setStyleOpen(false));
+    useOutsideClose(uploadRef, uploadOpen, () => setUploadOpen(false));
+
     useImperativeHandle(ref, () => ({
       applyPrompt(text: string) {
         setEditPrompt(text);
@@ -156,10 +167,16 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
       initParamsFromModel(model, task);
     };
 
+    const closeAllPopovers = () => {
+      setRatioOpen(false);
+      setResolutionOpen(false);
+      setStyleOpen(false);
+      setUploadOpen(false);
+    };
+
     const handleSubmit = () => {
       if (!selectedModel || !editPrompt.trim()) return;
 
-      // Required check
       const enabledLikes = getOrderedEnabledImageLikes(selectedModel);
       const isRequired = enabledLikes.some((item) => item.is_required === 1);
       if (isRequired && getTotalImageCount(referenceByType) < 1) {
@@ -210,21 +227,19 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
 
         {/* Controls row */}
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Model entry */}
           {showModel && (
             <ModelSelector models={models} selected={selectedModel} onSelect={handleModelChange} />
           )}
 
-          {/* Ratio entry */}
           {showRatio && (
-            <div className="relative">
+            <div className="relative" ref={ratioRef}>
               <EntryButton
                 icon={Proportions}
                 label={ratio}
                 active={ratioOpen}
-                onClick={() => { setRatioOpen(!ratioOpen); setResolutionOpen(false); setStyleOpen(false); setUploadOpen(false); }}
+                onClick={() => { const next = !ratioOpen; closeAllPopovers(); setRatioOpen(next); }}
               />
-              <EntryPopover open={ratioOpen} onClose={() => setRatioOpen(false)}>
+              <EntryPopover open={ratioOpen}>
                 <div className="flex flex-wrap gap-1.5 p-1">
                   {selectedModel.ratio.map((opt) => (
                     <button
@@ -245,16 +260,15 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             </div>
           )}
 
-          {/* Resolution entry */}
           {showResolution && (
-            <div className="relative">
+            <div className="relative" ref={resolutionRef}>
               <EntryButton
                 icon={ScanLine}
                 label={resolution}
                 active={resolutionOpen}
-                onClick={() => { setResolutionOpen(!resolutionOpen); setRatioOpen(false); setStyleOpen(false); setUploadOpen(false); }}
+                onClick={() => { const next = !resolutionOpen; closeAllPopovers(); setResolutionOpen(next); }}
               />
-              <EntryPopover open={resolutionOpen} onClose={() => setResolutionOpen(false)}>
+              <EntryPopover open={resolutionOpen}>
                 <div className="flex flex-wrap gap-1.5 p-1">
                   {selectedModel.resolution.map((r) => (
                     <button
@@ -275,16 +289,15 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             </div>
           )}
 
-          {/* Style entry */}
           {showStyle && (
-            <div className="relative">
+            <div className="relative" ref={styleRef}>
               <EntryButton
                 icon={Palette}
                 label={currentStyleName}
                 active={styleOpen}
-                onClick={() => { setStyleOpen(!styleOpen); setRatioOpen(false); setResolutionOpen(false); setUploadOpen(false); }}
+                onClick={() => { const next = !styleOpen; closeAllPopovers(); setStyleOpen(next); }}
               />
-              <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)}>
+              <EntryPopover open={styleOpen}>
                 <StyleSelector
                   resources={styleResources}
                   selectedId={styleId}
@@ -294,16 +307,15 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             </div>
           )}
 
-          {/* Upload entry */}
           {showUpload && (
-            <div className="relative">
+            <div className="relative" ref={uploadRef}>
               <EntryButton
                 icon={ImagePlus}
                 label={uploadLabel}
                 active={uploadOpen || totalUploaded > 0}
-                onClick={() => { setUploadOpen(!uploadOpen); setRatioOpen(false); setResolutionOpen(false); setStyleOpen(false); }}
+                onClick={() => { const next = !uploadOpen; closeAllPopovers(); setUploadOpen(next); }}
               />
-              <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
+              <EntryPopover open={uploadOpen}>
                 <div className="min-w-[280px]">
                   <DetailUploadReferencePanel
                     model={selectedModel}
@@ -315,10 +327,8 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             </div>
           )}
 
-          {/* Spacer */}
           <div className="flex-1" />
 
-          {/* Generate button */}
           <button
             onClick={handleSubmit}
             disabled={!editPrompt.trim()}
