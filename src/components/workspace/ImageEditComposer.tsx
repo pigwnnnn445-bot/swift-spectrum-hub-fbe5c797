@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useImperativeHandle, forwardRef } from "react";
 import { Coins } from "lucide-react";
 import ModelSelector from "./ModelSelector";
 import RatioSelector from "./RatioSelector";
