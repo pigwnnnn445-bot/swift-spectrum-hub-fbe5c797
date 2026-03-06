@@ -54,6 +54,8 @@ const ImageGenDarkPage = () => {
   const [detailImageUrl, setDetailImageUrl] = useState("");
   const [detailTask, setDetailTask] = useState<GenerateTask | null>(null);
   const [detailImageIndex, setDetailImageIndex] = useState(0);
+  // 视图模式：gen=生成页 | assets=资产管理
+  const [viewMode, setViewMode] = useState<"gen" | "assets">("gen");
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
