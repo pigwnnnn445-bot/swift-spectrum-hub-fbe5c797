@@ -182,12 +182,30 @@ const ImageDetailWorkspace = ({
         {/* Center: big image + right panel */}
         <div className="flex flex-1 min-w-0 overflow-hidden">
           {/* Big image */}
-          <div className="flex-1 flex items-center justify-center p-6 overflow-auto min-w-0">
+          <div className="relative flex-1 flex items-center justify-center p-6 overflow-auto min-w-0">
             <img
               src={selectedImageUrl}
               alt="大图预览"
               className="max-w-full max-h-full object-contain rounded-lg"
             />
+            {/* Prev arrow */}
+            <button
+              onClick={handlePrev}
+              disabled={!hasPrev}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60 active:scale-95 disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+              aria-label="上一张"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            {/* Next arrow */}
+            <button
+              onClick={handleNext}
+              disabled={!hasNext}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all hover:bg-black/60 active:scale-95 disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+              aria-label="下一张"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
           </div>
 
           {/* Right attributes panel */}
