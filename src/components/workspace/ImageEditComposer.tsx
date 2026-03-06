@@ -44,10 +44,12 @@ function EntryPopover({
   open,
   onClose,
   children,
+  className: extraClassName,
 }: {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -64,7 +66,10 @@ function EntryPopover({
   return (
     <div
       ref={ref}
-      className="absolute left-0 bottom-full mb-2 z-50 min-w-[200px] max-w-[340px] rounded-xl border border-workspace-border bg-workspace-panel shadow-lg p-3 workspace-scroll max-h-[420px] overflow-y-auto"
+      className={cn(
+        "absolute left-0 bottom-full mb-2 z-50 min-w-[200px] max-w-[340px] rounded-xl border border-workspace-border bg-workspace-panel shadow-lg p-3 workspace-scroll max-h-[420px] overflow-y-auto",
+        extraClassName
+      )}
     >
       {children}
     </div>
@@ -319,12 +324,32 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={styleOpen}
                 onClick={() => { setStyleOpen(!styleOpen); setRatioOpen(false); setResolutionOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)}>
-                <StyleSelector
-                  resources={styleResources}
-                  selectedId={styleId}
-                  onSelect={(id) => { setStyleId(id); setStyleOpen(false); }}
-                />
+              <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="rounded-2xl p-4 w-[260px] min-w-[260px]">
+                <p className="text-sm text-muted-foreground mb-3">Style</p>
+                <div className="flex flex-col gap-0.5">
+                  {styleResources.map((res) => {
+                    const isSelected = styleId === res.id;
+                    return (
+                      <button
+                        key={res.id}
+                        onClick={() => { setStyleId(res.id); setStyleOpen(false); }}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left",
+                          isSelected
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-workspace-chip/60 text-workspace-panel-foreground"
+                        )}
+                      >
+                        <img
+                          src={res.image}
+                          alt={res.resource_name}
+                          className="h-10 w-10 rounded-lg object-cover shrink-0"
+                        />
+                        <span className="text-sm font-medium truncate">{res.resource_name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </EntryPopover>
             </div>
           )}
