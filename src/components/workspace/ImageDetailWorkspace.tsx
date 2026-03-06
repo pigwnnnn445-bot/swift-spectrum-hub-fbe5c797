@@ -71,10 +71,6 @@ const ImageDetailWorkspace = ({
     composerRef.current?.applyPrompt(prompt);
   }, []);
 
-  const handleOpenInpaint = useCallback(() => {
-    composerRef.current?.openInpaint();
-  }, []);
-
   // When initial props change (shouldn't normally), sync
   useEffect(() => {
     setSelectedImageUrl(initialImageUrl);
@@ -122,7 +118,7 @@ const ImageDetailWorkspace = ({
 
           {/* Right attributes panel */}
           <div className="w-[280px] shrink-0 border-l border-workspace-border p-4 overflow-y-auto workspace-scroll hidden lg:block">
-            <ImageDetailRightPanel task={selectedTask} onApplyPrompt={handleApplyPrompt} onOpenInpaint={onInpaintGenerate ? handleOpenInpaint : undefined} />
+            <ImageDetailRightPanel task={selectedTask} onApplyPrompt={handleApplyPrompt} />
           </div>
         </div>
 
