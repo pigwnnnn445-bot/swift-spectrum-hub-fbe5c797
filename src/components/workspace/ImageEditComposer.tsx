@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from "react";
-import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus } from "lucide-react";
+import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus, Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import ModelSelector from "./ModelSelector";
 import StyleSelector from "./StyleSelector";
