@@ -125,7 +125,7 @@ const ImageDetailWorkspace = ({
 
       {/* Bottom composer */}
       <ImageEditComposer
-        key={selectedTask.id}
+        key={`${selectedTask.id}-${selectedImageIndex}`}
         task={selectedTask}
         models={models}
         onGenerate={onGenerate}
