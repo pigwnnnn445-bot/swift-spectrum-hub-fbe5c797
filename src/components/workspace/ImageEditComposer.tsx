@@ -341,7 +341,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                             : "hover:bg-workspace-chip/60 text-workspace-panel-foreground"
                         )}
                       >
-                        {r.resolution}
+                        <span className="truncate">{r.resolution}</span>
                       </button>
                     );
                   })}
