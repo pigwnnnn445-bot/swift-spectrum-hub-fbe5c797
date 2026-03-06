@@ -24,6 +24,8 @@ interface ImageDetailWorkspaceProps {
   onGenerate: (payload: ComposerPayload) => void;
   /** Called when inpaint Generate is clicked from detail; parent creates task & closes detail */
   onInpaintGenerate?: (payload: InpaintPayload, task: GenerateTask) => void;
+  /** Called to delete current image */
+  onDeleteImage?: (taskId: string, imageIndex: number) => void;
   /** Called to close this view */
   onClose: () => void;
 }
