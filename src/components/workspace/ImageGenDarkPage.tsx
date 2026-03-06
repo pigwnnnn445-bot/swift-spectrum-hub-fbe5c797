@@ -295,7 +295,7 @@ const ImageGenDarkPage = () => {
       styleId: payload.styleId,
       generationMode: "text-to-image",
       similarity: payload.similarity,
-      count: 1,
+      count: payload.imageCount ?? 1,
       images: [],
       createdAt: Date.now(),
       requestPayload: {
