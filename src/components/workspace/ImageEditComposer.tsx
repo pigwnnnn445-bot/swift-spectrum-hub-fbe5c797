@@ -199,6 +199,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
         styleName,
         similarity,
         referenceImages,
+        imageCount,
       });
     };
 
