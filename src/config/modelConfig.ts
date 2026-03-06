@@ -62,12 +62,14 @@ export interface ImageLikeOption {
   image_like_flg: number;
   /** 是否必填 */
   is_required?: number;
-  /** 参考类型标识：1=人物，3=风格，4=图像 */
+  /** 参考类型标识：1=人物，2=面部，3=风格，4=整图 */
   like_type: number;
   /** 是否支持多张上传 */
   more_image_flg: number;
   /** 是否仅支持单张上传 */
   one_image_flg: number;
+  /** 是否支持相似度调节：1=支持，0=不支持 */
+  similarity_flg?: number;
 }
 
 /** 模型完整配置 */
@@ -147,10 +149,36 @@ export interface ModelsData {
 // ─── 工具函数 ───────────────────────────
 
 const LIKE_TYPE_LABELS: Record<number, string> = {
-  1: "人物参考",
-  3: "风格参考",
-  4: "图像参考",
+  1: "人物",
+  2: "面部",
+  3: "风格",
+  4: "整图",
 };
+
+/** like_type → ReferenceTypeKey 映射 */
+export type ReferenceTypeKey = "whole" | "person" | "face" | "style";
+
+const LIKE_TYPE_TO_KEY: Record<number, ReferenceTypeKey> = {
+  4: "whole",
+  1: "person",
+  2: "face",
+  3: "style",
+};
+
+/** 固定排序：整图(4) → 人物(1) → 面部(2) → 风格(3) */
+export const LIKE_TYPE_DISPLAY_ORDER = [4, 1, 2, 3] as const;
+
+export function likeTypeToKey(likeType: number): ReferenceTypeKey | undefined {
+  return LIKE_TYPE_TO_KEY[likeType];
+}
+
+/** 按固定顺序返回启用的 image_like 列表 */
+export function getOrderedEnabledImageLikes(model: ModelConfig): ImageLikeOption[] {
+  const enabled = getEnabledImageLikes(model);
+  return LIKE_TYPE_DISPLAY_ORDER
+    .map((lt) => enabled.find((e) => e.like_type === lt))
+    .filter((x): x is ImageLikeOption => !!x);
+}
 
 export function getLikeTypeLabel(likeType: number): string {
   return LIKE_TYPE_LABELS[likeType] ?? "参考";
