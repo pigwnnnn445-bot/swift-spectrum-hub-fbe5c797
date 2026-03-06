@@ -10,6 +10,7 @@ import EditImageModal from "./EditImageModal";
 import ImageInpaintModal from "./ImageInpaintModal";
 import ImageDetailWorkspace from "./ImageDetailWorkspace";
 import AssetGalleryView from "./AssetGalleryView";
+import BackToTopButton from "./BackToTopButton";
 import type { InpaintPayload } from "./ImageInpaintModal";
 import type { ComposerPayload } from "./ImageEditComposer";
 import { fetchModelsData } from "@/api/modelService";
@@ -34,6 +35,7 @@ const ImageGenDarkPage = () => {
   const [isCooldown, setIsCooldown] = useState(false);
   const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const promptInputRef = useRef<HTMLTextAreaElement | null>(null);
+  const mainScrollRef = useRef<HTMLElement>(null);
   // 参考图状态（用于"应用为参考图"回填）
   const [referenceImages, setReferenceImages] = useState<string[]>([]);
   // Sidebar 参数追踪（用于构建任务快照）
@@ -418,7 +420,7 @@ const ImageGenDarkPage = () => {
         onReferenceImagesChange={setReferenceImages}
       />
 
-      <main className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>
+      <main ref={mainScrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>
         <div className="sticky top-0 z-50 flex items-center">
           <button
             onClick={() => setSidebarOpen(true)}
@@ -469,6 +471,8 @@ const ImageGenDarkPage = () => {
           </div>
         )}
       </main>
+
+      <BackToTopButton scrollContainerRef={mainScrollRef} />
 
       <EditImageModal
         open={editModalOpen}

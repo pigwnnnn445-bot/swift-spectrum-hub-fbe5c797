@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import { ArrowLeft, Search, Copy, Download, Trash2, AlertTriangle } from "lucide-react";
+import BackToTopButton from "./BackToTopButton";
 import { toast } from "@/hooks/use-toast";
 import type { GenerateTask } from "@/types/task";
 
@@ -21,6 +22,7 @@ interface AssetGalleryViewProps {
 
 const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDeleteTask }: AssetGalleryViewProps) => {
   const [search, setSearch] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const assets = useMemo<AssetItem[]>(() => {
     const list: AssetItem[] = [];
@@ -72,7 +74,7 @@ const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDelete
       </div>
 
       {/* Gallery */}
-      <div className="flex-1 overflow-y-auto workspace-scroll p-4 sm:p-6 lg:p-8">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto workspace-scroll p-4 sm:p-6 lg:p-8">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
             <FolderEmpty className="h-12 w-12 mb-3 opacity-40" />
@@ -92,6 +94,8 @@ const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDelete
           </div>
         )}
       </div>
+
+      <BackToTopButton scrollContainerRef={scrollRef} />
     </div>
   );
 };
