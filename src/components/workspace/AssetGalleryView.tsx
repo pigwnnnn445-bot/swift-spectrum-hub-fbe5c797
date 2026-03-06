@@ -74,7 +74,7 @@ const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDelete
       </div>
 
       {/* Gallery */}
-      <div className="flex-1 overflow-y-auto workspace-scroll p-4 sm:p-6 lg:p-8">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto workspace-scroll p-4 sm:p-6 lg:p-8">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
             <FolderEmpty className="h-12 w-12 mb-3 opacity-40" />
