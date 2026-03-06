@@ -223,7 +223,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
           )}
 
           {/* Similarity */}
-          {hasTypedUpload(selectedModel) && (
+          {caps.showSimilarity && (
             <Section title="相似度" centerTitle>
               <div className="flex items-center justify-center gap-4">
                 <button

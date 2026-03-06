@@ -305,7 +305,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           )}
 
           {/* Upload entry */}
-          {showUpload && (
+          {caps.showUpload && (
             <div className="relative">
               <EntryButton
                 icon={ImagePlus}
