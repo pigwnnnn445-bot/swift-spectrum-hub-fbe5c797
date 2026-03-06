@@ -38,8 +38,12 @@ export interface ImageEditComposerHandle {
 
 interface ImageEditComposerProps {
   task: GenerateTask;
+  /** Current detail image URL (for inpaint baseImage) */
+  currentImageUrl?: string;
   models: ModelConfig[];
   onGenerate: (payload: ComposerPayload) => void;
+  /** Called when inpaint modal sends; parent should create task & close detail */
+  onInpaintGenerate?: (payload: InpaintPayload, task: GenerateTask) => void;
 }
 
 /* ── tiny popover wrapper ─────────────────────── */
