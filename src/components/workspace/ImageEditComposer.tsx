@@ -34,18 +34,24 @@ interface ImageEditComposerProps {
   onGenerate: (payload: ComposerPayload) => void;
 }
 
-/* ── tiny popover wrapper ─────────────────────── */
+/* ── popover wrapper (uses parent ref for outside-click) ── */
 function EntryPopover({
   open,
-  onClose,
   children,
 }: {
   open: boolean;
-  onClose: () => void;
   children: React.ReactNode;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  if (!open) return null;
+  return (
+    <div className="absolute left-0 bottom-full mb-2 z-50 min-w-[200px] max-w-[340px] rounded-xl border border-workspace-border bg-workspace-panel shadow-lg p-3 workspace-scroll max-h-[420px] overflow-y-auto">
+      {children}
+    </div>
+  );
+}
 
+/** Hook: close popover on outside click (ref must wrap both trigger + popover) */
+function useOutsideClose(ref: React.RefObject<HTMLDivElement | null>, open: boolean, onClose: () => void) {
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
@@ -53,17 +59,7 @@ function EntryPopover({
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [open, onClose]);
-
-  if (!open) return null;
-  return (
-    <div
-      ref={ref}
-      className="absolute left-0 bottom-full mb-2 z-50 min-w-[200px] max-w-[340px] rounded-xl border border-workspace-border bg-workspace-panel shadow-lg p-3 workspace-scroll max-h-[420px] overflow-y-auto"
-    >
-      {children}
-    </div>
-  );
+  }, [ref, open, onClose]);
 }
 
 /* ── icon entry button ────────────────────────── */
