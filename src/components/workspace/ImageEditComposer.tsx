@@ -3,11 +3,7 @@ import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus } from "luci
 import { toast } from "sonner";
 import ModelSelector from "./ModelSelector";
 import StyleSelector from "./StyleSelector";
-import DetailUploadReferencePanel, {
-  getTotalImageCount,
-  getSubmittableReference,
-  type ReferenceByType,
-} from "./DetailUploadReferencePanel";
+import UploadReferencePanel from "./UploadReferencePanel";
 import {
   getOrderedEnabledImageLikes,
   getModelCapabilities,
