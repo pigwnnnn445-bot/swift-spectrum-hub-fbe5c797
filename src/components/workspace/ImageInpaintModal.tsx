@@ -21,6 +21,8 @@ interface Props {
   imageUrl: string;
   /** 本次局部重绘消耗的积分价格 */
   price?: number;
+  /** Override z-index for overlay & content (default z-50) */
+  overlayClassName?: string;
   onClose: () => void;
   onGenerate: (payload: InpaintPayload) => void;
 }
