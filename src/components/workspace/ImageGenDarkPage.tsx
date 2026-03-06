@@ -35,6 +35,7 @@ const ImageGenDarkPage = () => {
   const [isCooldown, setIsCooldown] = useState(false);
   const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const promptInputRef = useRef<HTMLTextAreaElement | null>(null);
+  const mainScrollRef = useRef<HTMLElement>(null);
   // 参考图状态（用于"应用为参考图"回填）
   const [referenceImages, setReferenceImages] = useState<string[]>([]);
   // Sidebar 参数追踪（用于构建任务快照）

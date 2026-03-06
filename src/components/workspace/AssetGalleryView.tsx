@@ -94,6 +94,8 @@ const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDelete
           </div>
         )}
       </div>
+
+      <BackToTopButton scrollContainerRef={scrollRef} />
     </div>
   );
 };
