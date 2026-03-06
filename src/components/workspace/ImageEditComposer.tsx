@@ -118,6 +118,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const [styleId, setStyleId] = useState<number | null>(null);
     const [similarity, setSimilarity] = useState(50);
     const [referenceImages, setReferenceImages] = useState<string[]>([]);
+    const [imageCount, setImageCount] = useState(1);
 
     // Popover toggles
     const [ratioOpen, setRatioOpen] = useState(false);
