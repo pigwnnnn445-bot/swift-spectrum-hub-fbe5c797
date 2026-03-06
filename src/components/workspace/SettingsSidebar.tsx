@@ -166,7 +166,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
           </Section>
 
           {/* Ratio */}
-          {selectedModel.ratio_flg === 1 && selectedModel.ratio.length > 0 && (
+          {caps.showRatio && (
             <Section title="比例">
               <OptionChipGroup
                 options={selectedModel.ratio}
@@ -178,7 +178,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
           )}
 
           {/* Resolution */}
-          {selectedModel.resolution_flg === 1 && selectedModel.resolution.length > 0 && (
+          {caps.showResolution && (
             <Section title="分辨率">
               <OptionChipGroup
                 options={selectedModel.resolution.map((r) => r.resolution)}
@@ -189,7 +189,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
           )}
 
           {/* Image Count */}
-          {selectedModel.image_num > 0 && (
+          {caps.showImageCount && (
             <Section title="生成图片数量">
               <OptionChipGroup
                 options={["1", "2", "3", "4"]}
@@ -200,7 +200,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
           )}
 
           {/* Style */}
-          {selectedModel.style_flg === 1 && styleResources.length > 0 && (
+          {caps.showStyle && styleResources.length > 0 && (
             <Section title="风格">
               <StyleSelector
                 resources={styleResources}
@@ -211,7 +211,7 @@ const SettingsSidebar = ({ open, onClose, selectedModel, onModelChange, models, 
           )}
 
           {/* Upload Reference */}
-          {selectedModel.image_reference_flg === 1 && (
+          {caps.showUpload && (
             <Section title="上传参考图">
               <UploadReferencePanel
                 key={selectedModel.id}
