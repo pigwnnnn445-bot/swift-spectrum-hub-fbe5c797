@@ -359,22 +359,26 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={countOpen}
                 onClick={() => { setCountOpen(!countOpen); setRatioOpen(false); setResolutionOpen(false); setStyleOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={countOpen} onClose={() => setCountOpen(false)}>
-                <div className="flex flex-wrap gap-1.5 p-1">
-                  {[1, 2, 3, 4].map((n) => (
-                    <button
-                      key={n}
-                      onClick={() => { setImageCount(n); setCountOpen(false); }}
-                      className={cn(
-                        "rounded-lg px-3 py-1.5 text-xs font-medium border transition-all cursor-pointer",
-                        imageCount === n
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-workspace-chip/50 text-workspace-panel-foreground/80 border-workspace-border hover:bg-workspace-chip"
-                      )}
-                    >
-                      {n}
-                    </button>
-                  ))}
+              <EntryPopover open={countOpen} onClose={() => setCountOpen(false)} className="w-[260px] min-w-[260px]">
+                <p className="text-sm text-muted-foreground mb-3">生图数量</p>
+                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
+                  {[1, 2, 3, 4].map((n) => {
+                    const isSelected = imageCount === n;
+                    return (
+                      <button
+                        key={n}
+                        onClick={() => { setImageCount(n); setCountOpen(false); }}
+                        className={cn(
+                          "flex items-center px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left text-sm font-medium",
+                          isSelected
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-workspace-chip/60 text-workspace-panel-foreground"
+                        )}
+                      >
+                        {n} 张
+                      </button>
+                    );
+                  })}
                 </div>
               </EntryPopover>
             </div>
