@@ -52,6 +52,7 @@ const ImageGenDarkPage = () => {
   const [detailOpen, setDetailOpen] = useState(false);
   const [detailImageUrl, setDetailImageUrl] = useState("");
   const [detailTask, setDetailTask] = useState<GenerateTask | null>(null);
+  const [detailImageIndex, setDetailImageIndex] = useState(0);
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
