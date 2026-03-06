@@ -191,7 +191,6 @@ const DetailUploadReferencePanel = ({
 /* ── per-type section ────────────────────────── */
 function TypeUploadSection({
   item,
-  typeKey,
   state,
   onUpdate,
 }: {
@@ -200,53 +199,12 @@ function TypeUploadSection({
   state: TypeRefState;
   onUpdate: (updater: (prev: TypeRefState) => TypeRefState) => void;
 }) {
-  const bothModes = item.one_image_flg === 1 && item.more_image_flg === 1;
-  const isSingle = state.uploadMode === "single";
-  const maxImages = isSingle ? 1 : MAX_MULTI_IMAGES;
-
-  const handleModeSwitch = (mode: "single" | "multi") => {
-    if (mode === state.uploadMode) return;
-    onUpdate((prev) => {
-      if (mode === "single" && prev.images.length > 1) {
-        // Revoke extra images
-        prev.images.slice(1).forEach((url) => URL.revokeObjectURL(url));
-        toast.info("已保留第一张参考图");
-        return { ...prev, uploadMode: mode, images: [prev.images[0]] };
-      }
-      return { ...prev, uploadMode: mode };
-    });
-  };
+  // more_image_flg=1 → multi (no toggle); otherwise single
+  const isMulti = item.more_image_flg === 1;
+  const maxImages = isMulti ? MAX_MULTI_IMAGES : 1;
 
   return (
     <div className="space-y-3">
-      {/* Single/Multi toggle */}
-      {bothModes && (
-        <div className="flex gap-1 rounded-lg bg-workspace-chip/30 p-0.5">
-          <button
-            onClick={() => handleModeSwitch("single")}
-            className={cn(
-              "flex-1 rounded-md px-3 py-1 text-xs font-medium transition-all cursor-pointer",
-              isSingle
-                ? "bg-primary text-primary-foreground"
-                : "text-workspace-panel-foreground/60 hover:text-workspace-panel-foreground/80"
-            )}
-          >
-            单张
-          </button>
-          <button
-            onClick={() => handleModeSwitch("multi")}
-            className={cn(
-              "flex-1 rounded-md px-3 py-1 text-xs font-medium transition-all cursor-pointer",
-              !isSingle
-                ? "bg-primary text-primary-foreground"
-                : "text-workspace-panel-foreground/60 hover:text-workspace-panel-foreground/80"
-            )}
-          >
-            多张
-          </button>
-        </div>
-      )}
-
       {/* Upload zone */}
       <UploadZone
         images={state.images}
@@ -254,7 +212,7 @@ function TypeUploadSection({
         onImagesChange={(images) => onUpdate((prev) => ({ ...prev, images }))}
       />
 
-      {/* Similarity */}
+      {/* Similarity: only when similarity_flg === 1 */}
       {item.similarity_flg === 1 && (
         <SimilarityControl
           value={state.similarity}
