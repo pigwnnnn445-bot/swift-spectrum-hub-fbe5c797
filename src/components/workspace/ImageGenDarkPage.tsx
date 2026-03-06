@@ -456,8 +456,9 @@ const ImageGenDarkPage = () => {
       {/* 大图详情视图 */}
       {detailOpen && detailTask && (
         <ImageDetailWorkspace
-          initialImageUrl={detailImageUrl}
-          initialTask={detailTask}
+           initialImageUrl={detailImageUrl}
+           initialImageIndex={detailImageIndex}
+           initialTask={detailTask}
           tasks={tasks}
           models={models}
           onGenerate={handleDetailGenerate}
