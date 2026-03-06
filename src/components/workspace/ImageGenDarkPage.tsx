@@ -434,31 +434,47 @@ const ImageGenDarkPage = () => {
           </div>
         </div>
 
-        <HeroPromptBar
-          prompt={prompt}
-          onPromptChange={setPrompt}
-          cost={totalCost}
-          isGenerating={isGenerating}
-          isSubmitDisabled={isSubmitting || isCooldown}
-          onSubmit={handleSubmit}
-          hasActiveTask={hasEnteredCreationMode}
-          promptInputRef={promptInputRef}
-        />
+        {/* ── 移动端：输入框 + 参数栏整体卡片 ── */}
+        <div className="sm:hidden mx-4 mb-2 rounded-2xl border border-workspace-border bg-workspace-surface overflow-visible">
+          <HeroPromptBar
+            prompt={prompt}
+            onPromptChange={setPrompt}
+            cost={totalCost}
+            isGenerating={isGenerating}
+            isSubmitDisabled={isSubmitting || isCooldown}
+            onSubmit={handleSubmit}
+            hasActiveTask={hasEnteredCreationMode}
+            promptInputRef={promptInputRef}
+          />
+          <MobileParamBar
+            selectedModel={selectedModel}
+            models={models}
+            onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+            imageCount={imageCount}
+            onImageCountChange={setImageCount}
+            onRatioChange={setSidebarRatio}
+            onResolutionChange={setSidebarResolution}
+            onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
+            onSimilarityChange={setSidebarSimilarity}
+            referenceImages={referenceImages}
+            onReferenceImagesChange={setReferenceImages}
+          />
+        </div>
 
-        {/* 移动端参数选择栏（sm 以下显示） */}
-        <MobileParamBar
-          selectedModel={selectedModel}
-          models={models}
-          onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
-          imageCount={imageCount}
-          onImageCountChange={setImageCount}
-          onRatioChange={setSidebarRatio}
-          onResolutionChange={setSidebarResolution}
-          onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-          onSimilarityChange={setSidebarSimilarity}
-          referenceImages={referenceImages}
-          onReferenceImagesChange={setReferenceImages}
-        />
+        {/* ── PC 端：原 HeroPromptBar 保持不变 ── */}
+        <div className="hidden sm:block">
+          <HeroPromptBar
+            prompt={prompt}
+            onPromptChange={setPrompt}
+            cost={totalCost}
+            isGenerating={isGenerating}
+            isSubmitDisabled={isSubmitting || isCooldown}
+            onSubmit={handleSubmit}
+            hasActiveTask={hasEnteredCreationMode}
+            promptInputRef={promptInputRef}
+          />
+        </div>
+
         {/* 吸顶输入条：进入创作模式后由 HeroPromptBar 吸顶，无需 StickyPromptBar */}
         {!hasEnteredCreationMode && (
           <div className="sticky top-[41px] z-40">
@@ -476,9 +492,9 @@ const ImageGenDarkPage = () => {
         {/* 任务列表 */}
         <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }} onInpaint={(url) => { setInpaintImageUrl(url); setInpaintModalOpen(true); }} onImageClick={handleImageClick} />
 
-        {/* 灵感画廊：进入创作模式后隐藏 */}
+        {/* 灵感画廊：进入创作模式后隐藏，独立区块 */}
         {!hasEnteredCreationMode && (
-          <div className="px-4 pb-8 sm:px-6 lg:px-8">
+          <div className="mt-8 px-4 pb-8 sm:px-6 lg:px-8">
             <h2 className="mb-5 mt-2 text-lg font-semibold text-workspace-panel-foreground">
               🎨 灵感显影室
             </h2>
