@@ -633,6 +633,12 @@ const ImageGenDarkPage = () => {
               setTasks((prev) => prev.map((t) => t.id === newTaskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t));
             });
           }}
+          onDeleteImage={(taskId, imageIndex) => {
+            setTasks((prev) => prev.map((t) => {
+              if (t.id !== taskId) return t;
+              return { ...t, images: t.images.filter((_, i) => i !== imageIndex) };
+            }));
+          }}
           onClose={() => { setDetailOpen(false); setDetailTask(null); }}
         />
       )}
