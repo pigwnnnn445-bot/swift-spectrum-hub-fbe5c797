@@ -13,6 +13,7 @@ interface AssetGalleryViewProps {
   tasks: GenerateTask[];
   onBack: () => void;
   onImageClick: (imageUrl: string, task: GenerateTask, imageIndex: number) => void;
+  onDeleteImage?: (taskId: string, imageIndex: number) => void;
 }
 
 const AssetGalleryView = ({ tasks, onBack, onImageClick }: AssetGalleryViewProps) => {
