@@ -52,7 +52,7 @@ function buildInpaintPayload(
 }
 
 /* ─── component ─── */
-const ImageInpaintModal = ({ open, imageUrl, price = 0, onClose, onGenerate }: Props) => {
+const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClose, onGenerate }: Props) => {
   /* state */
   const [activeTool, setActiveTool] = useState<ActiveTool>("brush");
   const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH);
