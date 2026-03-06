@@ -36,6 +36,10 @@ export interface GenerateTask {
   errorMessage?: string;
   /** 图生图参考图 URL 数组（存在时表示图生图任务） */
   referenceImages?: string[];
+  /** 局部重绘原图 URL */
+  baseImage?: string;
+  /** 局部重绘蒙版数据（dataURL） */
+  maskData?: string;
   /** 创建时间 */
   createdAt: number;
   /** 原始请求参数（方便重试 / 资产管理复用） */

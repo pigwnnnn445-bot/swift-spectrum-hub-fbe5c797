@@ -446,10 +446,64 @@ const ImageGenDarkPage = () => {
         imageUrl={inpaintImageUrl}
         onClose={() => { setInpaintModalOpen(false); setInpaintImageUrl(""); }}
         onGenerate={(payload: InpaintPayload) => {
-          // TODO: 接入真实局部重绘接口
+          // 校验蒙版
+          if (!payload.maskDataUrl) {
+            toast({ title: "请先涂抹需要修改的区域", variant: "destructive" });
+            return;
+          }
           setInpaintModalOpen(false);
-          toast({ title: "局部重绘已提交（占位）" });
-          console.log("[Inpaint payload]", payload);
+          setInpaintImageUrl("");
+
+          const newTaskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+          const taskModel = selectedModel!;
+          const taskRatio = sidebarRatio || taskModel.ratio?.[0] || "1:1";
+          const taskResolution = sidebarResolution || taskModel.resolution?.[0]?.resolution || "";
+
+          const newTask: GenerateTask = {
+            id: newTaskId,
+            prompt: payload.prompt,
+            status: "submitting",
+            modelId: taskModel.id,
+            modelName: taskModel.name,
+            modelImage: taskModel.image,
+            ratio: taskRatio,
+            resolution: taskResolution,
+            styleName: sidebarStyleName || undefined,
+            styleId: sidebarStyleId,
+            generationMode: "image-to-image",
+            similarity: sidebarSimilarity,
+            count: 1,
+            images: [],
+            baseImage: payload.baseImageUrl,
+            maskData: payload.maskDataUrl,
+            createdAt: Date.now(),
+            requestPayload: {
+              model_id: taskModel.id,
+              prompt: payload.prompt,
+              count: 1,
+              ratio: taskRatio,
+              resolution: taskResolution,
+              style_id: sidebarStyleId,
+              generation_mode: "image-to-image",
+              similarity: sidebarSimilarity,
+              base_image: payload.baseImageUrl,
+              mask_data: payload.maskDataUrl,
+            },
+          };
+
+          setHasEnteredCreationMode(true);
+          setTasks((prev) => [newTask, ...prev]);
+          setTasks((prev) => prev.map((t) => (t.id === newTaskId ? { ...t, status: "generating" as const } : t)));
+
+          mockGenerate(1).then((result) => {
+            setTasks((prev) => prev.map((t) => {
+              if (t.id !== newTaskId) return t;
+              if (result.success) return { ...t, status: "success" as const, images: result.images ?? [] };
+              return { ...t, status: "error" as const, errorMessage: result.errorMessage };
+            }));
+          }).catch(() => {
+            setTasks((prev) => prev.map((t) => t.id === newTaskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t));
+          });
         }}
       />
 
