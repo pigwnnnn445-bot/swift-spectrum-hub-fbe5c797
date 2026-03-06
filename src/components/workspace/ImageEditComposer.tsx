@@ -516,11 +516,12 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           </button>
         </div>
 
-        {/* Inpaint modal */}
+        {/* Inpaint modal – z-[200] to sit above the detail overlay (z-[100]) */}
         {currentImageUrl && onInpaintGenerate && (
           <ImageInpaintModal
             open={inpaintOpen}
             imageUrl={currentImageUrl}
+            overlayClassName="z-[200]"
             onClose={() => { setInpaintOpen(false); setMode("edit"); }}
             onGenerate={(payload: InpaintPayload) => {
               if (!payload.maskDataUrl) {
