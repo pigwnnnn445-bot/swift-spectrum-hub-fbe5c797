@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
 import ImageDetailRightPanel from "./ImageDetailRightPanel";
 import ImageHistoryRail from "./ImageHistoryRail";
