@@ -3,11 +3,7 @@ import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus } from "luci
 import { toast } from "sonner";
 import ModelSelector from "./ModelSelector";
 import StyleSelector from "./StyleSelector";
-import DetailUploadReferencePanel, {
-  getTotalImageCount,
-  getSubmittableReference,
-  type ReferenceByType,
-} from "./DetailUploadReferencePanel";
+import UploadReferencePanel from "./UploadReferencePanel";
 import {
   getOrderedEnabledImageLikes,
   getModelCapabilities,
@@ -30,7 +26,7 @@ export interface ComposerPayload {
   styleId: number | null;
   styleName: string;
   similarity: number;
-  referenceByType: ReturnType<typeof getSubmittableReference>;
+  referenceImages: string[];
 }
 
 export interface ImageEditComposerHandle {
@@ -115,7 +111,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const [resolution, setResolution] = useState("");
     const [styleId, setStyleId] = useState<number | null>(null);
     const [similarity, setSimilarity] = useState(50);
-    const [referenceByType, setReferenceByType] = useState<ReferenceByType>({});
+    const [referenceImages, setReferenceImages] = useState<string[]>([]);
 
     // Popover toggles
     const [ratioOpen, setRatioOpen] = useState(false);
@@ -139,7 +135,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     // Initialize / reset on task change
     useEffect(() => {
       setEditPrompt("");
-      setReferenceByType({});
+      setReferenceImages([]);
       const m = models.find((m) => m.id === task.modelId) ?? models[0] ?? null;
       setSelectedModel(m);
       if (m) initParamsFromModel(m, task);
@@ -168,7 +164,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
 
     const handleModelChange = (model: ModelConfig) => {
       setSelectedModel(model);
-      setReferenceByType({});
+      setReferenceImages([]);
       initParamsFromModel(model, task);
     };
 
@@ -178,7 +174,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
       // Required check
       const enabledLikes = getOrderedEnabledImageLikes(selectedModel);
       const isRequired = enabledLikes.some((item) => item.is_required === 1);
-      if (isRequired && getTotalImageCount(referenceByType) < 1) {
+      if (isRequired && referenceImages.length < 1) {
         toast.error("请先上传参考图");
         return;
       }
@@ -192,7 +188,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
         styleId,
         styleName,
         similarity,
-        referenceByType: getSubmittableReference(referenceByType),
+        referenceImages,
       });
     };
 
@@ -203,7 +199,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
 
     const styleResources = getStyleResources(selectedModel);
     const currentStyleName = styleResources.find((r) => r.id === styleId)?.resource_name ?? "自动";
-    const totalUploaded = getTotalImageCount(referenceByType);
+    const totalUploaded = referenceImages.length;
     const uploadLabel = totalUploaded > 0 ? `已上传(${totalUploaded})` : "上传图片";
     const totalCost = selectedModel.price;
 
@@ -344,10 +340,11 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
               />
               <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
                 <div className="min-w-[280px]">
-                  <DetailUploadReferencePanel
+                  <UploadReferencePanel
+                    key={selectedModel.id}
                     model={selectedModel}
-                    value={referenceByType}
-                    onChange={setReferenceByType}
+                    images={referenceImages}
+                    onImagesChange={setReferenceImages}
                   />
                 </div>
               </EntryPopover>
