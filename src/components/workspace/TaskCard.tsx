@@ -28,27 +28,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
   const isGenerating = task.status === "generating" || task.status === "submitting";
   const isError = task.status === "error";
   const isSuccess = task.status === "success";
-  const hasReferenceImages = (task.referenceImages?.length ?? 0) > 0;
   const aspectRatio = ratioToAspect(task.ratio);
-
-  const [promptExpanded, setPromptExpanded] = useState(false);
-  const [isTruncated, setIsTruncated] = useState(false);
-  const promptRef = useRef<HTMLParagraphElement>(null);
-
-  const checkTruncation = useCallback(() => {
-    const el = promptRef.current;
-    if (!el || promptExpanded) return;
-    setIsTruncated(el.scrollHeight > el.clientHeight + 1);
-  }, [promptExpanded]);
-
-  useEffect(() => {
-    checkTruncation();
-    const el = promptRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(checkTruncation);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [checkTruncation, task.prompt]);
 
   const handleCopyPrompt = async () => {
     try {
