@@ -298,7 +298,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 icon={ScanLine}
                 label={resolution}
                 active={resolutionOpen}
-                onClick={() => { setResolutionOpen(!resolutionOpen); setRatioOpen(false); setStyleOpen(false); setUploadOpen(false); }}
+                onClick={() => { setResolutionOpen(!resolutionOpen); setRatioOpen(false); setCountOpen(false); setStyleOpen(false); setUploadOpen(false); }}
               />
               <EntryPopover open={resolutionOpen} onClose={() => setResolutionOpen(false)}>
                 <div className="flex flex-wrap gap-1.5 p-1">
