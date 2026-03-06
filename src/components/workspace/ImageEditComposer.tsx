@@ -307,7 +307,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                             : "hover:bg-workspace-chip/60 text-workspace-panel-foreground"
                         )}
                       >
-                        {opt}
+                        <span className="truncate">{opt}</span>
                       </button>
                     );
                   })}
