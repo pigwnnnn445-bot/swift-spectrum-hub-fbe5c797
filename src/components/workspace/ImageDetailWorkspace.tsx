@@ -140,6 +140,24 @@ const ImageDetailWorkspace = ({
     return () => window.removeEventListener("keydown", handler);
   }, [allImages, selectedImageUrl, selectedTask.id, selectedImageIndex, handleHistorySelect]);
 
+  // Current index & boundary flags for arrow buttons
+  const currentIdx = useMemo(() =>
+    allImages.findIndex(
+      (item) => item.imageUrl === selectedImageUrl && item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex
+    ), [allImages, selectedImageUrl, selectedTask.id, selectedImageIndex]);
+  const hasPrev = currentIdx > 0;
+  const hasNext = currentIdx >= 0 && currentIdx < allImages.length - 1;
+
+  const handlePrev = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (hasPrev) handleHistorySelect(allImages[currentIdx - 1]);
+  }, [hasPrev, currentIdx, allImages, handleHistorySelect]);
+
+  const handleNext = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (hasNext) handleHistorySelect(allImages[currentIdx + 1]);
+  }, [hasNext, currentIdx, allImages, handleHistorySelect]);
+
   const fileName = useMemo(() => {
     const date = formatDate(selectedTask.createdAt);
     const summary = summarizePrompt(selectedTask.prompt);
