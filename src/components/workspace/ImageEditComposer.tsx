@@ -286,7 +286,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           )}
 
           {/* Style entry */}
-          {showStyle && (
+          {caps.showStyle && (
             <div className="relative">
               <EntryButton
                 icon={Palette}
