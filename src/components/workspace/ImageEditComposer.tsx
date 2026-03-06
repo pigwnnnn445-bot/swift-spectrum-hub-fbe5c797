@@ -268,7 +268,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 icon={Proportions}
                 label={ratio}
                 active={ratioOpen}
-                onClick={() => { setRatioOpen(!ratioOpen); setResolutionOpen(false); setStyleOpen(false); setUploadOpen(false); }}
+                onClick={() => { setRatioOpen(!ratioOpen); setResolutionOpen(false); setCountOpen(false); setStyleOpen(false); setUploadOpen(false); }}
               />
               <EntryPopover open={ratioOpen} onClose={() => setRatioOpen(false)}>
                 <div className="flex flex-wrap gap-1.5 p-1">
