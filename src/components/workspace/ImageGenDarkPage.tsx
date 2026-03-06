@@ -270,9 +270,10 @@ const ImageGenDarkPage = () => {
   }, [selectedModel, referenceImages]);
 
   // ── 点击成功图片打开详情视图 ──
-  const handleImageClick = useCallback((imageUrl: string, task: GenerateTask) => {
+  const handleImageClick = useCallback((imageUrl: string, task: GenerateTask, imageIndex: number) => {
     setDetailImageUrl(imageUrl);
     setDetailTask(task);
+    setDetailImageIndex(imageIndex);
     setDetailOpen(true);
   }, []);
 
