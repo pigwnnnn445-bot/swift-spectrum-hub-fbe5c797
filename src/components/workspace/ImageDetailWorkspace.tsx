@@ -11,6 +11,8 @@ import type { ModelConfig } from "@/config/modelConfig";
 interface ImageDetailWorkspaceProps {
   /** The image URL that was clicked to open this view */
   initialImageUrl: string;
+  /** The index of the clicked image within its task */
+  initialImageIndex: number;
   /** The task that owns the clicked image */
   initialTask: GenerateTask;
   /** All tasks (for history rail) */
