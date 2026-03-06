@@ -516,22 +516,26 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           </button>
         </div>
 
-        {/* Inpaint modal */}
-        {currentImageUrl && onInpaintGenerate && (
-          <ImageInpaintModal
-            open={inpaintOpen}
-            imageUrl={currentImageUrl}
-            onClose={() => { setInpaintOpen(false); setMode("edit"); }}
-            onGenerate={(payload: InpaintPayload) => {
-              if (!payload.maskDataUrl) {
-                toast.error("请先涂抹需要修改的区域");
-                return;
-              }
-              setInpaintOpen(false);
-              setMode("edit");
-              onInpaintGenerate(payload, task);
-            }}
-          />
+        {/* Inpaint modal – must use z > 100 to sit above the detail overlay */}
+        {currentImageUrl && onInpaintGenerate && inpaintOpen && (
+          <div className="fixed inset-0 z-[200]" style={{ pointerEvents: "none" }}>
+            <div style={{ pointerEvents: "auto" }}>
+              <ImageInpaintModal
+                open={inpaintOpen}
+                imageUrl={currentImageUrl}
+                onClose={() => { setInpaintOpen(false); setMode("edit"); }}
+                onGenerate={(payload: InpaintPayload) => {
+                  if (!payload.maskDataUrl) {
+                    toast.error("请先涂抹需要修改的区域");
+                    return;
+                  }
+                  setInpaintOpen(false);
+                  setMode("edit");
+                  onInpaintGenerate(payload, task);
+                }}
+              />
+            </div>
+          </div>
         )}
       </div>
     );
