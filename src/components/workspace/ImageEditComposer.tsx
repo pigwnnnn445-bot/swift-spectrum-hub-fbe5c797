@@ -27,6 +27,7 @@ export interface ComposerPayload {
   styleName: string;
   similarity: number;
   referenceImages: string[];
+  imageCount: number;
 }
 
 export interface ImageEditComposerHandle {
