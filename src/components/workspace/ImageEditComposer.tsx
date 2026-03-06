@@ -44,10 +44,12 @@ function EntryPopover({
   open,
   onClose,
   children,
+  className: extraClassName,
 }: {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -64,7 +66,10 @@ function EntryPopover({
   return (
     <div
       ref={ref}
-      className="absolute left-0 bottom-full mb-2 z-50 min-w-[200px] max-w-[340px] rounded-xl border border-workspace-border bg-workspace-panel shadow-lg p-3 workspace-scroll max-h-[420px] overflow-y-auto"
+      className={cn(
+        "absolute left-0 bottom-full mb-2 z-50 min-w-[200px] max-w-[340px] rounded-xl border border-workspace-border bg-workspace-panel shadow-lg p-3 workspace-scroll max-h-[420px] overflow-y-auto",
+        extraClassName
+      )}
     >
       {children}
     </div>
