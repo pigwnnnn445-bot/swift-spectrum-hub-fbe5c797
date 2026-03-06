@@ -16,6 +16,7 @@ interface ImageDetailRightPanelProps {
 }
 
 const ImageDetailRightPanel = ({ task, imageUrl, onApplyPrompt, onOpenInpaint, onRegenerate, onDelete }: ImageDetailRightPanelProps) => {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const handleCopyImage = async () => {
     if (!imageUrl) return;
     try {
@@ -91,28 +92,28 @@ const ImageDetailRightPanel = ({ task, imageUrl, onApplyPrompt, onOpenInpaint, o
               </Tooltip>
             )}
             {onDelete && (
-              <AlertDialog>
+              <>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <AlertDialogTrigger asChild>
-                      <button className={btnClass}>
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </AlertDialogTrigger>
+                    <button onClick={() => setDeleteDialogOpen(true)} className={btnClass}>
+                      <Trash2 className="h-4 w-4" />
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">删除图片</TooltipContent>
                 </Tooltip>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>确认删除</AlertDialogTitle>
-                    <AlertDialogDescription>确认删除这张图片？此操作不可撤销。</AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>取消</AlertDialogCancel>
-                    <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">删除</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>确认删除</AlertDialogTitle>
+                      <AlertDialogDescription>确认删除这张图片？此操作不可撤销。</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>取消</AlertDialogCancel>
+                      <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">删除</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
             )}
           </div>
         </TooltipProvider>
