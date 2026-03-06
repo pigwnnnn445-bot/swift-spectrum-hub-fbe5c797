@@ -108,11 +108,11 @@ const DetailUploadReferencePanel = ({
   value,
   onChange,
 }: DetailUploadReferencePanelProps) => {
-  const enabledLikes = getOrderedEnabledImageLikes(model);
-  const required = isRequired(enabledLikes);
+  const enabledTypes = getEffectiveTypes(model);
+  const required = isRequired(enabledTypes);
 
   const [activeType, setActiveType] = useState<number>(
-    enabledLikes[0]?.like_type ?? 4
+    enabledTypes[0]?.like_type ?? 4
   );
 
   const updateTypeState = useCallback(
@@ -125,11 +125,11 @@ const DetailUploadReferencePanel = ({
     [value, onChange]
   );
 
-  if (enabledLikes.length === 0) return null;
+  if (enabledTypes.length === 0) return null;
 
   return (
     <div className="space-y-3">
-      {/* Header */}
+      {/* 始终显示的顶部文案 */}
       <div className="flex items-center gap-2">
         <span className="text-xs font-medium text-workspace-panel-foreground/80">
           上传参考图
@@ -146,10 +146,10 @@ const DetailUploadReferencePanel = ({
         </span>
       </div>
 
-      {/* Type tabs */}
-      {enabledLikes.length > 1 && (
+      {/* Tabs: 仅 enabledTypes >= 2 时渲染 */}
+      {enabledTypes.length >= 2 && (
         <div className="flex gap-1 rounded-[10px] bg-workspace-chip/50 p-1">
-          {enabledLikes.map((item) => (
+          {enabledTypes.map((item) => (
             <button
               key={item.like_type}
               onClick={() => setActiveType(item.like_type)}
@@ -167,11 +167,11 @@ const DetailUploadReferencePanel = ({
       )}
 
       {/* Per-type content */}
-      {enabledLikes.map((item) => {
+      {enabledTypes.map((item) => {
         const key = likeTypeToKey(item.like_type);
         if (!key) return null;
         const state = getOrCreateState(value, key, item);
-        const isActive = activeType === item.like_type;
+        const isActive = enabledTypes.length === 1 || activeType === item.like_type;
 
         return (
           <div key={item.like_type} className={cn(!isActive && "hidden")}>
