@@ -226,7 +226,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           )}
 
           {/* Ratio entry */}
-          {showRatio && (
+          {caps.showRatio && (
             <div className="relative">
               <EntryButton
                 icon={Proportions}
