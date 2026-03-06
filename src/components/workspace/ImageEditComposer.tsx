@@ -28,9 +28,23 @@ interface ImageEditComposerProps {
   onGenerate: (payload: ComposerPayload) => void;
 }
 
-const ImageEditComposer = ({ task, models, onGenerate }: ImageEditComposerProps) => {
+const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerProps>(({ task, models, onGenerate }, ref) => {
   const [editPrompt, setEditPrompt] = useState("");
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    applyPrompt(text: string) {
+      setEditPrompt(text);
+      requestAnimationFrame(() => {
+        const el = textareaRef.current;
+        if (el) {
+          el.focus();
+          el.setSelectionRange(text.length, text.length);
+        }
+      });
+    },
+  }));
   const [ratio, setRatio] = useState("");
   const [resolution, setResolution] = useState("");
   const [styleId, setStyleId] = useState<number | null>(null);
