@@ -128,13 +128,17 @@ const ImageDetailWorkspace = ({
               onApplyPrompt={handleApplyPrompt}
               onOpenInpaint={onInpaintGenerate ? handleOpenInpaint : undefined}
               onRegenerate={() => {
+                const model = models.find(m => m.id === selectedTask.modelId) || models[0];
                 onGenerate({
-                  prompt: selectedTask.prompt,
-                  modelId: selectedTask.modelId,
-                  ratio: selectedTask.ratio,
-                  style: selectedTask.style,
-                  referenceImages: selectedTask.referenceImages,
-                  similarity: selectedTask.similarity,
+                  editPrompt: selectedTask.prompt,
+                  model,
+                  ratio: selectedTask.ratio || model.defaultRatio || "1:1",
+                  resolution: selectedTask.resolution || "",
+                  styleId: selectedTask.styleId ?? null,
+                  styleName: selectedTask.styleName || "",
+                  similarity: selectedTask.similarity ?? 50,
+                  referenceImages: selectedTask.referenceImages || [],
+                  imageCount: 1,
                 });
               }}
             />
