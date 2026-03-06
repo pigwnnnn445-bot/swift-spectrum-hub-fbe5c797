@@ -291,22 +291,26 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={ratioOpen}
                 onClick={() => { setRatioOpen(!ratioOpen); setResolutionOpen(false); setCountOpen(false); setStyleOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={ratioOpen} onClose={() => setRatioOpen(false)}>
-                <div className="flex flex-wrap gap-1.5 p-1">
-                  {selectedModel.ratio.map((opt) => (
-                    <button
-                      key={opt}
-                      onClick={() => { setRatio(opt); setRatioOpen(false); }}
-                      className={cn(
-                        "rounded-lg px-3 py-1.5 text-xs font-medium border transition-all cursor-pointer",
-                        ratio === opt
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-workspace-chip/50 text-workspace-panel-foreground/80 border-workspace-border hover:bg-workspace-chip"
-                      )}
-                    >
-                      {opt}
-                    </button>
-                  ))}
+              <EntryPopover open={ratioOpen} onClose={() => setRatioOpen(false)} className="w-[260px] min-w-[260px]">
+                <p className="text-sm text-muted-foreground mb-3">比例</p>
+                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
+                  {selectedModel.ratio.map((opt) => {
+                    const isSelected = ratio === opt;
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => { setRatio(opt); setRatioOpen(false); }}
+                        className={cn(
+                          "flex items-center px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left text-sm font-medium",
+                          isSelected
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-workspace-chip/60 text-workspace-panel-foreground"
+                        )}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
                 </div>
               </EntryPopover>
             </div>
