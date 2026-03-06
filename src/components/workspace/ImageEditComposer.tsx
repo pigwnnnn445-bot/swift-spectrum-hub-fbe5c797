@@ -500,15 +500,6 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             </div>
           )}
 
-          {/* Inpaint button */}
-          {currentImageUrl && onInpaintGenerate && (
-            <EntryButton
-              icon={PaintBucket}
-              label="局部重绘"
-              active={inpaintOpen}
-              onClick={() => setInpaintOpen(true)}
-            />
-          )}
 
           {/* Spacer */}
           <div className="flex-1" />
