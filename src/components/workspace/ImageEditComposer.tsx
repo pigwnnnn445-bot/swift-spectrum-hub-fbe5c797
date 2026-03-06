@@ -266,14 +266,6 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
               </button>
             ))}
           </div>
-          {currentImageUrl && onInpaintGenerate && (
-            <EntryButton
-              icon={PaintBucket}
-              label="局部重绘"
-              active={inpaintOpen}
-              onClick={() => setInpaintOpen(true)}
-            />
-          )}
         </div>
 
         {/* Textarea with inline mode badge on same line as text */}
