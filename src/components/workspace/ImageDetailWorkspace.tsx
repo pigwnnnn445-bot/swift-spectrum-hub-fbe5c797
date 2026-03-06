@@ -24,6 +24,8 @@ interface ImageDetailWorkspaceProps {
   onGenerate: (payload: ComposerPayload) => void;
   /** Called when inpaint Generate is clicked from detail; parent creates task & closes detail */
   onInpaintGenerate?: (payload: InpaintPayload, task: GenerateTask) => void;
+  /** Called to delete current image */
+  onDeleteImage?: (taskId: string, imageIndex: number) => void;
   /** Called to close this view */
   onClose: () => void;
 }
@@ -60,6 +62,7 @@ const ImageDetailWorkspace = ({
   models,
   onGenerate,
   onInpaintGenerate,
+  onDeleteImage,
   onClose,
 }: ImageDetailWorkspaceProps) => {
   const [selectedImageUrl, setSelectedImageUrl] = useState(initialImageUrl);
@@ -141,6 +144,10 @@ const ImageDetailWorkspace = ({
                   imageCount: 1,
                 });
               }}
+              onDelete={onDeleteImage ? () => {
+                onDeleteImage(selectedTask.id, selectedImageIndex);
+                onClose();
+              } : undefined}
             />
           </div>
         </div>
