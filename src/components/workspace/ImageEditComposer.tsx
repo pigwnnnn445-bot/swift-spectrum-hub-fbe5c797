@@ -191,7 +191,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const showResolution = selectedModel.resolution_flg === 1 && selectedModel.resolution.length > 0;
     const showStyle = selectedModel.style_flg === 1 && selectedModel.style.length > 0;
     const enabledLikes = getOrderedEnabledImageLikes(selectedModel);
-    const showUpload = enabledLikes.length > 0 || selectedModel.image_reference_flg === 1;
+    const showUpload = enabledLikes.length > 0;
     const showModel = models.length > 1;
 
     const styleResources = selectedModel.style_flg === 1 ? (selectedModel.style[0]?.resource ?? []) : [];
