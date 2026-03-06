@@ -63,12 +63,33 @@ function EntryPopover({
     return () => document.removeEventListener("mousedown", handler);
   }, [open, onClose]);
 
+  // Clamp to viewport on open & resize
+  useEffect(() => {
+    if (!open || !ref.current) return;
+    const clamp = () => {
+      const el = ref.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.right > window.innerWidth) {
+        el.style.left = "auto";
+        el.style.right = "0";
+      }
+      if (rect.left < 0) {
+        el.style.left = "0";
+        el.style.right = "auto";
+      }
+    };
+    requestAnimationFrame(clamp);
+    window.addEventListener("resize", clamp);
+    return () => window.removeEventListener("resize", clamp);
+  }, [open]);
+
   if (!open) return null;
   return (
     <div
       ref={ref}
       className={cn(
-        "absolute left-0 bottom-full mb-2 z-50 min-w-[200px] max-w-[340px] rounded-xl border border-workspace-border bg-workspace-panel shadow-lg p-3 workspace-scroll max-h-[420px] overflow-y-auto",
+        "absolute left-0 bottom-full mb-2 z-50 rounded-2xl border border-workspace-border bg-workspace-panel shadow-lg p-4 max-w-[calc(100vw-2rem)]",
         extraClassName
       )}
     >
@@ -270,22 +291,26 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={ratioOpen}
                 onClick={() => { setRatioOpen(!ratioOpen); setResolutionOpen(false); setCountOpen(false); setStyleOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={ratioOpen} onClose={() => setRatioOpen(false)}>
-                <div className="flex flex-wrap gap-1.5 p-1">
-                  {selectedModel.ratio.map((opt) => (
-                    <button
-                      key={opt}
-                      onClick={() => { setRatio(opt); setRatioOpen(false); }}
-                      className={cn(
-                        "rounded-lg px-3 py-1.5 text-xs font-medium border transition-all cursor-pointer",
-                        ratio === opt
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-workspace-chip/50 text-workspace-panel-foreground/80 border-workspace-border hover:bg-workspace-chip"
-                      )}
-                    >
-                      {opt}
-                    </button>
-                  ))}
+              <EntryPopover open={ratioOpen} onClose={() => setRatioOpen(false)} className="w-[260px] min-w-[260px]">
+                <p className="text-sm text-muted-foreground mb-3">比例</p>
+                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
+                  {selectedModel.ratio.map((opt) => {
+                    const isSelected = ratio === opt;
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => { setRatio(opt); setRatioOpen(false); }}
+                        className={cn(
+                          "flex items-center px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left text-sm font-medium",
+                          isSelected
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-workspace-chip/60 text-workspace-panel-foreground"
+                        )}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
                 </div>
               </EntryPopover>
             </div>
@@ -300,22 +325,26 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={resolutionOpen}
                 onClick={() => { setResolutionOpen(!resolutionOpen); setRatioOpen(false); setCountOpen(false); setStyleOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={resolutionOpen} onClose={() => setResolutionOpen(false)}>
-                <div className="flex flex-wrap gap-1.5 p-1">
-                  {selectedModel.resolution.map((r) => (
-                    <button
-                      key={r.resolution}
-                      onClick={() => { setResolution(r.resolution); setResolutionOpen(false); }}
-                      className={cn(
-                        "rounded-lg px-3 py-1.5 text-xs font-medium border transition-all cursor-pointer",
-                        resolution === r.resolution
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-workspace-chip/50 text-workspace-panel-foreground/80 border-workspace-border hover:bg-workspace-chip"
-                      )}
-                    >
-                      {r.resolution}
-                    </button>
-                  ))}
+              <EntryPopover open={resolutionOpen} onClose={() => setResolutionOpen(false)} className="w-[260px] min-w-[260px]">
+                <p className="text-sm text-muted-foreground mb-3">分辨率</p>
+                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
+                  {selectedModel.resolution.map((r) => {
+                    const isSelected = resolution === r.resolution;
+                    return (
+                      <button
+                        key={r.resolution}
+                        onClick={() => { setResolution(r.resolution); setResolutionOpen(false); }}
+                        className={cn(
+                          "flex items-center px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left text-sm font-medium",
+                          isSelected
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-workspace-chip/60 text-workspace-panel-foreground"
+                        )}
+                      >
+                        {r.resolution}
+                      </button>
+                    );
+                  })}
                 </div>
               </EntryPopover>
             </div>
@@ -330,22 +359,26 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={countOpen}
                 onClick={() => { setCountOpen(!countOpen); setRatioOpen(false); setResolutionOpen(false); setStyleOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={countOpen} onClose={() => setCountOpen(false)}>
-                <div className="flex flex-wrap gap-1.5 p-1">
-                  {[1, 2, 3, 4].map((n) => (
-                    <button
-                      key={n}
-                      onClick={() => { setImageCount(n); setCountOpen(false); }}
-                      className={cn(
-                        "rounded-lg px-3 py-1.5 text-xs font-medium border transition-all cursor-pointer",
-                        imageCount === n
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-workspace-chip/50 text-workspace-panel-foreground/80 border-workspace-border hover:bg-workspace-chip"
-                      )}
-                    >
-                      {n}
-                    </button>
-                  ))}
+              <EntryPopover open={countOpen} onClose={() => setCountOpen(false)} className="w-[260px] min-w-[260px]">
+                <p className="text-sm text-muted-foreground mb-3">生图数量</p>
+                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
+                  {[1, 2, 3, 4].map((n) => {
+                    const isSelected = imageCount === n;
+                    return (
+                      <button
+                        key={n}
+                        onClick={() => { setImageCount(n); setCountOpen(false); }}
+                        className={cn(
+                          "flex items-center px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left text-sm font-medium",
+                          isSelected
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-workspace-chip/60 text-workspace-panel-foreground"
+                        )}
+                      >
+                        {n} 张
+                      </button>
+                    );
+                  })}
                 </div>
               </EntryPopover>
             </div>
@@ -360,7 +393,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={styleOpen}
                 onClick={() => { setStyleOpen(!styleOpen); setRatioOpen(false); setResolutionOpen(false); setCountOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="rounded-2xl p-4 w-[260px] min-w-[260px] !max-h-none !overflow-visible">
+              <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="w-[260px] min-w-[260px]">
                 <p className="text-sm text-muted-foreground mb-3">风格</p>
                 <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
                   {styleResources.map((res) => {
