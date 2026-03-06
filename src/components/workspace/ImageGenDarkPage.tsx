@@ -301,7 +301,7 @@ const ImageGenDarkPage = () => {
       requestPayload: {
         model_id: payload.model.id,
         prompt: payload.editPrompt,
-        count: 1,
+        count: payload.imageCount ?? 1,
         ratio: payload.ratio,
         resolution: payload.resolution,
         style_id: payload.styleId,
