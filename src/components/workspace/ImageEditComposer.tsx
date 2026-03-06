@@ -340,10 +340,11 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
               />
               <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
                 <div className="min-w-[280px]">
-                  <DetailUploadReferencePanel
+                  <UploadReferencePanel
+                    key={selectedModel.id}
                     model={selectedModel}
-                    value={referenceByType}
-                    onChange={setReferenceByType}
+                    images={referenceImages}
+                    onImagesChange={setReferenceImages}
                   />
                 </div>
               </EntryPopover>
