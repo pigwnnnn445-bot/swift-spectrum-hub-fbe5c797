@@ -5,6 +5,7 @@ import ImageHistoryRail from "./ImageHistoryRail";
 import ImageEditComposer from "./ImageEditComposer";
 import type { HistoryImageItem } from "./ImageHistoryRail";
 import type { ComposerPayload, ImageEditComposerHandle } from "./ImageEditComposer";
+import type { InpaintPayload } from "./ImageInpaintModal";
 import type { GenerateTask } from "@/types/task";
 import type { ModelConfig } from "@/config/modelConfig";
 
