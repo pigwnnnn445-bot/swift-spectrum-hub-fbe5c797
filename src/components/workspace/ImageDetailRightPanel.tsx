@@ -102,7 +102,7 @@ const ImageDetailRightPanel = ({ task, imageUrl, onApplyPrompt, onOpenInpaint, o
                   <TooltipContent side="bottom">删除图片</TooltipContent>
                 </Tooltip>
                 <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                  <AlertDialogContent>
+                  <AlertDialogContent className="z-[200]">
                     <AlertDialogHeader>
                       <AlertDialogTitle>确认删除</AlertDialogTitle>
                       <AlertDialogDescription>确认删除这张图片？此操作不可撤销。</AlertDialogDescription>
