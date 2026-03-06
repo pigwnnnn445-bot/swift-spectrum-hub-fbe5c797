@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from "react";
-import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus, Minus, Plus } from "lucide-react";
+import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus, Minus, Plus, Zap } from "lucide-react";
 import { toast } from "sonner";
 import ModelSelector from "./ModelSelector";
 import StyleSelector from "./StyleSelector";
@@ -417,15 +417,15 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           {/* Spacer */}
           <div className="flex-1" />
 
-          {/* Generate button */}
+          {/* Send button – aligned with HeroPromptBar */}
           <button
             onClick={handleSubmit}
             disabled={!editPrompt.trim()}
-            className="flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-medium text-primary-foreground bg-gradient-to-r from-primary to-[hsl(var(--workspace-neon))] hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="mr-2 mb-2 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-workspace-neon px-5 py-2.5 text-sm font-medium text-white transition-all hover:brightness-110 shadow-md shrink-0 disabled:opacity-40 disabled:pointer-events-none"
           >
-            <span>Generate</span>
-            <Coins className="h-3.5 w-3.5" />
-            <span>{totalCost}</span>
+            发送
+            <Zap className="h-3.5 w-3.5" />
+            <span className="text-white/70">{totalCost}</span>
           </button>
         </div>
       </div>
