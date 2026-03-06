@@ -30,36 +30,6 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
   const isSuccess = task.status === "success";
   const aspectRatio = ratioToAspect(task.ratio);
 
-  const handleCopyPrompt = async () => {
-    try {
-      await navigator.clipboard.writeText(task.prompt);
-      toast({ title: "复制成功" });
-    } catch {
-      toast({ title: "复制失败，请重试", variant: "destructive" });
-    }
-  };
-
-  const handleApplyPrompt = () => {
-    onApplyPrompt?.(task.prompt);
-  };
-
-  const handleCopyImage = async (url: string) => {
-    try {
-      const res = await fetch(url);
-      const blob = await res.blob();
-      await navigator.clipboard.write([
-        new ClipboardItem({ [blob.type]: blob }),
-      ]);
-      toast({ title: "参考图已复制" });
-    } catch {
-      toast({ title: "复制失败，浏览器可能不支持复制图片", variant: "destructive" });
-    }
-  };
-
-  const handleApplyImage = (url: string) => {
-    onApplyReferenceImage?.(url);
-  };
-
   const handleCopyResultImage = async (url: string) => {
     try {
       const res = await fetch(url);
