@@ -374,7 +374,7 @@ const MobileParamBar = ({
               onClick={() => { closeAll(); setUploadOpen(!uploadOpen); }}
             />
             <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
-              <div className="min-w-[280px] space-y-4">
+              <div className="min-w-[280px] space-y-4 overflow-y-auto overscroll-contain" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
                 <div className="space-y-2.5">
                   <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
                     上传参考图
