@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Search, Copy, Download, Trash2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 import type { GenerateTask } from "@/types/task";
 
 interface AssetImage {
@@ -12,9 +13,10 @@ interface AssetGalleryViewProps {
   tasks: GenerateTask[];
   onBack: () => void;
   onImageClick: (imageUrl: string, task: GenerateTask, imageIndex: number) => void;
+  onDeleteImage?: (taskId: string, imageIndex: number) => void;
 }
 
-const AssetGalleryView = ({ tasks, onBack, onImageClick }: AssetGalleryViewProps) => {
+const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage }: AssetGalleryViewProps) => {
   const [search, setSearch] = useState("");
 
   const assets = useMemo<AssetImage[]>(() => {
@@ -73,7 +75,7 @@ const AssetGalleryView = ({ tasks, onBack, onImageClick }: AssetGalleryViewProps
         ) : (
           <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 2xl:columns-6" style={{ columnGap: 12 }}>
             {filtered.map((item, i) => (
-              <AssetCard key={`${item.task.id}-${item.imageIndex}-${i}`} item={item} onClick={onImageClick} />
+              <AssetCard key={`${item.task.id}-${item.imageIndex}-${i}`} item={item} onClick={onImageClick} onDelete={onDeleteImage} />
             ))}
           </div>
         )}
@@ -90,14 +92,57 @@ const FolderEmpty = ({ className }: { className?: string }) => (
   </svg>
 );
 
-/* Single asset card with hover prompt overlay */
+/* Single asset card with hover prompt overlay + action buttons */
 const AssetCard = ({
   item,
   onClick,
+  onDelete,
 }: {
   item: AssetImage;
   onClick: (url: string, task: GenerateTask, idx: number) => void;
+  onDelete?: (taskId: string, imageIndex: number) => void;
 }) => {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const handleCopy = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const res = await fetch(item.url);
+      const blob = await res.blob();
+      await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+      toast({ title: "已复制到剪贴板" });
+    } catch {
+      toast({ title: "复制失败", variant: "destructive" });
+    }
+  };
+
+  const handleDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const a = document.createElement("a");
+    a.href = item.url;
+    a.download = `image_${item.task.id}_${item.imageIndex}.png`;
+    a.click();
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setConfirmDelete(true);
+  };
+
+  const handleConfirmDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete?.(item.task.id, item.imageIndex);
+    setConfirmDelete(false);
+    toast({ title: "图片已删除" });
+  };
+
+  const handleCancelDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setConfirmDelete(false);
+  };
+
+  const btnClass = "flex h-7 w-7 items-center justify-center rounded-md bg-black/50 text-white/90 hover:bg-black/70 backdrop-blur transition-colors";
+
   return (
     <div
       className="group relative mb-3 inline-block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-workspace-panel break-inside-avoid transition-shadow hover:shadow-lg"
@@ -109,8 +154,23 @@ const AssetCard = ({
         className="w-full h-auto block transition-transform duration-200 group-hover:scale-105"
         loading="lazy"
       />
+
       {/* Hover overlay */}
-      <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 pointer-events-none">
+      <div className="absolute inset-0 flex flex-col justify-between bg-gradient-to-t from-black/70 via-black/10 to-black/30 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+        {/* Top-right action buttons */}
+        <div className="flex justify-end gap-1.5 p-2">
+          <button onClick={handleCopy} className={btnClass} title="复制图片">
+            <Copy className="h-3.5 w-3.5" />
+          </button>
+          <button onClick={handleDownload} className={btnClass} title="下载图片">
+            <Download className="h-3.5 w-3.5" />
+          </button>
+          <button onClick={handleDeleteClick} className={btnClass} title="删除图片">
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
+
+        {/* Bottom prompt info */}
         <div className="w-full p-2.5">
           <p className="line-clamp-4 text-xs leading-relaxed text-white/90">
             {item.task.prompt}
@@ -122,6 +182,30 @@ const AssetCard = ({
           </div>
         </div>
       </div>
+
+      {/* Delete confirmation overlay */}
+      {confirmDelete && (
+        <div
+          className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-black/60 backdrop-blur-sm"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <p className="text-sm font-medium text-white">确认删除这张图片？</p>
+          <div className="flex gap-2">
+            <button
+              onClick={handleConfirmDelete}
+              className="rounded-md bg-destructive px-4 py-1.5 text-xs font-medium text-destructive-foreground hover:bg-destructive/90 transition-colors"
+            >
+              删除
+            </button>
+            <button
+              onClick={handleCancelDelete}
+              className="rounded-md bg-white/20 px-4 py-1.5 text-xs font-medium text-white hover:bg-white/30 transition-colors"
+            >
+              取消
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

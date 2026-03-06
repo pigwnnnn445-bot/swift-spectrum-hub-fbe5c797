@@ -336,6 +336,13 @@ const ImageGenDarkPage = () => {
           tasks={tasks}
           onBack={() => setViewMode("gen")}
           onImageClick={handleImageClick}
+          onDeleteImage={(taskId, imageIndex) => {
+            setTasks((prev) => prev.map((t) => {
+              if (t.id !== taskId) return t;
+              const newImages = t.images.filter((_, i) => i !== imageIndex);
+              return { ...t, images: newImages };
+            }));
+          }}
         />
         {/* 大图详情视图（复用） */}
         {detailOpen && detailTask && (
