@@ -22,6 +22,8 @@ interface ImageDetailWorkspaceProps {
   models: ModelConfig[];
   /** Called when Generate is clicked */
   onGenerate: (payload: ComposerPayload) => void;
+  /** Called when inpaint Generate is clicked from detail; parent creates task & closes detail */
+  onInpaintGenerate?: (payload: InpaintPayload, task: GenerateTask) => void;
   /** Called to close this view */
   onClose: () => void;
 }
