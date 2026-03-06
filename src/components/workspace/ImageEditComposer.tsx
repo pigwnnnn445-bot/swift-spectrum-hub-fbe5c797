@@ -232,7 +232,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const styleResources = getStyleResources(selectedModel);
     const currentStyleName = styleResources.find((r) => r.id === styleId)?.resource_name ?? "自动";
     const totalUploaded = referenceImages.length;
-    const uploadLabel = totalUploaded > 0 ? `已上传(${totalUploaded})` : "上传图片";
+    const uploadLabel = totalUploaded > 0 ? `已上传(${totalUploaded})` : "上传参考图";
     const totalCost = selectedModel.price;
 
     return (
