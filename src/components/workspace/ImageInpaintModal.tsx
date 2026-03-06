@@ -347,7 +347,8 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClos
       return;
     }
     setIsSubmitting(true);
-    const payload = buildInpaintPayload(imageUrl, maskCanvasRef.current, prompt);
+    const finalPrompt = prompt.trim() || "基于原始图像自动编辑";
+    const payload = buildInpaintPayload(imageUrl, maskCanvasRef.current, finalPrompt);
     onGenerate(payload);
   }, [hasMask, imageUrl, prompt, onGenerate]);
 
