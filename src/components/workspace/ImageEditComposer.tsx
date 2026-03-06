@@ -324,12 +324,32 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 active={styleOpen}
                 onClick={() => { setStyleOpen(!styleOpen); setRatioOpen(false); setResolutionOpen(false); setUploadOpen(false); }}
               />
-              <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)}>
-                <StyleSelector
-                  resources={styleResources}
-                  selectedId={styleId}
-                  onSelect={(id) => { setStyleId(id); setStyleOpen(false); }}
-                />
+              <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="rounded-2xl p-4 w-[260px] min-w-[260px]">
+                <p className="text-sm text-muted-foreground mb-3">Style</p>
+                <div className="flex flex-col gap-0.5">
+                  {styleResources.map((res) => {
+                    const isSelected = styleId === res.id;
+                    return (
+                      <button
+                        key={res.id}
+                        onClick={() => { setStyleId(res.id); setStyleOpen(false); }}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left",
+                          isSelected
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-workspace-chip/60 text-workspace-panel-foreground"
+                        )}
+                      >
+                        <img
+                          src={res.image}
+                          alt={res.resource_name}
+                          className="h-10 w-10 rounded-lg object-cover shrink-0"
+                        />
+                        <span className="text-sm font-medium truncate">{res.resource_name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </EntryPopover>
             </div>
           )}
