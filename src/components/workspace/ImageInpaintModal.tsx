@@ -534,7 +534,8 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClos
             </Button>
           </div>
         </div>
-      </DialogContent>
+      </DialogPrimitive.Content>
+      </DialogPortal>
     </Dialog>
   );
 };
