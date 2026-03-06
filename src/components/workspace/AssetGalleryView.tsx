@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, Search, Copy, Download, Trash2 } from "lucide-react";
+import { ArrowLeft, Search, Copy, Download, Trash2, AlertTriangle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import type { GenerateTask } from "@/types/task";
 
-interface AssetImage {
+interface AssetItem {
+  type: "success" | "error";
+  /** 成功时为图片 URL，失败时为空字符串 */
   url: string;
   task: GenerateTask;
   imageIndex: number;
@@ -14,21 +16,25 @@ interface AssetGalleryViewProps {
   onBack: () => void;
   onImageClick: (imageUrl: string, task: GenerateTask, imageIndex: number) => void;
   onDeleteImage?: (taskId: string, imageIndex: number) => void;
+  onDeleteTask?: (taskId: string) => void;
 }
 
-const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage }: AssetGalleryViewProps) => {
+const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDeleteTask }: AssetGalleryViewProps) => {
   const [search, setSearch] = useState("");
 
-  const assets = useMemo<AssetImage[]>(() => {
-    const list: AssetImage[] = [];
-    // 按 createdAt 倒序，展示所有 success 任务的图片
+  const assets = useMemo<AssetItem[]>(() => {
+    const list: AssetItem[] = [];
     const sorted = [...tasks]
-      .filter((t) => t.status === "success" && t.images.length > 0)
+      .filter((t) => (t.status === "success" && t.images.length > 0) || t.status === "error")
       .sort((a, b) => b.createdAt - a.createdAt);
     for (const task of sorted) {
-      task.images.forEach((url, idx) => {
-        list.push({ url, task, imageIndex: idx });
-      });
+      if (task.status === "error") {
+        list.push({ type: "error", url: "", task, imageIndex: -1 });
+      } else {
+        task.images.forEach((url, idx) => {
+          list.push({ type: "success", url, task, imageIndex: idx });
+        });
+      }
     }
     return list;
   }, [tasks]);
@@ -75,7 +81,13 @@ const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage }: AssetG
         ) : (
           <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 2xl:columns-6" style={{ columnGap: 12 }}>
             {filtered.map((item, i) => (
-              <AssetCard key={`${item.task.id}-${item.imageIndex}-${i}`} item={item} onClick={onImageClick} onDelete={onDeleteImage} />
+              <AssetCard
+                key={`${item.task.id}-${item.imageIndex}-${i}`}
+                item={item}
+                onClick={onImageClick}
+                onDeleteImage={onDeleteImage}
+                onDeleteTask={onDeleteTask}
+              />
             ))}
           </div>
         )}
@@ -92,17 +104,20 @@ const FolderEmpty = ({ className }: { className?: string }) => (
   </svg>
 );
 
-/* Single asset card with hover prompt overlay + action buttons */
+/* Single asset card */
 const AssetCard = ({
   item,
   onClick,
-  onDelete,
+  onDeleteImage,
+  onDeleteTask,
 }: {
-  item: AssetImage;
+  item: AssetItem;
   onClick: (url: string, task: GenerateTask, idx: number) => void;
-  onDelete?: (taskId: string, imageIndex: number) => void;
+  onDeleteImage?: (taskId: string, imageIndex: number) => void;
+  onDeleteTask?: (taskId: string) => void;
 }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const isError = item.type === "error";
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -131,9 +146,13 @@ const AssetCard = ({
 
   const handleConfirmDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onDelete?.(item.task.id, item.imageIndex);
+    if (isError) {
+      onDeleteTask?.(item.task.id);
+    } else {
+      onDeleteImage?.(item.task.id, item.imageIndex);
+    }
     setConfirmDelete(false);
-    toast({ title: "图片已删除" });
+    toast({ title: isError ? "失败记录已删除" : "图片已删除" });
   };
 
   const handleCancelDelete = (e: React.MouseEvent) => {
@@ -141,46 +160,74 @@ const AssetCard = ({
     setConfirmDelete(false);
   };
 
+  const handleCardClick = () => {
+    if (isError) return; // error 卡片不进入详情
+    onClick(item.url, item.task, item.imageIndex);
+  };
+
   const btnClass = "flex h-7 w-7 items-center justify-center rounded-md bg-black/50 text-white/90 hover:bg-black/70 backdrop-blur transition-colors";
 
   return (
     <div
-      className="group relative mb-3 inline-block w-full cursor-pointer overflow-hidden rounded-lg border border-border bg-workspace-panel break-inside-avoid transition-shadow hover:shadow-lg"
-      onClick={() => onClick(item.url, item.task, item.imageIndex)}
+      className={`group relative mb-3 inline-block w-full overflow-hidden rounded-lg border border-border bg-workspace-panel break-inside-avoid transition-shadow hover:shadow-lg ${isError ? "cursor-default" : "cursor-pointer"}`}
+      onClick={handleCardClick}
     >
-      <img
-        src={item.url}
-        alt={item.task.prompt}
-        className="w-full h-auto block transition-transform duration-200 group-hover:scale-105"
-        loading="lazy"
-      />
-
-      {/* Hover overlay */}
-      <div className="absolute inset-0 flex flex-col justify-between bg-gradient-to-t from-black/70 via-black/10 to-black/30 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-        {/* Top-right action buttons */}
-        <div className="flex justify-end gap-1.5 p-2">
-          <button onClick={handleCopy} className={btnClass} title="复制图片">
-            <Copy className="h-3.5 w-3.5" />
-          </button>
-          <button onClick={handleDownload} className={btnClass} title="下载图片">
-            <Download className="h-3.5 w-3.5" />
-          </button>
-          <button onClick={handleDeleteClick} className={btnClass} title="删除图片">
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
-        </div>
-
-        {/* Bottom prompt info */}
-        <div className="w-full p-2.5">
-          <p className="line-clamp-4 text-xs leading-relaxed text-white/90">
-            {item.task.prompt}
-          </p>
-          <div className="mt-1.5 flex items-center gap-2 text-[10px] text-white/60">
+      {isError ? (
+        /* 失败占位卡片 */
+        <div className="flex flex-col items-center justify-center gap-2 px-4 py-8 text-center">
+          <AlertTriangle className="h-8 w-8 text-destructive/70" />
+          <p className="text-sm font-medium text-destructive">生成失败</p>
+          {item.task.errorMessage && (
+            <p className="line-clamp-2 text-xs text-muted-foreground">{item.task.errorMessage}</p>
+          )}
+          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground/70 italic">{item.task.prompt}</p>
+          <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground/50">
             <span>{item.task.modelName}</span>
             <span>·</span>
             <span>{new Date(item.task.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
+      ) : (
+        /* 成功图片 */
+        <img
+          src={item.url}
+          alt={item.task.prompt}
+          className="w-full h-auto block transition-transform duration-200 group-hover:scale-105"
+          loading="lazy"
+        />
+      )}
+
+      {/* Hover overlay — 成功：完整按钮+prompt；失败：仅删除按钮 */}
+      <div className={`absolute inset-0 flex flex-col justify-between opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${isError ? "bg-black/30" : "bg-gradient-to-t from-black/70 via-black/10 to-black/30"}`}>
+        <div className="flex justify-end gap-1.5 p-2">
+          {!isError && (
+            <>
+              <button onClick={handleCopy} className={btnClass} title="复制图片">
+                <Copy className="h-3.5 w-3.5" />
+              </button>
+              <button onClick={handleDownload} className={btnClass} title="下载图片">
+                <Download className="h-3.5 w-3.5" />
+              </button>
+            </>
+          )}
+          <button onClick={handleDeleteClick} className={btnClass} title="删除">
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
+
+        {/* Bottom prompt info — 仅成功卡片 */}
+        {!isError && (
+          <div className="w-full p-2.5">
+            <p className="line-clamp-4 text-xs leading-relaxed text-white/90">
+              {item.task.prompt}
+            </p>
+            <div className="mt-1.5 flex items-center gap-2 text-[10px] text-white/60">
+              <span>{item.task.modelName}</span>
+              <span>·</span>
+              <span>{new Date(item.task.createdAt).toLocaleDateString()}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Delete confirmation overlay */}
@@ -189,7 +236,7 @@ const AssetCard = ({
           className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-black/60 backdrop-blur-sm"
           onClick={(e) => e.stopPropagation()}
         >
-          <p className="text-sm font-medium text-white">确认删除这张图片？</p>
+          <p className="text-sm font-medium text-white">{isError ? "确认删除此失败记录？" : "确认删除这张图片？"}</p>
           <div className="flex gap-2">
             <button
               onClick={handleConfirmDelete}
