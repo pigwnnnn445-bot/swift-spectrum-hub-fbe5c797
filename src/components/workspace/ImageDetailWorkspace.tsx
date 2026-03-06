@@ -11,6 +11,8 @@ import type { ModelConfig } from "@/config/modelConfig";
 interface ImageDetailWorkspaceProps {
   /** The image URL that was clicked to open this view */
   initialImageUrl: string;
+  /** The index of the clicked image within its task */
+  initialImageIndex: number;
   /** The task that owns the clicked image */
   initialTask: GenerateTask;
   /** All tasks (for history rail) */
@@ -49,6 +51,7 @@ function formatDate(ts: number): string {
 
 const ImageDetailWorkspace = ({
   initialImageUrl,
+  initialImageIndex,
   initialTask,
   tasks,
   models,
@@ -57,16 +60,19 @@ const ImageDetailWorkspace = ({
 }: ImageDetailWorkspaceProps) => {
   const [selectedImageUrl, setSelectedImageUrl] = useState(initialImageUrl);
   const [selectedTask, setSelectedTask] = useState(initialTask);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(initialImageIndex);
 
   // When initial props change (shouldn't normally), sync
   useEffect(() => {
     setSelectedImageUrl(initialImageUrl);
     setSelectedTask(initialTask);
-  }, [initialImageUrl, initialTask]);
+    setSelectedImageIndex(initialImageIndex);
+  }, [initialImageUrl, initialTask, initialImageIndex]);
 
   const handleHistorySelect = useCallback((item: HistoryImageItem) => {
     setSelectedImageUrl(item.imageUrl);
     setSelectedTask(item.task);
+    setSelectedImageIndex(item.imageIndex);
   }, []);
 
   const fileName = useMemo(() => {
@@ -119,7 +125,7 @@ const ImageDetailWorkspace = ({
 
       {/* Bottom composer */}
       <ImageEditComposer
-        key={selectedTask.id}
+        key={`${selectedTask.id}-${selectedImageIndex}`}
         task={selectedTask}
         models={models}
         onGenerate={onGenerate}

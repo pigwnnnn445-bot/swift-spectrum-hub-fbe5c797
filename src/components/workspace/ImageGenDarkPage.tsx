@@ -52,6 +52,7 @@ const ImageGenDarkPage = () => {
   const [detailOpen, setDetailOpen] = useState(false);
   const [detailImageUrl, setDetailImageUrl] = useState("");
   const [detailTask, setDetailTask] = useState<GenerateTask | null>(null);
+  const [detailImageIndex, setDetailImageIndex] = useState(0);
   // 组件卸载时清理 cooldown timeout
   useEffect(() => {
     return () => {
@@ -269,9 +270,10 @@ const ImageGenDarkPage = () => {
   }, [selectedModel, referenceImages]);
 
   // ── 点击成功图片打开详情视图 ──
-  const handleImageClick = useCallback((imageUrl: string, task: GenerateTask) => {
+  const handleImageClick = useCallback((imageUrl: string, task: GenerateTask, imageIndex: number) => {
     setDetailImageUrl(imageUrl);
     setDetailTask(task);
+    setDetailImageIndex(imageIndex);
     setDetailOpen(true);
   }, []);
 
@@ -454,8 +456,9 @@ const ImageGenDarkPage = () => {
       {/* 大图详情视图 */}
       {detailOpen && detailTask && (
         <ImageDetailWorkspace
-          initialImageUrl={detailImageUrl}
-          initialTask={detailTask}
+           initialImageUrl={detailImageUrl}
+           initialImageIndex={detailImageIndex}
+           initialTask={detailTask}
           tasks={tasks}
           models={models}
           onGenerate={handleDetailGenerate}
