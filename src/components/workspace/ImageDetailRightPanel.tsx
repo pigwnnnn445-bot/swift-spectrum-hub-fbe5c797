@@ -16,6 +16,7 @@ interface ImageDetailRightPanelProps {
 }
 
 const ImageDetailRightPanel = ({ task, imageUrl, onApplyPrompt, onOpenInpaint, onRegenerate, onDelete }: ImageDetailRightPanelProps) => {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const handleCopyImage = async () => {
     if (!imageUrl) return;
     try {
