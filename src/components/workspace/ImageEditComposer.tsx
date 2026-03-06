@@ -339,7 +339,10 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 onClick={() => { setUploadOpen(!uploadOpen); setRatioOpen(false); setResolutionOpen(false); setStyleOpen(false); }}
               />
               <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
-                <div className="min-w-[280px]">
+                <div className="min-w-[280px] space-y-2.5">
+                  <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
+                    上传参考图
+                  </h3>
                   <UploadReferencePanel
                     key={selectedModel.id}
                     model={selectedModel}
