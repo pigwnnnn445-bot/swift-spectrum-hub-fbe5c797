@@ -111,6 +111,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const [resolution, setResolution] = useState("");
     const [styleId, setStyleId] = useState<number | null>(null);
     const [similarity, setSimilarity] = useState(50);
+    const [steps, setSteps] = useState(20);
     const [referenceImages, setReferenceImages] = useState<string[]>([]);
 
     // Popover toggles
