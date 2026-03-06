@@ -49,9 +49,16 @@ function isRequired(enabledLikes: ImageLikeOption[]): boolean {
   return enabledLikes.some((item) => item.is_required === 1);
 }
 
-function defaultModeForType(item: ImageLikeOption): "single" | "multi" {
-  if (item.one_image_flg === 1) return "single";
-  return "multi";
+/** 生效参考场景：image_like_flg===1 且至少支持单图或多图之一 */
+function getEffectiveTypes(model: ModelConfig): ImageLikeOption[] {
+  return getOrderedEnabledImageLikes(model).filter(
+    (t) => t.one_image_flg === 1 || t.more_image_flg === 1
+  );
+}
+
+/** more_image_flg=1 → multi；否则 single */
+function uploadModeForType(item: ImageLikeOption): "single" | "multi" {
+  return item.more_image_flg === 1 ? "multi" : "single";
 }
 
 function getOrCreateState(
@@ -63,7 +70,7 @@ function getOrCreateState(
     current[key] ?? {
       images: [],
       similarity: SIMILARITY_DEFAULT,
-      uploadMode: defaultModeForType(item),
+      uploadMode: uploadModeForType(item),
     }
   );
 }
@@ -101,11 +108,11 @@ const DetailUploadReferencePanel = ({
   value,
   onChange,
 }: DetailUploadReferencePanelProps) => {
-  const enabledLikes = getOrderedEnabledImageLikes(model);
-  const required = isRequired(enabledLikes);
+  const enabledTypes = getEffectiveTypes(model);
+  const required = isRequired(enabledTypes);
 
   const [activeType, setActiveType] = useState<number>(
-    enabledLikes[0]?.like_type ?? 4
+    enabledTypes[0]?.like_type ?? 4
   );
 
   const updateTypeState = useCallback(
@@ -118,11 +125,11 @@ const DetailUploadReferencePanel = ({
     [value, onChange]
   );
 
-  if (enabledLikes.length === 0) return null;
+  if (enabledTypes.length === 0) return null;
 
   return (
     <div className="space-y-3">
-      {/* Header */}
+      {/* 始终显示的顶部文案 */}
       <div className="flex items-center gap-2">
         <span className="text-xs font-medium text-workspace-panel-foreground/80">
           上传参考图
@@ -139,10 +146,10 @@ const DetailUploadReferencePanel = ({
         </span>
       </div>
 
-      {/* Type tabs */}
-      {enabledLikes.length > 1 && (
+      {/* Tabs: 仅 enabledTypes >= 2 时渲染 */}
+      {enabledTypes.length >= 2 && (
         <div className="flex gap-1 rounded-[10px] bg-workspace-chip/50 p-1">
-          {enabledLikes.map((item) => (
+          {enabledTypes.map((item) => (
             <button
               key={item.like_type}
               onClick={() => setActiveType(item.like_type)}
@@ -160,11 +167,11 @@ const DetailUploadReferencePanel = ({
       )}
 
       {/* Per-type content */}
-      {enabledLikes.map((item) => {
+      {enabledTypes.map((item) => {
         const key = likeTypeToKey(item.like_type);
         if (!key) return null;
         const state = getOrCreateState(value, key, item);
-        const isActive = activeType === item.like_type;
+        const isActive = enabledTypes.length === 1 || activeType === item.like_type;
 
         return (
           <div key={item.like_type} className={cn(!isActive && "hidden")}>
@@ -184,7 +191,6 @@ const DetailUploadReferencePanel = ({
 /* ── per-type section ────────────────────────── */
 function TypeUploadSection({
   item,
-  typeKey,
   state,
   onUpdate,
 }: {
@@ -193,53 +199,12 @@ function TypeUploadSection({
   state: TypeRefState;
   onUpdate: (updater: (prev: TypeRefState) => TypeRefState) => void;
 }) {
-  const bothModes = item.one_image_flg === 1 && item.more_image_flg === 1;
-  const isSingle = state.uploadMode === "single";
-  const maxImages = isSingle ? 1 : MAX_MULTI_IMAGES;
-
-  const handleModeSwitch = (mode: "single" | "multi") => {
-    if (mode === state.uploadMode) return;
-    onUpdate((prev) => {
-      if (mode === "single" && prev.images.length > 1) {
-        // Revoke extra images
-        prev.images.slice(1).forEach((url) => URL.revokeObjectURL(url));
-        toast.info("已保留第一张参考图");
-        return { ...prev, uploadMode: mode, images: [prev.images[0]] };
-      }
-      return { ...prev, uploadMode: mode };
-    });
-  };
+  // more_image_flg=1 → multi (no toggle); otherwise single
+  const isMulti = item.more_image_flg === 1;
+  const maxImages = isMulti ? MAX_MULTI_IMAGES : 1;
 
   return (
     <div className="space-y-3">
-      {/* Single/Multi toggle */}
-      {bothModes && (
-        <div className="flex gap-1 rounded-lg bg-workspace-chip/30 p-0.5">
-          <button
-            onClick={() => handleModeSwitch("single")}
-            className={cn(
-              "flex-1 rounded-md px-3 py-1 text-xs font-medium transition-all cursor-pointer",
-              isSingle
-                ? "bg-primary text-primary-foreground"
-                : "text-workspace-panel-foreground/60 hover:text-workspace-panel-foreground/80"
-            )}
-          >
-            单张
-          </button>
-          <button
-            onClick={() => handleModeSwitch("multi")}
-            className={cn(
-              "flex-1 rounded-md px-3 py-1 text-xs font-medium transition-all cursor-pointer",
-              !isSingle
-                ? "bg-primary text-primary-foreground"
-                : "text-workspace-panel-foreground/60 hover:text-workspace-panel-foreground/80"
-            )}
-          >
-            多张
-          </button>
-        </div>
-      )}
-
       {/* Upload zone */}
       <UploadZone
         images={state.images}
@@ -247,7 +212,7 @@ function TypeUploadSection({
         onImagesChange={(images) => onUpdate((prev) => ({ ...prev, images }))}
       />
 
-      {/* Similarity */}
+      {/* Similarity: only when similarity_flg === 1 */}
       {item.similarity_flg === 1 && (
         <SimilarityControl
           value={state.similarity}
