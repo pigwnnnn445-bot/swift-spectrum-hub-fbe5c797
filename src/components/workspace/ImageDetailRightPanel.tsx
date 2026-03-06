@@ -12,9 +12,10 @@ interface ImageDetailRightPanelProps {
   onApplyPrompt?: (prompt: string) => void;
   onOpenInpaint?: () => void;
   onRegenerate?: () => void;
+  onDelete?: () => void;
 }
 
-const ImageDetailRightPanel = ({ task, imageUrl, onApplyPrompt, onOpenInpaint, onRegenerate }: ImageDetailRightPanelProps) => {
+const ImageDetailRightPanel = ({ task, imageUrl, onApplyPrompt, onOpenInpaint, onRegenerate, onDelete }: ImageDetailRightPanelProps) => {
   const handleCopyImage = async () => {
     if (!imageUrl) return;
     try {
