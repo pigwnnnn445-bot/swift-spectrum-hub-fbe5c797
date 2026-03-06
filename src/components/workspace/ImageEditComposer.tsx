@@ -146,21 +146,23 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     }, [task.id]);
 
     const initParamsFromModel = (model: ModelConfig, t: GenerateTask) => {
+      const defRatio = getDefaultRatio(model);
       const ratioOptions = model.ratio_flg === 1 ? model.ratio : [];
-      setRatio(ratioOptions.includes(t.ratio) ? t.ratio : ratioOptions[0] ?? "1:1");
+      setRatio(ratioOptions.includes(t.ratio) ? t.ratio : defRatio);
 
+      const defRes = getDefaultResolution(model);
       const resOptions = model.resolution_flg === 1 ? model.resolution.map((r) => r.resolution) : [];
-      setResolution(resOptions.includes(t.resolution) ? t.resolution : resOptions[0] ?? "");
+      setResolution(resOptions.includes(t.resolution) ? t.resolution : defRes);
 
       if (model.style_flg === 1 && model.style.length > 0) {
         const allRes = model.style.flatMap((tab) => tab.resource);
         const found = allRes.find((r) => r.id === t.styleId);
-        setStyleId(found ? t.styleId ?? null : allRes[0]?.id ?? null);
+        setStyleId(found ? t.styleId ?? null : getDefaultStyleId(model));
       } else {
         setStyleId(null);
       }
 
-      setSimilarity(t.similarity ?? 50);
+      setSimilarity(t.similarity ?? DEFAULT_SIMILARITY);
     };
 
     const handleModelChange = (model: ModelConfig) => {
