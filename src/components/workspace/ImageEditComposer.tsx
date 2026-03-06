@@ -244,22 +244,32 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
 
     return (
       <div className="border-t border-workspace-border bg-workspace-panel px-4 py-3 space-y-3">
-        {/* Mode segmented tabs */}
-        <div className="flex items-center gap-1 rounded-lg bg-workspace-chip/30 p-0.5 w-fit">
-          {([["edit", "编辑图像"], ["new", "新作品"]] as const).map(([value, label]) => (
-            <button
-              key={value}
-              onClick={() => setMode(value)}
-              className={cn(
-                "rounded-md px-3.5 py-1.5 text-xs font-medium transition-all cursor-pointer",
-                mode === value
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-workspace-panel-foreground/70 hover:text-workspace-panel-foreground"
-              )}
-            >
-              {label}
-            </button>
-          ))}
+        {/* Mode segmented tabs + inpaint button */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 rounded-lg bg-workspace-chip/30 p-0.5 w-fit">
+            {([["edit", "编辑图像"], ["new", "新作品"]] as const).map(([value, label]) => (
+              <button
+                key={value}
+                onClick={() => setMode(value)}
+                className={cn(
+                  "rounded-md px-3.5 py-1.5 text-xs font-medium transition-all cursor-pointer",
+                  mode === value
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-workspace-panel-foreground/70 hover:text-workspace-panel-foreground"
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          {currentImageUrl && onInpaintGenerate && (
+            <EntryButton
+              icon={PaintBucket}
+              label="局部重绘"
+              active={inpaintOpen}
+              onClick={() => setInpaintOpen(true)}
+            />
+          )}
         </div>
 
         {/* Textarea with inline mode badge on same line as text */}
