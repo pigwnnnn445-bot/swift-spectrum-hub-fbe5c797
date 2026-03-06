@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PaintBucket, Copy, Download, RefreshCw, Trash2 } from "lucide-react";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogOverlay, AlertDialogPortal } from "@/components/ui/alert-dialog";
+import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import TaskAttributePanel from "./TaskAttributePanel";
@@ -102,16 +103,19 @@ const ImageDetailRightPanel = ({ task, imageUrl, onApplyPrompt, onOpenInpaint, o
                   <TooltipContent side="bottom">删除图片</TooltipContent>
                 </Tooltip>
                 <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>确认删除</AlertDialogTitle>
-                      <AlertDialogDescription>确认删除这张图片？此操作不可撤销。</AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>取消</AlertDialogCancel>
-                      <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">删除</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
+                  <AlertDialogPortal>
+                    <AlertDialogOverlay className="z-[200]" />
+                    <AlertDialogPrimitive.Content className="fixed left-[50%] top-[50%] z-[200] grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>确认删除</AlertDialogTitle>
+                        <AlertDialogDescription>确认删除这张图片？此操作不可撤销。</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>取消</AlertDialogCancel>
+                        <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">删除</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogPrimitive.Content>
+                  </AlertDialogPortal>
                 </AlertDialog>
               </>
             )}
