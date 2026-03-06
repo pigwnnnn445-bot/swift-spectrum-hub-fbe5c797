@@ -18,6 +18,10 @@ export interface ComposerPayload {
   similarity: number;
 }
 
+export interface ImageEditComposerHandle {
+  applyPrompt: (text: string) => void;
+}
+
 interface ImageEditComposerProps {
   task: GenerateTask;
   models: ModelConfig[];
