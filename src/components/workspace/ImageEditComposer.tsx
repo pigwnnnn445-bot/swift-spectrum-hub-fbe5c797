@@ -32,9 +32,9 @@ const ImageEditComposer = ({ task, models, onGenerate }: ImageEditComposerProps)
   const [styleId, setStyleId] = useState<number | null>(null);
   const [similarity, setSimilarity] = useState(50);
 
-  // Initialize from task snapshot
+  // Initialize from task snapshot — prompt always starts empty
   useEffect(() => {
-    setEditPrompt(task.prompt);
+    setEditPrompt("");
     const m = models.find((m) => m.id === task.modelId) ?? models[0] ?? null;
     setSelectedModel(m);
     if (m) {
