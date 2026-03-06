@@ -261,7 +261,7 @@ const MobileParamBar = ({
             />
             <EntryPopover open={resolutionOpen} onClose={() => setResolutionOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
               <p className="text-sm text-muted-foreground mb-3">分辨率</p>
-              <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto workspace-scroll">
+              <div className="flex flex-col gap-0.5 overflow-y-auto overscroll-contain workspace-scroll" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
                 {selectedModel.resolution.map((r) => {
                   const isSelected = resolution === r.resolution;
                   return (
