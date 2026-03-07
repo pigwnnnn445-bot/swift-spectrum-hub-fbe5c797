@@ -435,7 +435,7 @@ const ImageGenDarkPage = () => {
         </div>
 
         {/* ── 移动端：输入框 + 参数栏整体卡片 ── */}
-        <div className="sm:hidden mx-4 mb-2 rounded-2xl border border-workspace-border bg-workspace-surface overflow-visible">
+        <div className="sm:hidden mx-4 mb-2 rounded-2xl bg-muted/30 px-4 py-4 overflow-visible">
           <HeroPromptBar
             prompt={prompt}
             onPromptChange={setPrompt}
