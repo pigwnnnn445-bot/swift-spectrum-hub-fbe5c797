@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Move, Paintbrush, Eraser, Undo2, Redo2, Trash2, ZoomIn, ZoomOut, Zap, Minus, Plus, Coins } from "lucide-react";
+import { X, Move, Paintbrush, Eraser, Undo2, Redo2, Trash2, ZoomIn, ZoomOut, Zap, Minus, Plus } from "lucide-react";
 import { Dialog, DialogPortal, DialogOverlay, DialogTitle } from "@/components/ui/dialog";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
@@ -520,19 +519,17 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClos
               style={{ minHeight: 40, maxHeight: 160 }}
               rows={1}
             />
-            <Button
+            <button
               onClick={handleGenerate}
               disabled={isSubmitting}
-              className="shrink-0 gap-2 px-4"
+              className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:opacity-60 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-gradient-to-r from-primary to-workspace-neon h-8 w-8 sm:w-auto sm:px-3 text-sm font-bold rounded-full text-white gap-1"
             >
-              <span>发送</span>
+              <Zap className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">发送</span>
               {price > 0 && (
-                <span className="flex items-center gap-1 text-primary-foreground/80 text-xs">
-                  <Coins className="h-3.5 w-3.5" />
-                  {price}
-                </span>
+                <span className="hidden sm:inline text-white/70">{price}</span>
               )}
-            </Button>
+            </button>
           </div>
         </div>
       </DialogPrimitive.Content>
