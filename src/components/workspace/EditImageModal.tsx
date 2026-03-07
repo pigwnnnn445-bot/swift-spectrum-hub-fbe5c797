@@ -257,13 +257,11 @@ const EditImageModal = ({
           <button
             disabled={!canSubmit}
             onClick={handleGenerate}
-            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:opacity-60 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-gradient-to-r from-primary to-workspace-neon h-8 w-8 sm:w-auto sm:px-3 text-sm font-bold rounded-full text-white gap-1"
           >
-            发送
-            <span className="flex items-center gap-0.5 text-xs opacity-80">
-              <Zap className="h-3 w-3" />
-              {selectedModel?.price ?? 5}
-            </span>
+            <Zap className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">发送</span>
+            <span className="hidden sm:inline text-white/70">{selectedModel?.price ?? 5}</span>
           </button>
         </div>
       </div>

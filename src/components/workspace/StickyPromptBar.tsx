@@ -47,11 +47,11 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isGenerating, 
             <button
               disabled={!prompt.trim() || isGenerating}
               onClick={onSubmit}
-              className="mr-2 mb-2 flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-workspace-neon px-5 py-2.5 text-sm font-medium text-white transition-all hover:brightness-110 shadow-md shrink-0 disabled:opacity-40 disabled:pointer-events-none"
+              className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:opacity-60 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-gradient-to-r from-primary to-workspace-neon h-8 w-8 sm:w-auto sm:px-3 text-sm font-bold rounded-full text-white gap-1 mr-2 mb-2"
             >
-              {isGenerating ? "生成中..." : "发送"}
               <Zap className="h-3.5 w-3.5" />
-              <span className="text-white/70">{cost}</span>
+              <span className="hidden sm:inline">{isGenerating ? "生成中..." : "发送"}</span>
+              <span className="hidden sm:inline text-white/70">{cost}</span>
             </button>
           </div>
         </div>
