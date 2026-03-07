@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Move, Paintbrush, Eraser, Undo2, Redo2, Trash2, ZoomIn, ZoomOut, Zap, Minus, Plus, Coins } from "lucide-react";
+import { X, Move, Paintbrush, Eraser, Undo2, Redo2, Trash2, ZoomIn, ZoomOut, Zap, Minus, Plus } from "lucide-react";
 import { Dialog, DialogPortal, DialogOverlay, DialogTitle } from "@/components/ui/dialog";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
