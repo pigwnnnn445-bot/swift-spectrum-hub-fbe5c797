@@ -139,7 +139,7 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
                 </span>
                 <span className="flex-1 text-sm text-foreground leading-relaxed">{text}</span>
                 <button
-                  onClick={(e) => { e.stopPropagation(); handleEditCandidate(idx); }}
+                  onClick={(e) => { e.stopPropagation(); handleOpenEditModal(idx); }}
                   className="shrink-0 mt-0.5 flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
                   title="编辑"
                 >
