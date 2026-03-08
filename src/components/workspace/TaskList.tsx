@@ -9,9 +9,11 @@ interface TaskListProps {
   onEditImage?: (imageUrl: string, task: GenerateTask) => void;
   onInpaint?: (imageUrl: string) => void;
   onImageClick?: (imageUrl: string, task: GenerateTask, imageIndex: number) => void;
+  onDeleteImage?: (taskId: string, imageIndex: number) => void;
+  onDeleteTask?: (taskId: string) => void;
 }
 
-const TaskList = ({ tasks, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage, onInpaint, onImageClick }: TaskListProps) => {
+const TaskList = ({ tasks, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage, onInpaint, onImageClick, onDeleteImage, onDeleteTask }: TaskListProps) => {
   if (tasks.length === 0) return null;
 
   return (
