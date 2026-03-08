@@ -5,7 +5,6 @@ interface HeroPromptBarProps {
   prompt: string;
   onPromptChange: (value: string) => void;
   cost: number;
-  isGenerating?: boolean;
   isSubmitDisabled?: boolean;
   onSubmit?: () => void;
   hasActiveTask?: boolean;
@@ -27,7 +26,7 @@ const useAutoResize = (value: string, maxHeight: number) => {
   return ref;
 };
 
-const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, isSubmitDisabled, onSubmit, hasActiveTask, promptInputRef }: HeroPromptBarProps) => {
+const HeroPromptBar = ({ prompt, onPromptChange, cost, isSubmitDisabled, onSubmit, hasActiveTask, promptInputRef }: HeroPromptBarProps) => {
   const autoRef = useAutoResize(prompt, 220);
 
   // Merge internal auto-resize ref with external ref
@@ -64,7 +63,7 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, isSubmitDis
               onClick={onSubmit}
               className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:opacity-60 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-gradient-to-r from-primary to-workspace-neon h-8 w-8 sm:w-auto sm:px-3 text-sm font-bold rounded-full text-white gap-1 mr-2 mb-2"
             >
-              <span className="hidden sm:inline">{isGenerating ? "生成中..." : "发送"}</span>
+              <span className="hidden sm:inline">发送</span>
               <span>⚡</span>
               <span className="hidden sm:inline text-white/70">{cost}</span>
             </button>

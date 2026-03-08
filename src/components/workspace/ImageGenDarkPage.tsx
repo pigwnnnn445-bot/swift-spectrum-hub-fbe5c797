@@ -84,8 +84,6 @@ const ImageGenDarkPage = () => {
     setExtraCost(extra);
   }, []);
 
-  // ── 检查是否有任务正在生成（仅用于按钮文案等实时状态） ──
-  const isGenerating = tasks.some((t) => t.status === "generating" || t.status === "submitting");
 
   // ── 提交生成任务 ──
   const handleSubmit = useCallback(() => {
@@ -449,7 +447,7 @@ const ImageGenDarkPage = () => {
             prompt={prompt}
             onPromptChange={setPrompt}
             cost={totalCost}
-            isGenerating={isGenerating}
+            
             isSubmitDisabled={isSubmitting || isCooldown}
             onSubmit={handleSubmit}
             hasActiveTask={hasEnteredCreationMode}
@@ -476,7 +474,7 @@ const ImageGenDarkPage = () => {
             prompt={prompt}
             onPromptChange={setPrompt}
             cost={totalCost}
-            isGenerating={isGenerating}
+            
             isSubmitDisabled={isSubmitting || isCooldown}
             onSubmit={handleSubmit}
             hasActiveTask={hasEnteredCreationMode}
