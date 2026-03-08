@@ -1,4 +1,5 @@
 import { useRef, useEffect, useCallback, type RefObject } from "react";
+import { Sparkles } from "lucide-react";
 
 
 interface HeroPromptBarProps {
