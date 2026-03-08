@@ -446,11 +446,7 @@ const ImageGenDarkPage = () => {
         </div>
 
         {/* ── 移动端：输入框 + 参数栏整体卡片 ── */}
-        <div className="sm:hidden mx-4 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible space-y-2
-          [&_>div>.relative.w-full.bg-workspace-panel]:bg-transparent
-          [&_h1]:whitespace-nowrap [&_h1]:overflow-hidden [&_h1]:text-ellipsis [&_h1]:mb-4 [&_h1]:text-3xl [&_h1]:px-0
-          [&_>div>.relative.w-full.bg-workspace-panel_.relative.z-10]:px-0 [&_>div>.relative.w-full.bg-workspace-panel_.relative.z-10]:py-0
-        ">
+        <div className="sm:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
           <HeroPromptBar
             prompt={prompt}
             onPromptChange={setPrompt}
@@ -461,19 +457,21 @@ const ImageGenDarkPage = () => {
             hasActiveTask={hasEnteredCreationMode}
             promptInputRef={promptInputRef}
           />
-          <MobileParamBar
-            selectedModel={selectedModel}
-            models={models}
-            onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
-            imageCount={imageCount}
-            onImageCountChange={setImageCount}
-            onRatioChange={setSidebarRatio}
-            onResolutionChange={setSidebarResolution}
-            onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-            onSimilarityChange={setSidebarSimilarity}
-            referenceImages={referenceImages}
-            onReferenceImagesChange={setReferenceImages}
-          />
+          <div className="mt-2">
+            <MobileParamBar
+              selectedModel={selectedModel}
+              models={models}
+              onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+              imageCount={imageCount}
+              onImageCountChange={setImageCount}
+              onRatioChange={setSidebarRatio}
+              onResolutionChange={setSidebarResolution}
+              onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
+              onSimilarityChange={setSidebarSimilarity}
+              referenceImages={referenceImages}
+              onReferenceImagesChange={setReferenceImages}
+            />
+          </div>
         </div>
 
         {/* ── PC 端：原 HeroPromptBar 保持不变 ── */}
