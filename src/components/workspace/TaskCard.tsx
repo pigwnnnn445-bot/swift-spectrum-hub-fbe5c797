@@ -4,6 +4,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import TaskAttributePanel from "./TaskAttributePanel";
+import ConfirmDialog from "./ConfirmDialog";
 import type { GenerateTask } from "@/types/task";
 
 interface TaskCardProps {
@@ -31,6 +32,20 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
   const isError = task.status === "error";
   const isSuccess = task.status === "success";
   const aspectRatio = ratioToAspect(task.ratio);
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<(() => void) | null>(null);
+
+  const requestDelete = (action: () => void) => {
+    setPendingDelete(() => action);
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    pendingDelete?.();
+    setConfirmOpen(false);
+    setPendingDelete(null);
+  };
 
   const handleCopyResultImage = async (url: string) => {
     try {
@@ -117,7 +132,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                       </Tooltip>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button onClick={() => { if (window.confirm("确认删除这张图片？")) onDeleteImage?.(task.id, 0); }} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-red-600/80 transition-colors cursor-pointer active:scale-90">
+                          <button onClick={() => requestDelete(() => onDeleteImage?.(task.id, 0))} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-red-600/80 transition-colors cursor-pointer active:scale-90">
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
                         </TooltipTrigger>
@@ -166,7 +181,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                       </Tooltip>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button onClick={() => { if (window.confirm("确认删除这张图片？")) onDeleteTask?.(task.id); }} className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white hover:bg-red-600/80 transition-colors cursor-pointer active:scale-90">
+                          <button onClick={() => requestDelete(() => onDeleteTask?.(task.id))} className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white hover:bg-red-600/80 transition-colors cursor-pointer active:scale-90">
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </TooltipTrigger>
@@ -246,7 +261,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button onClick={() => { if (window.confirm("确认删除这张图片？")) onDeleteImage?.(task.id, i); }} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-red-600/80 transition-colors cursor-pointer active:scale-90">
+                            <button onClick={() => requestDelete(() => onDeleteImage?.(task.id, i))} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-red-600/80 transition-colors cursor-pointer active:scale-90">
                               <Trash2 className="h-3.5 w-3.5" />
                             </button>
                           </TooltipTrigger>
@@ -300,7 +315,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button onClick={() => { if (window.confirm("确认删除这张图片？")) onDeleteTask?.(task.id); }} className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white hover:bg-red-600/80 transition-colors cursor-pointer active:scale-90">
+                            <button onClick={() => requestDelete(() => onDeleteTask?.(task.id))} className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white hover:bg-red-600/80 transition-colors cursor-pointer active:scale-90">
                               <Trash2 className="h-4 w-4" />
                             </button>
                           </TooltipTrigger>
@@ -323,6 +338,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
           />
         </div>
       </div>
+      <ConfirmDialog open={confirmOpen} onOpenChange={setConfirmOpen} onConfirm={handleConfirmDelete} />
     </div>
   );
 };
