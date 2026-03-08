@@ -287,6 +287,7 @@ const ImageGenDarkPage = () => {
     setDetailOpen(false);
     setDetailTask(null);
     const newTaskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const hasRef = payload.referenceImages && payload.referenceImages.length > 0;
     const newTask: GenerateTask = {
       id: newTaskId,
       prompt: payload.editPrompt,
@@ -298,10 +299,11 @@ const ImageGenDarkPage = () => {
       resolution: payload.resolution,
       styleName: payload.styleName || undefined,
       styleId: payload.styleId,
-      generationMode: "text-to-image",
+      generationMode: hasRef ? "image-to-image" : "text-to-image",
       similarity: payload.similarity,
       count: payload.imageCount ?? 1,
       images: [],
+      referenceImages: hasRef ? [...payload.referenceImages] : undefined,
       createdAt: Date.now(),
       requestPayload: {
         model_id: payload.model.id,
@@ -310,6 +312,8 @@ const ImageGenDarkPage = () => {
         ratio: payload.ratio,
         resolution: payload.resolution,
         style_id: payload.styleId,
+        similarity: payload.similarity,
+        reference_images: hasRef ? [...payload.referenceImages] : [],
       },
     };
     setHasEnteredCreationMode(true);
