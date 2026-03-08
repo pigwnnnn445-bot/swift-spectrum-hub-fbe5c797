@@ -134,3 +134,18 @@
 .generating-arrow-1 { animation: taskcard-generating-dot 1.2s ease-in-out infinite; }
 .generating-arrow-2 { animation: taskcard-generating-dot 1.2s ease-in-out 0.3s infinite; }
 .generating-arrow-3 { animation: taskcard-generating-dot 1.2s ease-in-out 0.6s infinite; }
+
+/* Mobile input module: unify background, fix title, compact spacing */
+.mobile-input-module > div:first-child {
+  background: transparent !important;
+}
+.mobile-input-module > div:first-child > div:first-child {
+  padding: 0 !important;
+}
+.mobile-input-module h1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+}
