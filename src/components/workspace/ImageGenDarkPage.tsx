@@ -80,15 +80,13 @@ const ImageGenDarkPage = () => {
     observer.observe(target);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    fetchModelsData().then((data) => {
       setProviders(data.provider_list);
       setModels(data.model_list);
       if (data.model_list.length > 0) setSelectedModel(data.model_list[0]);
     });
-  }, []);
-
-  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    const scrollTop = e.currentTarget.scrollTop;
-    setShowStickyBar(scrollTop > 200);
   }, []);
 
   const handleExtraCostChange = useCallback((extra: number) => {
