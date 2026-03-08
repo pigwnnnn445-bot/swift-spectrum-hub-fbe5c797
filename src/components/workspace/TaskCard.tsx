@@ -334,7 +334,6 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
           <TaskAttributePanel
             task={task}
             onApplyPrompt={onApplyPrompt}
-            onApplyReferenceImage={onApplyReferenceImage}
           />
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { ChevronDown, ChevronUp, Copy, ArrowUp, Image as ImageIcon, Palette } from "lucide-react";
+import { ChevronDown, ChevronUp, Copy, ArrowUp, Image as ImageIcon, Palette, ZoomIn } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import type { GenerateTask } from "@/types/task";
 
@@ -8,12 +9,11 @@ interface TaskAttributePanelProps {
   task: GenerateTask;
   /** Optional: called when user clicks "apply prompt" */
   onApplyPrompt?: (prompt: string) => void;
-  /** Optional: called when user clicks "apply reference image" */
-  onApplyReferenceImage?: (imageUrl: string) => void;
 }
 
-const TaskAttributePanel = ({ task, onApplyPrompt, onApplyReferenceImage }: TaskAttributePanelProps) => {
+const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) => {
   const hasReferenceImages = (task.referenceImages?.length ?? 0) > 0;
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const [promptExpanded, setPromptExpanded] = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
@@ -60,9 +60,6 @@ const TaskAttributePanel = ({ task, onApplyPrompt, onApplyReferenceImage }: Task
     }
   };
 
-  const handleApplyImage = (url: string) => {
-    onApplyReferenceImage?.(url);
-  };
 
   return (
     <div className="flex flex-col">
@@ -184,11 +181,11 @@ const TaskAttributePanel = ({ task, onApplyPrompt, onApplyReferenceImage }: Task
                     <Copy className="h-2.5 w-2.5" />
                   </button>
                   <button
-                    onClick={() => handleApplyImage(src)}
-                    title="应用为参考图"
+                    onClick={() => setPreviewImage(src)}
+                    title="查看大图"
                     className="flex h-5 w-5 items-center justify-center rounded-full bg-white/25 text-white hover:bg-white/40 transition-colors duration-150 cursor-pointer active:scale-90"
                   >
-                    <ArrowUp className="h-2.5 w-2.5" />
+                    <ZoomIn className="h-2.5 w-2.5" />
                   </button>
                 </div>
               </div>
@@ -196,6 +193,15 @@ const TaskAttributePanel = ({ task, onApplyPrompt, onApplyReferenceImage }: Task
           </div>
         </div>
       )}
+
+      {/* 参考图大图预览 */}
+      <Dialog open={!!previewImage} onOpenChange={(open) => { if (!open) setPreviewImage(null); }}>
+        <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 bg-black/95 border-none flex items-center justify-center">
+          {previewImage && (
+            <img src={previewImage} alt="参考图预览" className="max-w-full max-h-[85vh] object-contain rounded" />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
