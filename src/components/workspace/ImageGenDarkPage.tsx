@@ -339,6 +339,14 @@ const ImageGenDarkPage = () => {
           tasks={tasks}
           onBack={() => setViewMode("gen")}
           onImageClick={handleImageClick}
+          onGoToGallery={() => {
+            setViewMode("gen");
+            setHasEnteredCreationMode(true);
+            setTimeout(() => {
+              const el = document.getElementById("inspiration-gallery");
+              if (el) el.scrollIntoView({ behavior: "smooth" });
+            }, 100);
+          }}
           onDeleteImage={(taskId, imageIndex) => {
             setTasks((prev) => prev
               .map((t) => {
