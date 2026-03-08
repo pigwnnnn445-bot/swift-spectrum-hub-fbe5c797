@@ -145,11 +145,6 @@ const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) =>
             {task.resolution}
           </span>
         )}
-        {task.similarity != null && task.generationMode === "image-to-image" && (
-          <span className="flex items-center gap-1 rounded-full bg-workspace-chip px-2.5 py-1 text-xs text-workspace-panel-foreground h-[26px]">
-            相似度 {task.similarity}%
-          </span>
-        )}
       </div>
 
       {/* 3) 图生图标签 + 参考图缩略图 */}
