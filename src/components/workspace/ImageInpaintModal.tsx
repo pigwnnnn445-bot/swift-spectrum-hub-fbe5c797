@@ -63,6 +63,11 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClos
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasMask, setHasMask] = useState(false);
 
+  // Prompt generator
+  const [genOpen, setGenOpen] = useState(false);
+  const [optOpen, setOptOpen] = useState(false);
+  const [pgSeed, setPgSeed] = useState("");
+
   /* refs */
   const containerRef = useRef<HTMLDivElement>(null);
   const displayCanvasRef = useRef<HTMLCanvasElement>(null);
