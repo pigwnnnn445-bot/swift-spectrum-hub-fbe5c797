@@ -287,15 +287,6 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
             onApplyPrompt={onApplyPrompt}
             onApplyReferenceImage={onApplyReferenceImage}
           />
-          {/* 生成中标签 — TaskAttributePanel 不含状态标签 */}
-          {isGenerating && (
-            <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
-              <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs text-primary h-[26px]">
-                <RotateCw className="h-3 w-3 animate-spin" />
-                生成中...
-              </span>
-            </div>
-          )}
         </div>
       </div>
     </div>
