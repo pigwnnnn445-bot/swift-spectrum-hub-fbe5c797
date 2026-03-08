@@ -4,6 +4,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import TaskAttributePanel from "./TaskAttributePanel";
+import ConfirmDialog from "./ConfirmDialog";
 import type { GenerateTask } from "@/types/task";
 
 interface TaskCardProps {
