@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { X, AlertCircle, Pencil, RefreshCw } from "lucide-react";
+import PromptCandidateEditModal from "./PromptCandidateEditModal";
 import {
   Dialog,
   DialogPortal,
@@ -35,6 +36,10 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
   const [selectedIdx, setSelectedIdx] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Third modal (candidate edit)
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editModalIdx, setEditModalIdx] = useState(0);
+
   // Reset on open
   useEffect(() => {
     if (open && seed) {
@@ -59,8 +64,15 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
     onApply(finalText);
   }, [topInput, seed, candidates, selectedIdx, onApply]);
 
-  const handleEditCandidate = (idx: number) => {
-    setTopInput(candidates[idx]);
+  const handleOpenEditModal = (idx: number) => {
+    setEditModalIdx(idx);
+    setEditModalOpen(true);
+  };
+
+  const handleCandidateEdited = (newText: string) => {
+    setCandidates(prev => prev.map((c, i) => i === editModalIdx ? newText : c));
+    setSelectedIdx(editModalIdx);
+    setEditModalOpen(false);
   };
 
   return (
@@ -127,7 +139,7 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
                 </span>
                 <span className="flex-1 text-sm text-foreground leading-relaxed">{text}</span>
                 <button
-                  onClick={(e) => { e.stopPropagation(); handleEditCandidate(idx); }}
+                  onClick={(e) => { e.stopPropagation(); handleOpenEditModal(idx); }}
                   className="shrink-0 mt-0.5 flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
                   title="编辑"
                 >
@@ -165,6 +177,15 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
           </div>
         </DialogPrimitive.Content>
       </DialogPortal>
+
+      {/* Third modal: candidate edit */}
+      <PromptCandidateEditModal
+        open={editModalOpen}
+        index={editModalIdx + 1}
+        initialText={candidates[editModalIdx] ?? ""}
+        onClose={() => setEditModalOpen(false)}
+        onGenerate={handleCandidateEdited}
+      />
     </Dialog>
   );
 };
