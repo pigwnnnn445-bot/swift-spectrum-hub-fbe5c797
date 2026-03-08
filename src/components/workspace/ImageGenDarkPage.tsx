@@ -32,6 +32,7 @@ const ImageGenDarkPage = () => {
   const [imageCount, setImageCount] = useState(1);
   const [tasks, setTasks] = useState<GenerateTask[]>([]);
   const [hasEnteredCreationMode, setHasEnteredCreationMode] = useState(false);
+  const [showInspirationOnly, setShowInspirationOnly] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCooldown, setIsCooldown] = useState(false);
   const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
