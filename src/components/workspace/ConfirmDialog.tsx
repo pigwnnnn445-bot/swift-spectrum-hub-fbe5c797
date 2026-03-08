@@ -3,6 +3,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -12,14 +13,14 @@ interface ConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
-  title?: string;
 }
 
-const ConfirmDialog = ({ open, onOpenChange, onConfirm, title = "确认删除图片？" }: ConfirmDialogProps) => (
+const ConfirmDialog = ({ open, onOpenChange, onConfirm }: ConfirmDialogProps) => (
   <AlertDialog open={open} onOpenChange={onOpenChange}>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>{title}</AlertDialogTitle>
+        <AlertDialogTitle>确认删除</AlertDialogTitle>
+        <AlertDialogDescription>确认删除这张图片？此操作不可撤销。</AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>取消</AlertDialogCancel>
