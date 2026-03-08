@@ -9,12 +9,11 @@ interface TaskAttributePanelProps {
   task: GenerateTask;
   /** Optional: called when user clicks "apply prompt" */
   onApplyPrompt?: (prompt: string) => void;
-  /** Optional: called when user clicks "apply reference image" */
-  onApplyReferenceImage?: (imageUrl: string) => void;
 }
 
-const TaskAttributePanel = ({ task, onApplyPrompt, onApplyReferenceImage }: TaskAttributePanelProps) => {
+const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) => {
   const hasReferenceImages = (task.referenceImages?.length ?? 0) > 0;
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const [promptExpanded, setPromptExpanded] = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
