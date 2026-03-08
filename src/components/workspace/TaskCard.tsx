@@ -156,13 +156,21 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                   </div>
                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150 rounded-lg">
                     <TooltipProvider delayDuration={200}>
-                      <Tooltip>
+                       <Tooltip>
                         <TooltipTrigger asChild>
                           <button onClick={() => onRetry?.(task.id)} className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/40 transition-colors cursor-pointer active:scale-90">
                             <RotateCw className="h-4 w-4" />
                           </button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom">重新生成图片</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button onClick={() => { if (window.confirm("确认删除这张图片？")) onDeleteTask?.(task.id); }} className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white hover:bg-red-600/80 transition-colors cursor-pointer active:scale-90">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">删除图片</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </div>
