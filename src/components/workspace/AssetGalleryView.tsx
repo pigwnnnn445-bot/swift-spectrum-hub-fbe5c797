@@ -54,7 +54,7 @@ const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDelete
       <div className="flex items-center gap-3 px-4 py-3 bg-workspace-panel border-b border-workspace-border/60 sm:px-6 lg:px-8">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>返回</span>
