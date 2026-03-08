@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { X, ChevronDown, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import PromptGeneratorModal from "./PromptGeneratorModal";
+import PromptOptimizerModal from "./PromptOptimizerModal";
 import type { ModelConfig } from "@/config/modelConfig";
 import type { GenerateTask, GenerationMode } from "@/types/task";
 
@@ -102,6 +104,11 @@ const EditImageModal = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Prompt generator
+  const [genOpen, setGenOpen] = useState(false);
+  const [optOpen, setOptOpen] = useState(false);
+  const [seed, setSeed] = useState("");
 
   const MAX_HEIGHT = 280;
 
@@ -256,7 +263,7 @@ const EditImageModal = ({
           {/* 右：提示词生成器 + 发送按钮 */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => console.log("open prompt generator")}
+              onClick={() => setGenOpen(true)}
               className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 h-8 text-xs font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer shrink-0"
             >
               <Sparkles className="h-3.5 w-3.5" />
@@ -274,6 +281,26 @@ const EditImageModal = ({
           </div>
         </div>
       </div>
+
+      {/* Prompt generator modals */}
+      <PromptGeneratorModal
+        open={genOpen}
+        onClose={() => setGenOpen(false)}
+        onOptimize={(s) => { setSeed(s); setGenOpen(false); setOptOpen(true); }}
+      />
+      <PromptOptimizerModal
+        open={optOpen}
+        seed={seed}
+        onClose={() => setOptOpen(false)}
+        onApply={(text) => {
+          setEditPrompt(text);
+          setOptOpen(false);
+          requestAnimationFrame(() => {
+            const el = textareaRef.current;
+            if (el) { el.focus(); el.setSelectionRange(text.length, text.length); }
+          });
+        }}
+      />
     </div>
   );
 };

@@ -6,6 +6,8 @@ import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import PromptGeneratorModal from "./PromptGeneratorModal";
+import PromptOptimizerModal from "./PromptOptimizerModal";
 
 /* ─── types ─── */
 type ActiveTool = "move" | "brush" | "eraser";
@@ -60,6 +62,11 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClos
   const [prompt, setPrompt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasMask, setHasMask] = useState(false);
+
+  // Prompt generator
+  const [genOpen, setGenOpen] = useState(false);
+  const [optOpen, setOptOpen] = useState(false);
+  const [pgSeed, setPgSeed] = useState("");
 
   /* refs */
   const containerRef = useRef<HTMLDivElement>(null);
@@ -520,7 +527,7 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClos
               rows={1}
             />
             <button
-              onClick={() => console.log("open prompt generator")}
+              onClick={() => setGenOpen(true)}
               className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 h-8 text-xs font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer shrink-0"
             >
               <Sparkles className="h-3.5 w-3.5" />
@@ -537,6 +544,26 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClos
             </button>
           </div>
         </div>
+
+        {/* Prompt generator modals */}
+        <PromptGeneratorModal
+          open={genOpen}
+          onClose={() => setGenOpen(false)}
+          onOptimize={(s) => { setPgSeed(s); setGenOpen(false); setOptOpen(true); }}
+        />
+        <PromptOptimizerModal
+          open={optOpen}
+          seed={pgSeed}
+          onClose={() => setOptOpen(false)}
+          onApply={(text) => {
+            setPrompt(text);
+            setOptOpen(false);
+            requestAnimationFrame(() => {
+              const el = promptRef.current;
+              if (el) { el.focus(); el.setSelectionRange(text.length, text.length); }
+            });
+          }}
+        />
       </DialogPrimitive.Content>
       </DialogPortal>
     </Dialog>

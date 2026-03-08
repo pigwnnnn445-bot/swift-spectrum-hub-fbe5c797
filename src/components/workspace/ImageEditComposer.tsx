@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import ModelSelector from "./ModelSelector";
 import StyleSelector from "./StyleSelector";
 import UploadReferencePanel from "./UploadReferencePanel";
+import PromptGeneratorModal from "./PromptGeneratorModal";
+import PromptOptimizerModal from "./PromptOptimizerModal";
 import {
   getOrderedEnabledImageLikes,
   getModelCapabilities,
@@ -155,6 +157,11 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const [uploadOpen, setUploadOpen] = useState(false);
     const [countOpen, setCountOpen] = useState(false);
     const [inpaintOpen, setInpaintOpen] = useState(false);
+
+    // Prompt generator
+    const [genOpen, setGenOpen] = useState(false);
+    const [optOpen, setOptOpen] = useState(false);
+    const [seed, setSeed] = useState("");
 
     useImperativeHandle(ref, () => ({
       applyPrompt(text: string) {
@@ -500,9 +507,9 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
           {/* Spacer */}
           <div className="flex-1" />
 
-          {/* Send button – aligned with HeroPromptBar */}
+          {/* Prompt generator button */}
           <button
-            onClick={() => console.log("open prompt generator")}
+            onClick={() => setGenOpen(true)}
             className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 h-8 text-xs font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer shrink-0"
           >
             <Sparkles className="h-3.5 w-3.5" />
@@ -537,6 +544,26 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             }}
           />
         )}
+
+        {/* Prompt generator modals */}
+        <PromptGeneratorModal
+          open={genOpen}
+          onClose={() => setGenOpen(false)}
+          onOptimize={(s) => { setSeed(s); setGenOpen(false); setOptOpen(true); }}
+        />
+        <PromptOptimizerModal
+          open={optOpen}
+          seed={seed}
+          onClose={() => setOptOpen(false)}
+          onApply={(text) => {
+            setEditPrompt(text);
+            setOptOpen(false);
+            requestAnimationFrame(() => {
+              const el = textareaRef.current;
+              if (el) { el.focus(); el.setSelectionRange(text.length, text.length); }
+            });
+          }}
+        />
       </div>
     );
   }
