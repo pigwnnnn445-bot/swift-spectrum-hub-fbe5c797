@@ -1,5 +1,5 @@
 import { useRef, useEffect, useCallback, type RefObject } from "react";
-import { Zap } from "lucide-react";
+
 
 interface HeroPromptBarProps {
   prompt: string;

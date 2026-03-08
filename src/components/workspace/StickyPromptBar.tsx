@@ -1,5 +1,5 @@
 import { useRef, useEffect, useCallback } from "react";
-import { Zap } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 interface StickyPromptBarProps {

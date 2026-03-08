@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, Zap, ChevronDown } from "lucide-react";
+import { X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import type { ModelConfig } from "@/config/modelConfig";
