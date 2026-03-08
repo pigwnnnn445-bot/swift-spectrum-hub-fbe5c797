@@ -181,11 +181,11 @@ const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) =>
                     <Copy className="h-2.5 w-2.5" />
                   </button>
                   <button
-                    onClick={() => handleApplyImage(src)}
-                    title="应用为参考图"
+                    onClick={() => setPreviewImage(src)}
+                    title="查看大图"
                     className="flex h-5 w-5 items-center justify-center rounded-full bg-white/25 text-white hover:bg-white/40 transition-colors duration-150 cursor-pointer active:scale-90"
                   >
-                    <ArrowUp className="h-2.5 w-2.5" />
+                    <ZoomIn className="h-2.5 w-2.5" />
                   </button>
                 </div>
               </div>
