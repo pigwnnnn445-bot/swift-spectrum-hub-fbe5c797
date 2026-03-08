@@ -527,7 +527,7 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClos
               rows={1}
             />
             <button
-              onClick={() => console.log("open prompt generator")}
+              onClick={() => setGenOpen(true)}
               className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 h-8 text-xs font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer shrink-0"
             >
               <Sparkles className="h-3.5 w-3.5" />
