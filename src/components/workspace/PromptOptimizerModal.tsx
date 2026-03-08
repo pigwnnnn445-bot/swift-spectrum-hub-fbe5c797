@@ -177,6 +177,15 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
           </div>
         </DialogPrimitive.Content>
       </DialogPortal>
+
+      {/* Third modal: candidate edit */}
+      <PromptCandidateEditModal
+        open={editModalOpen}
+        index={editModalIdx + 1}
+        initialText={candidates[editModalIdx] ?? ""}
+        onClose={() => setEditModalOpen(false)}
+        onGenerate={handleCandidateEdited}
+      />
     </Dialog>
   );
 };
