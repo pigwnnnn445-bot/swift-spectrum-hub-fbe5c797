@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { X, AlertCircle, Pencil, RefreshCw } from "lucide-react";
+import PromptCandidateEditModal from "./PromptCandidateEditModal";
 import {
   Dialog,
   DialogPortal,
