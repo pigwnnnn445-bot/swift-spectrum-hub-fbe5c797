@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from "react";
-import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus, Minus, Plus, Zap, Hash, PaintBucket } from "lucide-react";
+import { Coins, Sparkles, Proportions, ScanLine, Palette, ImagePlus, Minus, Plus, Hash, PaintBucket } from "lucide-react";
 import ImageInpaintModal from "./ImageInpaintModal";
 import type { InpaintPayload } from "./ImageInpaintModal";
 import { toast } from "sonner";
@@ -506,8 +506,8 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
             disabled={!editPrompt.trim()}
             className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:opacity-60 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-gradient-to-r from-primary to-workspace-neon h-8 w-8 sm:w-auto sm:px-3 text-sm font-bold rounded-full text-white gap-1"
           >
-            <Zap className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">发送</span>
+            <span>⚡</span>
             <span className="hidden sm:inline text-white/70">{totalCost}</span>
           </button>
         </div>
