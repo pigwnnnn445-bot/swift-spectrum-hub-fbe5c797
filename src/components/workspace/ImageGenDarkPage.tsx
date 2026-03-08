@@ -26,7 +26,8 @@ const ImageGenDarkPage = () => {
   const [models, setModels] = useState<ModelConfig[]>([]);
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [showStickyBar, setShowStickyBar] = useState(false);
+  const [isHeroVisible, setIsHeroVisible] = useState(true);
+  const heroRef = useRef<HTMLDivElement>(null);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
   const [imageCount, setImageCount] = useState(1);
@@ -67,17 +68,25 @@ const ImageGenDarkPage = () => {
     };
   }, []);
 
+  // IntersectionObserver: 监听 HeroPromptBar 是否在视口内
+  useEffect(() => {
+    const root = mainScrollRef.current;
+    const target = heroRef.current;
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsHeroVisible(entry.isIntersecting),
+      { root, threshold: 0 }
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     fetchModelsData().then((data) => {
       setProviders(data.provider_list);
       setModels(data.model_list);
       if (data.model_list.length > 0) setSelectedModel(data.model_list[0]);
     });
-  }, []);
-
-  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    const scrollTop = e.currentTarget.scrollTop;
-    setShowStickyBar(scrollTop > 200);
   }, []);
 
   const handleExtraCostChange = useCallback((extra: number) => {
@@ -433,12 +442,15 @@ const ImageGenDarkPage = () => {
         onReferenceImagesChange={setReferenceImages}
       />
 
-      <main ref={mainScrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>
+      <main ref={mainScrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
         <div className="sticky top-0 z-50 flex items-center">
           <div className="flex-1 min-w-0">
             <TopNavBar onOpenAssets={() => setViewMode("assets")} />
           </div>
         </div>
+
+        {/* ── 哨兵元素：用于 IntersectionObserver 检测 Hero 是否在视口 ── */}
+        <div ref={heroRef} className="h-px w-full" />
 
         {/* ── 移动端：输入框 + 参数栏整体卡片 ── */}
         <div className="sm:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
@@ -446,7 +458,6 @@ const ImageGenDarkPage = () => {
             prompt={prompt}
             onPromptChange={setPrompt}
             cost={totalCost}
-            
             isSubmitDisabled={isSubmitting || isCooldown}
             onSubmit={handleSubmit}
             hasActiveTask={hasEnteredCreationMode}
@@ -469,13 +480,12 @@ const ImageGenDarkPage = () => {
           </div>
         </div>
 
-        {/* ── PC 端：原 HeroPromptBar 保持不变 ── */}
+        {/* ── PC 端：原 HeroPromptBar ── */}
         <div className="hidden sm:block">
           <HeroPromptBar
             prompt={prompt}
             onPromptChange={setPrompt}
             cost={totalCost}
-            
             isSubmitDisabled={isSubmitting || isCooldown}
             onSubmit={handleSubmit}
             hasActiveTask={hasEnteredCreationMode}
@@ -483,11 +493,11 @@ const ImageGenDarkPage = () => {
           />
         </div>
 
-        {/* 吸顶输入条：进入创作模式后由 HeroPromptBar 吸顶，无需 StickyPromptBar */}
-        {!hasEnteredCreationMode && (
+        {/* 吸顶输入条：仅当 Hero 哨兵滚出视口时显示 */}
+        {!isHeroVisible && (
           <div className="sticky top-[41px] z-40">
             <StickyPromptBar
-              visible={showStickyBar}
+              visible={true}
               prompt={prompt}
               onPromptChange={setPrompt}
               cost={totalCost}
