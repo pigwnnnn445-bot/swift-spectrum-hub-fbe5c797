@@ -442,7 +442,7 @@ const ImageGenDarkPage = () => {
         onReferenceImagesChange={setReferenceImages}
       />
 
-      <main ref={mainScrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll" onScroll={handleScroll}>
+      <main ref={mainScrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
         <div className="sticky top-0 z-50 flex items-center">
           <div className="flex-1 min-w-0">
             <TopNavBar onOpenAssets={() => setViewMode("assets")} />
