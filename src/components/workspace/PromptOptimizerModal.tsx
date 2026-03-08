@@ -127,7 +127,7 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
             {candidates.map((text, idx) => (
               <button
                 key={idx}
-                onClick={() => setSelectedIdx(idx)}
+                onClick={() => { setSelectedIdx(idx); setTopInput(candidates[idx]); }}
                 className={cn(
                   "w-full text-left rounded-xl border px-4 py-3 transition-colors cursor-pointer flex items-start gap-3",
                   selectedIdx === idx
