@@ -18,9 +18,10 @@ interface AssetGalleryViewProps {
   onImageClick: (imageUrl: string, task: GenerateTask, imageIndex: number) => void;
   onDeleteImage?: (taskId: string, imageIndex: number) => void;
   onDeleteTask?: (taskId: string) => void;
+  onGoToGallery?: () => void;
 }
 
-const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDeleteTask }: AssetGalleryViewProps) => {
+const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDeleteTask, onGoToGallery }: AssetGalleryViewProps) => {
   const [search, setSearch] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -76,10 +77,26 @@ const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDelete
       {/* Gallery */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto workspace-scroll p-4 sm:p-6 lg:p-8">
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-            <FolderEmpty className="h-12 w-12 mb-3 opacity-40" />
-            <p className="text-sm">{assets.length === 0 ? "暂无生成图片" : "未找到匹配结果"}</p>
-          </div>
+          assets.length === 0 ? (
+            /* 全部为空：空状态引导 */
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <FolderEmpty className="h-12 w-12 mb-3 opacity-40 text-muted-foreground" />
+              <p className="text-lg font-semibold text-foreground">哎呀，您的作品为空</p>
+              <p className="mt-2 text-sm text-muted-foreground">快去灵感显影室看看吧</p>
+              <button
+                onClick={() => onGoToGallery?.()}
+                className="mt-5 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                去灵感显影室
+              </button>
+            </div>
+          ) : (
+            /* 搜索无结果 */
+            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+              <FolderEmpty className="h-12 w-12 mb-3 opacity-40" />
+              <p className="text-sm">未找到匹配结果</p>
+            </div>
+          )
         ) : (
           <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 2xl:columns-6" style={{ columnGap: 12 }}>
             {filtered.map((item, i) => (

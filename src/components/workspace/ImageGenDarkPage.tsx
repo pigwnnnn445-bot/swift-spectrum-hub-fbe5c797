@@ -339,6 +339,14 @@ const ImageGenDarkPage = () => {
           tasks={tasks}
           onBack={() => setViewMode("gen")}
           onImageClick={handleImageClick}
+          onGoToGallery={() => {
+            setViewMode("gen");
+            setHasEnteredCreationMode(true);
+            setTimeout(() => {
+              const el = document.getElementById("inspiration-gallery");
+              if (el) el.scrollIntoView({ behavior: "smooth" });
+            }, 100);
+          }}
           onDeleteImage={(taskId, imageIndex) => {
             setTasks((prev) => prev
               .map((t) => {
@@ -492,9 +500,26 @@ const ImageGenDarkPage = () => {
         {/* 任务列表 */}
         <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }} onInpaint={(url) => { setInpaintImageUrl(url); setInpaintModalOpen(true); }} onImageClick={handleImageClick} />
 
-        {/* 灵感画廊：进入创作模式后隐藏，独立区块 */}
-        {!hasEnteredCreationMode && (
-          <div className="mt-8 px-4 pb-8 sm:px-6 lg:px-8">
+        {/* 首页空状态：创作模式下且任务全部删除 */}
+        {tasks.length === 0 && hasEnteredCreationMode && (
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <p className="text-lg font-semibold text-foreground">哎呀，您的作品为空</p>
+            <p className="mt-2 text-sm text-muted-foreground">快去灵感显影室看看吧</p>
+            <button
+              onClick={() => {
+                const el = document.getElementById("inspiration-gallery");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="mt-5 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              去灵感显影室
+            </button>
+          </div>
+        )}
+
+        {/* 灵感画廊：未进入创作模式 或 任务为空时展示 */}
+        {(!hasEnteredCreationMode || tasks.length === 0) && (
+          <div id="inspiration-gallery" className="mt-8 px-4 pb-8 sm:px-6 lg:px-8">
             <h2 className="mb-5 mt-2 text-lg font-semibold text-workspace-panel-foreground">
               🎨 灵感显影室
             </h2>
