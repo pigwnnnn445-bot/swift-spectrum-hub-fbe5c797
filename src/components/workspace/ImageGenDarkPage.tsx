@@ -32,6 +32,7 @@ const ImageGenDarkPage = () => {
   const [imageCount, setImageCount] = useState(1);
   const [tasks, setTasks] = useState<GenerateTask[]>([]);
   const [hasEnteredCreationMode, setHasEnteredCreationMode] = useState(false);
+  const [showInspirationOnly, setShowInspirationOnly] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCooldown, setIsCooldown] = useState(false);
   const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -497,39 +498,13 @@ const ImageGenDarkPage = () => {
           </div>
         )}
 
-        {/* 任务列表 */}
-        <TaskList
-          tasks={tasks}
-          onRetry={handleRetry}
-          onApplyPrompt={handleApplyPrompt}
-          onApplyReferenceImage={handleApplyReferenceImage}
-          onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }}
-          onInpaint={(url) => { setInpaintImageUrl(url); setInpaintModalOpen(true); }}
-          onImageClick={handleImageClick}
-          onDeleteImage={(taskId, imageIndex) => {
-            setTasks((prev) => prev
-              .map((t) => {
-                if (t.id !== taskId) return t;
-                return { ...t, images: t.images.filter((_, i) => i !== imageIndex) };
-              })
-              .filter((t) => !(t.status === "success" && t.images.length === 0))
-            );
-          }}
-          onDeleteTask={(taskId) => {
-            setTasks((prev) => prev.filter((t) => t.id !== taskId));
-          }}
-        />
-
-        {/* 首页空状态：创作模式下且任务全部删除 */}
-        {tasks.length === 0 && hasEnteredCreationMode && (
+        {/* 空状态：创作模式下任务全删且未点击去灵感显影室 */}
+        {tasks.length === 0 && hasEnteredCreationMode && !showInspirationOnly && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <p className="text-lg font-semibold text-foreground">哎呀，您的作品为空</p>
             <p className="mt-2 text-sm text-muted-foreground">快去灵感显影室看看吧</p>
             <button
-              onClick={() => {
-                const el = document.getElementById("inspiration-gallery");
-                if (el) el.scrollIntoView({ behavior: "smooth" });
-              }}
+              onClick={() => setShowInspirationOnly(true)}
               className="mt-5 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               去灵感显影室
@@ -537,8 +512,43 @@ const ImageGenDarkPage = () => {
           </div>
         )}
 
-        {/* 灵感画廊：未进入创作模式 或 任务为空时展示 */}
-        {(!hasEnteredCreationMode || tasks.length === 0) && (
+        {/* 点击去灵感显影室后：只展示素材库 */}
+        {tasks.length === 0 && hasEnteredCreationMode && showInspirationOnly && (
+          <div id="inspiration-gallery" className="mt-8 px-4 pb-8 sm:px-6 lg:px-8">
+            <h2 className="mb-5 mt-2 text-lg font-semibold text-workspace-panel-foreground">
+              🎨 灵感显影室
+            </h2>
+            <MasonryGallery onUsePrompt={setPrompt} />
+          </div>
+        )}
+
+        {/* 有任务时：正常展示任务列表 */}
+        {tasks.length > 0 && (
+          <TaskList
+            tasks={tasks}
+            onRetry={handleRetry}
+            onApplyPrompt={handleApplyPrompt}
+            onApplyReferenceImage={handleApplyReferenceImage}
+            onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }}
+            onInpaint={(url) => { setInpaintImageUrl(url); setInpaintModalOpen(true); }}
+            onImageClick={handleImageClick}
+            onDeleteImage={(taskId, imageIndex) => {
+              setTasks((prev) => prev
+                .map((t) => {
+                  if (t.id !== taskId) return t;
+                  return { ...t, images: t.images.filter((_, i) => i !== imageIndex) };
+                })
+                .filter((t) => !(t.status === "success" && t.images.length === 0))
+              );
+            }}
+            onDeleteTask={(taskId) => {
+              setTasks((prev) => prev.filter((t) => t.id !== taskId));
+            }}
+          />
+        )}
+
+        {/* 未进入创作模式时：展示灵感画廊 */}
+        {!hasEnteredCreationMode && (
           <div id="inspiration-gallery" className="mt-8 px-4 pb-8 sm:px-6 lg:px-8">
             <h2 className="mb-5 mt-2 text-lg font-semibold text-workspace-panel-foreground">
               🎨 灵感显影室
