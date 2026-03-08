@@ -474,7 +474,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                 sideOffset={8}
                 avoidCollisions
                 collisionPadding={12}
-                className="z-[150] rounded-2xl border border-workspace-border bg-workspace-panel shadow-lg p-4 w-fit min-w-[220px] max-w-[calc(100vw-24px)]"
+                className="z-[150] rounded-2xl border border-workspace-border bg-workspace-panel shadow-lg p-4 !w-[min(90vw,340px)] max-w-[calc(100vw-24px)]"
               >
                 <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50 mb-3">
                   上传参考图
