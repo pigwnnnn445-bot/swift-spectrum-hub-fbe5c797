@@ -474,7 +474,7 @@ const ImageGenDarkPage = () => {
             prompt={prompt}
             onPromptChange={setPrompt}
             cost={totalCost}
-            isGenerating={isGenerating}
+            
             isSubmitDisabled={isSubmitting || isCooldown}
             onSubmit={handleSubmit}
             hasActiveTask={hasEnteredCreationMode}
