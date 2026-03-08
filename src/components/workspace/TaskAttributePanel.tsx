@@ -12,7 +12,7 @@ interface TaskAttributePanelProps {
 }
 
 const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) => {
-  const hasReferenceImages = (task.referenceImages?.length ?? 0) > 0;
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const [promptExpanded, setPromptExpanded] = useState(false);
