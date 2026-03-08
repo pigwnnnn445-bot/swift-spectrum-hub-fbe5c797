@@ -196,8 +196,8 @@ const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) =>
       )}
 
       {/* 参考图大图预览 */}
-      <Dialog open={!!previewImage} onOpenChange={(open) => { if (!open) setPreviewImage(null); }}>
-        <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 bg-black/95 border-none flex items-center justify-center">
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 bg-black/95 border-none flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
           {previewImage && (
             <img src={previewImage} alt="参考图预览" className="max-w-full max-h-[85vh] object-contain rounded" />
           )}
