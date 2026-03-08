@@ -68,8 +68,18 @@ const ImageGenDarkPage = () => {
     };
   }, []);
 
+  // IntersectionObserver: 监听 HeroPromptBar 是否在视口内
   useEffect(() => {
-    fetchModelsData().then((data) => {
+    const root = mainScrollRef.current;
+    const target = heroRef.current;
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsHeroVisible(entry.isIntersecting),
+      { root, threshold: 0 }
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
       setProviders(data.provider_list);
       setModels(data.model_list);
       if (data.model_list.length > 0) setSelectedModel(data.model_list[0]);
