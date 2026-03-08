@@ -446,7 +446,7 @@ const ImageGenDarkPage = () => {
         </div>
 
         {/* ── 移动端：输入框 + 参数栏整体卡片 ── */}
-        <div className="sm:hidden mx-4 mb-2 rounded-2xl bg-muted/30 px-4 py-4 overflow-visible">
+        <div className="sm:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
           <HeroPromptBar
             prompt={prompt}
             onPromptChange={setPrompt}
@@ -457,19 +457,21 @@ const ImageGenDarkPage = () => {
             hasActiveTask={hasEnteredCreationMode}
             promptInputRef={promptInputRef}
           />
-          <MobileParamBar
-            selectedModel={selectedModel}
-            models={models}
-            onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
-            imageCount={imageCount}
-            onImageCountChange={setImageCount}
-            onRatioChange={setSidebarRatio}
-            onResolutionChange={setSidebarResolution}
-            onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-            onSimilarityChange={setSidebarSimilarity}
-            referenceImages={referenceImages}
-            onReferenceImagesChange={setReferenceImages}
-          />
+          <div className="mt-2">
+            <MobileParamBar
+              selectedModel={selectedModel}
+              models={models}
+              onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+              imageCount={imageCount}
+              onImageCountChange={setImageCount}
+              onRatioChange={setSidebarRatio}
+              onResolutionChange={setSidebarResolution}
+              onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
+              onSimilarityChange={setSidebarSimilarity}
+              referenceImages={referenceImages}
+              onReferenceImagesChange={setReferenceImages}
+            />
+          </div>
         </div>
 
         {/* ── PC 端：原 HeroPromptBar 保持不变 ── */}
