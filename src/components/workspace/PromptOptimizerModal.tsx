@@ -64,8 +64,15 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
     onApply(finalText);
   }, [topInput, seed, candidates, selectedIdx, onApply]);
 
-  const handleEditCandidate = (idx: number) => {
-    setTopInput(candidates[idx]);
+  const handleOpenEditModal = (idx: number) => {
+    setEditModalIdx(idx);
+    setEditModalOpen(true);
+  };
+
+  const handleCandidateEdited = (newText: string) => {
+    setCandidates(prev => prev.map((c, i) => i === editModalIdx ? newText : c));
+    setSelectedIdx(editModalIdx);
+    setEditModalOpen(false);
   };
 
   return (
