@@ -344,7 +344,8 @@ const ImageGenDarkPage = () => {
           onImageClick={handleImageClick}
           onGoToGallery={() => {
             setViewMode("gen");
-            setHasEnteredCreationMode(true);
+            setHasEnteredCreationMode(false);
+            setShowInspirationOnly(false);
             setTimeout(() => {
               const el = document.getElementById("inspiration-gallery");
               if (el) el.scrollIntoView({ behavior: "smooth" });
