@@ -182,7 +182,7 @@ const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) =>
                     <Copy className="h-2.5 w-2.5" />
                   </button>
                   <button
-                    onClick={() => { setPreviewImage(src); setPreviewOpen(true); }}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setPreviewImage(src); setPreviewOpen(true); }}
                     title="查看大图"
                     className="flex h-5 w-5 items-center justify-center rounded-full bg-white/25 text-white hover:bg-white/40 transition-colors duration-150 cursor-pointer active:scale-90"
                   >
