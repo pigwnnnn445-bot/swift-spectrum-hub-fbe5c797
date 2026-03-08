@@ -36,6 +36,10 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
   const [selectedIdx, setSelectedIdx] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Third modal (candidate edit)
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editModalIdx, setEditModalIdx] = useState(0);
+
   // Reset on open
   useEffect(() => {
     if (open && seed) {
