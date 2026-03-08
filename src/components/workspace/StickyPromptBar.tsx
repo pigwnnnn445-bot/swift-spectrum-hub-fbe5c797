@@ -49,8 +49,8 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isGenerating, 
               onClick={onSubmit}
               className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:opacity-60 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-gradient-to-r from-primary to-workspace-neon h-8 w-8 sm:w-auto sm:px-3 text-sm font-bold rounded-full text-white gap-1 mr-2 mb-2"
             >
-              <Zap className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">{isGenerating ? "生成中..." : "发送"}</span>
+              <span>⚡</span>
               <span className="hidden sm:inline text-white/70">{cost}</span>
             </button>
           </div>
