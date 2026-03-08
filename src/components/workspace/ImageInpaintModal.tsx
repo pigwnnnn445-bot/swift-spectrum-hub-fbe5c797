@@ -544,6 +544,26 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClos
             </button>
           </div>
         </div>
+
+        {/* Prompt generator modals */}
+        <PromptGeneratorModal
+          open={genOpen}
+          onClose={() => setGenOpen(false)}
+          onOptimize={(s) => { setPgSeed(s); setGenOpen(false); setOptOpen(true); }}
+        />
+        <PromptOptimizerModal
+          open={optOpen}
+          seed={pgSeed}
+          onClose={() => setOptOpen(false)}
+          onApply={(text) => {
+            setPrompt(text);
+            setOptOpen(false);
+            requestAnimationFrame(() => {
+              const el = promptRef.current;
+              if (el) { el.focus(); el.setSelectionRange(text.length, text.length); }
+            });
+          }}
+        />
       </DialogPrimitive.Content>
       </DialogPortal>
     </Dialog>

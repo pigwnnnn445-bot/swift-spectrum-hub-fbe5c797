@@ -281,6 +281,26 @@ const EditImageModal = ({
           </div>
         </div>
       </div>
+
+      {/* Prompt generator modals */}
+      <PromptGeneratorModal
+        open={genOpen}
+        onClose={() => setGenOpen(false)}
+        onOptimize={(s) => { setSeed(s); setGenOpen(false); setOptOpen(true); }}
+      />
+      <PromptOptimizerModal
+        open={optOpen}
+        seed={seed}
+        onClose={() => setOptOpen(false)}
+        onApply={(text) => {
+          setEditPrompt(text);
+          setOptOpen(false);
+          requestAnimationFrame(() => {
+            const el = textareaRef.current;
+            if (el) { el.focus(); el.setSelectionRange(text.length, text.length); }
+          });
+        }}
+      />
     </div>
   );
 };
