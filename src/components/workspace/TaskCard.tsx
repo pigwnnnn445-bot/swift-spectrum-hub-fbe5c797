@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { RotateCw, AlertCircle, Copy, Download, Paintbrush, PenLine } from "lucide-react";
+import { RotateCw, AlertCircle, Copy, Download, Paintbrush, PenLine, Loader2 } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
