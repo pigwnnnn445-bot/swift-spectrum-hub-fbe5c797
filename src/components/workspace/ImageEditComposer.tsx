@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import ModelSelector from "./ModelSelector";
 import StyleSelector from "./StyleSelector";
 import UploadReferencePanel from "./UploadReferencePanel";
+import PromptGeneratorModal from "./PromptGeneratorModal";
+import PromptOptimizerModal from "./PromptOptimizerModal";
 import {
   getOrderedEnabledImageLikes,
   getModelCapabilities,
