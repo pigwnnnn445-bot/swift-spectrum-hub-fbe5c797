@@ -453,55 +453,77 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
 
           {/* Upload entry */}
           {caps.showUpload && (
-            <div className="relative">
-              <EntryButton
-                icon={ImagePlus}
-                label={uploadLabel}
-                active={uploadOpen || totalUploaded > 0}
-                onClick={() => { setUploadOpen(!uploadOpen); setRatioOpen(false); setResolutionOpen(false); setCountOpen(false); setStyleOpen(false); }}
-              />
-              <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
-                <div className="min-w-[280px] space-y-4 overflow-y-auto overscroll-contain" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
-                  <div className="space-y-2.5">
-                    <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
-                      上传参考图
-                    </h3>
+            <Popover open={uploadOpen} onOpenChange={setUploadOpen}>
+              <PopoverTrigger asChild>
+                <button
+                  onClick={() => { setRatioOpen(false); setResolutionOpen(false); setCountOpen(false); setStyleOpen(false); }}
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-all cursor-pointer",
+                    uploadOpen || totalUploaded > 0
+                      ? "bg-primary/10 text-primary border-primary/30"
+                      : "bg-workspace-chip/50 text-workspace-panel-foreground/80 border-workspace-border hover:bg-workspace-chip"
+                  )}
+                >
+                  <ImagePlus className="h-3.5 w-3.5 shrink-0" />
+                  <span className="truncate max-w-[120px]">{uploadLabel}</span>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent
+                side="top"
+                align="start"
+                sideOffset={8}
+                avoidCollisions
+                collisionPadding={12}
+                className="z-[150] rounded-2xl border border-workspace-border bg-workspace-panel shadow-lg p-4 w-[min(92vw,380px)] max-w-[calc(100vw-24px)]"
+              >
+                <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50 mb-3">
+                  上传参考图
+                </h3>
+                <div
+                  className="overflow-y-auto overscroll-contain workspace-scroll"
+                  style={{
+                    maxHeight: "min(340px, calc(100dvh - 180px))",
+                    touchAction: "pan-y",
+                    paddingBottom: "max(12px, env(safe-area-inset-bottom))",
+                  }}
+                >
+                  <div className="space-y-4">
                     <UploadReferencePanel
                       key={selectedModel.id}
                       model={selectedModel}
                       images={referenceImages}
                       onImagesChange={setReferenceImages}
                     />
-                  </div>
 
-                  {/* 相似度 */}
-                  {caps.showSimilarity && (
-                    <div className="space-y-2.5">
-                      <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50 text-center">
-                        相似度
-                      </h3>
-                      <div className="flex items-center justify-center gap-4">
-                        <button
-                          onClick={() => setSimilarity((prev) => Math.max(0, prev - 1))}
-                          className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
-                        >
-                          <Minus className="h-4 w-4 text-workspace-panel-foreground" />
-                        </button>
-                        <span className="min-w-[2.5rem] text-center text-sm font-medium text-workspace-panel-foreground">
-                          {similarity}
-                        </span>
-                        <button
-                          onClick={() => setSimilarity((prev) => Math.min(100, prev + 1))}
-                          className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
-                        >
-                          <Plus className="h-4 w-4 text-workspace-panel-foreground" />
-                        </button>
+                    {/* 相似度 */}
+                    {caps.showSimilarity && (
+                      <div className="space-y-2.5">
+                        <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50 text-center">
+                          相似度
+                        </h3>
+                        <div className="flex items-center justify-center gap-4">
+                          <button
+                            onClick={() => setSimilarity((prev) => Math.max(0, prev - 1))}
+                            className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
+                          >
+                            <Minus className="h-4 w-4 text-workspace-panel-foreground" />
+                          </button>
+                          <span className="min-w-[2.5rem] text-center text-sm font-medium text-workspace-panel-foreground">
+                            {similarity}
+                          </span>
+                          <button
+                            onClick={() => setSimilarity((prev) => Math.min(100, prev + 1))}
+                            className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
+                          >
+                            <Plus className="h-4 w-4 text-workspace-panel-foreground" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </EntryPopover>
-            </div>
+              </PopoverContent>
+            </Popover>
           )}
 
 
