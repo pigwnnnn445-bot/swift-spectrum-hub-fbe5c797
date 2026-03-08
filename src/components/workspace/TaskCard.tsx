@@ -64,8 +64,17 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
           {task.count === 1 && (
             <>
               {isGenerating && (
-                <div className="w-full max-w-[340px] min-w-[240px]">
+                <div className="relative w-full max-w-[340px] min-w-[240px]">
                   <Skeleton className="w-full rounded-lg bg-workspace-chip animate-pulse" style={{ aspectRatio }} />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none rounded-lg">
+                    <Loader2 className="h-8 w-8 text-muted-foreground/50 animate-spin" />
+                    <div className="absolute bottom-3 left-3 flex items-center gap-1 text-sm text-muted-foreground/70 font-medium">
+                      <span>Generating...</span>
+                      <span className="generating-arrow-1">›</span>
+                      <span className="generating-arrow-2">›</span>
+                      <span className="generating-arrow-3">›</span>
+                    </div>
+                  </div>
                 </div>
               )}
               {isSuccess && task.images.length === 1 && (
