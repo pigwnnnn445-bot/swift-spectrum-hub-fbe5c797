@@ -88,7 +88,7 @@ const ImageGenDarkPage = () => {
   const isGenerating = tasks.some((t) => t.status === "generating" || t.status === "submitting");
 
   // ── 提交生成任务 ──
-  const handleSubmit = useCallback(async () => {
+  const handleSubmit = useCallback(() => {
     if (!selectedModel || !prompt.trim() || isSubmitting || isCooldown) return;
 
     if (!prompt.trim()) {
