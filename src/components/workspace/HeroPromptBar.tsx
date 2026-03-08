@@ -26,7 +26,7 @@ const useAutoResize = (value: string, maxHeight: number) => {
   return ref;
 };
 
-const HeroPromptBar = ({ prompt, onPromptChange, cost, isGenerating, isSubmitDisabled, onSubmit, hasActiveTask, promptInputRef }: HeroPromptBarProps) => {
+const HeroPromptBar = ({ prompt, onPromptChange, cost, isSubmitDisabled, onSubmit, hasActiveTask, promptInputRef }: HeroPromptBarProps) => {
   const autoRef = useAutoResize(prompt, 220);
 
   // Merge internal auto-resize ref with external ref
