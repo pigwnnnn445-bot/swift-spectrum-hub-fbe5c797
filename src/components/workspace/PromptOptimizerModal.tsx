@@ -56,13 +56,9 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
   }, [topInput, seed]);
 
   const handleApply = useCallback(() => {
-    // Priority: if user edited top input and it's non-empty, use that; otherwise use selected candidate
-    const topTrimmed = topInput.trim();
-    const finalText = topTrimmed !== seed.trim() && topTrimmed.length > 0
-      ? topTrimmed
-      : candidates[selectedIdx] ?? topTrimmed;
-    onApply(finalText);
-  }, [topInput, seed, candidates, selectedIdx, onApply]);
+    const text = topInput.trim();
+    if (text) onApply(text);
+  }, [topInput, onApply]);
 
   const handleOpenEditModal = (idx: number) => {
     setEditModalIdx(idx);
