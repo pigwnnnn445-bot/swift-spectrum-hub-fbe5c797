@@ -449,54 +449,60 @@ const ImageGenDarkPage = () => {
           </div>
         </div>
 
-        {/* ── 移动端：输入框 + 参数栏整体卡片 ── */}
-        <div className="sm:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
-          <HeroPromptBar
-            prompt={prompt}
-            onPromptChange={setPrompt}
-            cost={totalCost}
-            
-            isSubmitDisabled={isSubmitting || isCooldown}
-            onSubmit={handleSubmit}
-            hasActiveTask={hasEnteredCreationMode}
-            promptInputRef={promptInputRef}
-          />
-          <div className="mt-2">
-            <MobileParamBar
-              selectedModel={selectedModel}
-              models={models}
-              onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
-              imageCount={imageCount}
-              onImageCountChange={setImageCount}
-              onRatioChange={setSidebarRatio}
-              onResolutionChange={setSidebarResolution}
-              onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-              onSimilarityChange={setSidebarSimilarity}
-              referenceImages={referenceImages}
-              onReferenceImagesChange={setReferenceImages}
-            />
-          </div>
-        </div>
+        {/* ── Hero 区域（移动端+PC端），用 ref 监听可见性 ── */}
+        {isHeroVisible && (
+          <>
+            {/* 移动端：输入框 + 参数栏整体卡片 */}
+            <div ref={heroRef} className="sm:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
+              <HeroPromptBar
+                prompt={prompt}
+                onPromptChange={setPrompt}
+                cost={totalCost}
+                isSubmitDisabled={isSubmitting || isCooldown}
+                onSubmit={handleSubmit}
+                hasActiveTask={hasEnteredCreationMode}
+                promptInputRef={promptInputRef}
+              />
+              <div className="mt-2">
+                <MobileParamBar
+                  selectedModel={selectedModel}
+                  models={models}
+                  onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+                  imageCount={imageCount}
+                  onImageCountChange={setImageCount}
+                  onRatioChange={setSidebarRatio}
+                  onResolutionChange={setSidebarResolution}
+                  onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
+                  onSimilarityChange={setSidebarSimilarity}
+                  referenceImages={referenceImages}
+                  onReferenceImagesChange={setReferenceImages}
+                />
+              </div>
+            </div>
 
-        {/* ── PC 端：原 HeroPromptBar 保持不变 ── */}
-        <div className="hidden sm:block">
-          <HeroPromptBar
-            prompt={prompt}
-            onPromptChange={setPrompt}
-            cost={totalCost}
-            
-            isSubmitDisabled={isSubmitting || isCooldown}
-            onSubmit={handleSubmit}
-            hasActiveTask={hasEnteredCreationMode}
-            promptInputRef={promptInputRef}
-          />
-        </div>
+            {/* PC 端：原 HeroPromptBar */}
+            <div className="hidden sm:block">
+              <HeroPromptBar
+                prompt={prompt}
+                onPromptChange={setPrompt}
+                cost={totalCost}
+                isSubmitDisabled={isSubmitting || isCooldown}
+                onSubmit={handleSubmit}
+                hasActiveTask={hasEnteredCreationMode}
+                promptInputRef={promptInputRef}
+              />
+            </div>
+          </>
+        )}
 
-        {/* 吸顶输入条：进入创作模式后由 HeroPromptBar 吸顶，无需 StickyPromptBar */}
-        {!hasEnteredCreationMode && (
+        {/* 占位 div：当 Hero 隐藏时保持 IntersectionObserver 的观察目标 */}
+        {!isHeroVisible && <div ref={heroRef} className="h-0" />}
+
+        {/* 吸顶输入条：仅当 HeroPromptBar 不在视口时显示 */}
+        {!isHeroVisible && (
           <div className="sticky top-[41px] z-40">
             <StickyPromptBar
-              visible={showStickyBar}
+              visible={true}
               prompt={prompt}
               onPromptChange={setPrompt}
               cost={totalCost}
