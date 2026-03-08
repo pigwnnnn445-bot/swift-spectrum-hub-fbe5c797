@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { X, ChevronDown, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import PromptGeneratorModal from "./PromptGeneratorModal";
+import PromptOptimizerModal from "./PromptOptimizerModal";
 import type { ModelConfig } from "@/config/modelConfig";
 import type { GenerateTask, GenerationMode } from "@/types/task";
 
