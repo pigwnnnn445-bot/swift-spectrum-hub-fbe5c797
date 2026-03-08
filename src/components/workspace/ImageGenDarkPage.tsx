@@ -105,7 +105,6 @@ const ImageGenDarkPage = () => {
       setIsCooldown(false);
       cooldownRef.current = null;
     }, 2000);
-
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const count = imageCount;
 
