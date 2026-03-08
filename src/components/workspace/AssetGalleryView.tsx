@@ -21,7 +21,7 @@ interface AssetGalleryViewProps {
   onGoToGallery?: () => void;
 }
 
-const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDeleteTask }: AssetGalleryViewProps) => {
+const AssetGalleryView = ({ tasks, onBack, onImageClick, onDeleteImage, onDeleteTask, onGoToGallery }: AssetGalleryViewProps) => {
   const [search, setSearch] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
