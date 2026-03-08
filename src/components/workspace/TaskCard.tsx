@@ -338,6 +338,7 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
           />
         </div>
       </div>
+      <ConfirmDialog open={confirmOpen} onOpenChange={setConfirmOpen} onConfirm={handleConfirmDelete} />
     </div>
   );
 };
