@@ -105,6 +105,11 @@ const EditImageModal = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Prompt generator
+  const [genOpen, setGenOpen] = useState(false);
+  const [optOpen, setOptOpen] = useState(false);
+  const [seed, setSeed] = useState("");
+
   const MAX_HEIGHT = 280;
 
   const resizeTextarea = useCallback(() => {
