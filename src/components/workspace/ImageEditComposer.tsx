@@ -158,6 +158,11 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
     const [countOpen, setCountOpen] = useState(false);
     const [inpaintOpen, setInpaintOpen] = useState(false);
 
+    // Prompt generator
+    const [genOpen, setGenOpen] = useState(false);
+    const [optOpen, setOptOpen] = useState(false);
+    const [seed, setSeed] = useState("");
+
     useImperativeHandle(ref, () => ({
       applyPrompt(text: string) {
         setEditPrompt(text);
