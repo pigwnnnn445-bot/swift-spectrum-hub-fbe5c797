@@ -175,7 +175,7 @@ const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) =>
                 {/* hover 操作 */}
                 <div className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/65 opacity-0 group-hover/ref:opacity-100 transition-opacity duration-[140ms]">
                   <button
-                    onClick={() => handleCopyImage(src)}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleCopyImage(src); }}
                     title="复制参考图"
                     className="flex h-5 w-5 items-center justify-center rounded-full bg-white/25 text-white hover:bg-white/40 transition-colors duration-150 cursor-pointer active:scale-90"
                   >
