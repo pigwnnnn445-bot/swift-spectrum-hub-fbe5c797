@@ -88,7 +88,7 @@ const ImageGenDarkPage = () => {
   const isGenerating = tasks.some((t) => t.status === "generating" || t.status === "submitting");
 
   // ── 提交生成任务 ──
-  const handleSubmit = useCallback(async () => {
+  const handleSubmit = useCallback(() => {
     if (!selectedModel || !prompt.trim() || isSubmitting || isCooldown) return;
 
     if (!prompt.trim()) {
@@ -105,7 +105,6 @@ const ImageGenDarkPage = () => {
       setIsCooldown(false);
       cooldownRef.current = null;
     }, 2000);
-
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const count = imageCount;
 
@@ -152,10 +151,12 @@ const ImageGenDarkPage = () => {
       prev.map((t) => (t.id === taskId ? { ...t, status: "generating" as const } : t))
     );
 
+    // 任务已创建并插入列表，立即恢复可提交状态（允许并行发送）
+    setIsSubmitting(false);
+
     // ── 调用 mock 接口（发布时替换为真实 API） ──
-    try {
-      const result = await mockGenerate(count);
-      setIsSubmitting(false);
+    // 闭包捕获 taskId，确保并发任务结果精确回写
+    mockGenerate(count).then((result) => {
       setTasks((prev) =>
         prev.map((t) => {
           if (t.id !== taskId) return t;
@@ -165,14 +166,13 @@ const ImageGenDarkPage = () => {
           return { ...t, status: "error" as const, errorMessage: result.errorMessage };
         })
       );
-    } catch {
-      setIsSubmitting(false);
+    }).catch(() => {
       setTasks((prev) =>
         prev.map((t) =>
           t.id === taskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t
         )
       );
-    }
+    });
   }, [selectedModel, prompt, isSubmitting, isCooldown, imageCount, referenceImages, sidebarRatio, sidebarResolution, sidebarStyleId, sidebarStyleName, sidebarSimilarity]);
 
   // ── 重试任务（从快照新建，count=1，原任务保留） ──
@@ -492,7 +492,7 @@ const ImageGenDarkPage = () => {
               prompt={prompt}
               onPromptChange={setPrompt}
               cost={totalCost}
-              isGenerating={isGenerating}
+              isSubmitDisabled={isSubmitting || isCooldown}
               onSubmit={handleSubmit}
             />
           </div>
