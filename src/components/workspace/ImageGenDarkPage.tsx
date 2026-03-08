@@ -498,7 +498,27 @@ const ImageGenDarkPage = () => {
         )}
 
         {/* 任务列表 */}
-        <TaskList tasks={tasks} onRetry={handleRetry} onApplyPrompt={handleApplyPrompt} onApplyReferenceImage={handleApplyReferenceImage} onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }} onInpaint={(url) => { setInpaintImageUrl(url); setInpaintModalOpen(true); }} onImageClick={handleImageClick} />
+        <TaskList
+          tasks={tasks}
+          onRetry={handleRetry}
+          onApplyPrompt={handleApplyPrompt}
+          onApplyReferenceImage={handleApplyReferenceImage}
+          onEditImage={(url, task) => { setEditingImageUrl(url); setEditingTask(task); setEditModalOpen(true); }}
+          onInpaint={(url) => { setInpaintImageUrl(url); setInpaintModalOpen(true); }}
+          onImageClick={handleImageClick}
+          onDeleteImage={(taskId, imageIndex) => {
+            setTasks((prev) => prev
+              .map((t) => {
+                if (t.id !== taskId) return t;
+                return { ...t, images: t.images.filter((_, i) => i !== imageIndex) };
+              })
+              .filter((t) => !(t.status === "success" && t.images.length === 0))
+            );
+          }}
+          onDeleteTask={(taskId) => {
+            setTasks((prev) => prev.filter((t) => t.id !== taskId));
+          }}
+        />
 
         {/* 首页空状态：创作模式下且任务全部删除 */}
         {tasks.length === 0 && hasEnteredCreationMode && (
