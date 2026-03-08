@@ -56,13 +56,9 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
   }, [topInput, seed]);
 
   const handleApply = useCallback(() => {
-    // Priority: if user edited top input and it's non-empty, use that; otherwise use selected candidate
-    const topTrimmed = topInput.trim();
-    const finalText = topTrimmed !== seed.trim() && topTrimmed.length > 0
-      ? topTrimmed
-      : candidates[selectedIdx] ?? topTrimmed;
-    onApply(finalText);
-  }, [topInput, seed, candidates, selectedIdx, onApply]);
+    const text = topInput.trim();
+    if (text) onApply(text);
+  }, [topInput, onApply]);
 
   const handleOpenEditModal = (idx: number) => {
     setEditModalIdx(idx);
@@ -72,6 +68,7 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
   const handleCandidateEdited = (newText: string) => {
     setCandidates(prev => prev.map((c, i) => i === editModalIdx ? newText : c));
     setSelectedIdx(editModalIdx);
+    setTopInput(newText);
     setEditModalOpen(false);
   };
 
@@ -126,7 +123,7 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
             {candidates.map((text, idx) => (
               <button
                 key={idx}
-                onClick={() => setSelectedIdx(idx)}
+                onClick={() => { setSelectedIdx(idx); setTopInput(candidates[idx]); }}
                 className={cn(
                   "w-full text-left rounded-xl border px-4 py-3 transition-colors cursor-pointer flex items-start gap-3",
                   selectedIdx === idx
@@ -154,7 +151,7 @@ const PromptOptimizerModal = ({ open, seed, onClose, onApply }: PromptOptimizerM
             {candidates.map((_, idx) => (
               <button
                 key={idx}
-                onClick={() => setSelectedIdx(idx)}
+                onClick={() => { setSelectedIdx(idx); setTopInput(candidates[idx]); }}
                 className={cn(
                   "flex-1 h-9 rounded-lg text-sm font-medium transition-colors cursor-pointer flex items-center justify-center gap-1",
                   selectedIdx === idx
