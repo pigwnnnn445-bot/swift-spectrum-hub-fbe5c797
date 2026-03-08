@@ -14,6 +14,8 @@ interface TaskCardProps {
   onEditImage?: (imageUrl: string, task: GenerateTask) => void;
   onInpaint?: (imageUrl: string) => void;
   onImageClick?: (imageUrl: string, task: GenerateTask, imageIndex: number) => void;
+  onDeleteImage?: (taskId: string, imageIndex: number) => void;
+  onDeleteTask?: (taskId: string) => void;
 }
 
 const ratioToAspect = (ratio?: string): string => {
