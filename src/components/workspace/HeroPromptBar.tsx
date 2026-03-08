@@ -5,7 +5,6 @@ interface HeroPromptBarProps {
   prompt: string;
   onPromptChange: (value: string) => void;
   cost: number;
-  isGenerating?: boolean;
   isSubmitDisabled?: boolean;
   onSubmit?: () => void;
   hasActiveTask?: boolean;
