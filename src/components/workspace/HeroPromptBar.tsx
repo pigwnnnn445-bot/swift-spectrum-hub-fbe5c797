@@ -59,15 +59,24 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost, isSubmitDisabled, onSubmi
               className="prompt-textarea flex-1 resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/50 focus:outline-none sm:text-base"
               style={{ maxHeight: 220, minHeight: 100 }}
             />
-            <button
-              disabled={isSubmitDisabled || !prompt.trim()}
-              onClick={onSubmit}
-              className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:opacity-60 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-gradient-to-r from-primary to-workspace-neon h-8 w-8 sm:w-auto sm:px-3 text-sm font-bold rounded-full text-white gap-1 mr-2 mb-2"
-            >
-              <span className="hidden sm:inline">发送</span>
-              <span>⚡</span>
-              <span className="hidden sm:inline text-white/70">{cost}</span>
-            </button>
+            <div className="flex items-center gap-2 mr-2 mb-2">
+              <button
+                onClick={() => console.log("open prompt generator")}
+                className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 h-8 text-xs font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer shrink-0"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">提示词生成器</span>
+              </button>
+              <button
+                disabled={isSubmitDisabled || !prompt.trim()}
+                onClick={onSubmit}
+                className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:opacity-60 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-gradient-to-r from-primary to-workspace-neon h-8 w-8 sm:w-auto sm:px-3 text-sm font-bold rounded-full text-white gap-1"
+              >
+                <span className="hidden sm:inline">发送</span>
+                <span>⚡</span>
+                <span className="hidden sm:inline text-white/70">{cost}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

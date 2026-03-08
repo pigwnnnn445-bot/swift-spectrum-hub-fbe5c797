@@ -520,6 +520,13 @@ const ImageInpaintModal = ({ open, imageUrl, price = 0, overlayClassName, onClos
               rows={1}
             />
             <button
+              onClick={() => console.log("open prompt generator")}
+              className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 h-8 text-xs font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer shrink-0"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">提示词生成器</span>
+            </button>
+            <button
               onClick={handleGenerate}
               disabled={isSubmitting}
               className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:opacity-60 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-gradient-to-r from-primary to-workspace-neon h-8 w-8 sm:w-auto sm:px-3 text-sm font-bold rounded-full text-white gap-1"
