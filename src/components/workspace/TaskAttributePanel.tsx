@@ -60,9 +60,6 @@ const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) =>
     }
   };
 
-  const handleApplyImage = (url: string) => {
-    onApplyReferenceImage?.(url);
-  };
 
   return (
     <div className="flex flex-col">
