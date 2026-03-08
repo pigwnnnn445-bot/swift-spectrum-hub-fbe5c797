@@ -32,6 +32,8 @@ const TaskList = ({ tasks, onRetry, onApplyPrompt, onApplyReferenceImage, onEdit
             onEditImage={onEditImage}
             onInpaint={onInpaint}
             onImageClick={onImageClick}
+            onDeleteImage={onDeleteImage}
+            onDeleteTask={onDeleteTask}
           />
         ))}
       </div>
