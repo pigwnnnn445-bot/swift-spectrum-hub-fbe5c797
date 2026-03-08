@@ -6,6 +6,8 @@ import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import PromptGeneratorModal from "./PromptGeneratorModal";
+import PromptOptimizerModal from "./PromptOptimizerModal";
 
 /* ─── types ─── */
 type ActiveTool = "move" | "brush" | "eraser";
