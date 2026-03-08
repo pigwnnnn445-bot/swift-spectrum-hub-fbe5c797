@@ -125,3 +125,12 @@
 .prompt-textarea::-webkit-scrollbar {
   display: none;
 }
+
+/* TaskCard generating overlay arrow animation */
+@keyframes taskcard-generating-dot {
+  0%, 80%, 100% { opacity: 0.2; transform: translateX(0); }
+  40% { opacity: 1; transform: translateX(2px); }
+}
+.generating-arrow-1 { animation: taskcard-generating-dot 1.2s ease-in-out infinite; }
+.generating-arrow-2 { animation: taskcard-generating-dot 1.2s ease-in-out 0.3s infinite; }
+.generating-arrow-3 { animation: taskcard-generating-dot 1.2s ease-in-out 0.6s infinite; }
