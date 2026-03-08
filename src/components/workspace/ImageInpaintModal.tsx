@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Move, Paintbrush, Eraser, Undo2, Redo2, Trash2, ZoomIn, ZoomOut, Zap, Minus, Plus } from "lucide-react";
+import { X, Move, Paintbrush, Eraser, Undo2, Redo2, Trash2, ZoomIn, ZoomOut, Minus, Plus } from "lucide-react";
 import { Dialog, DialogPortal, DialogOverlay, DialogTitle } from "@/components/ui/dialog";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Slider } from "@/components/ui/slider";
