@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, ChevronDown } from "lucide-react";
+import { X, ChevronDown, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import type { ModelConfig } from "@/config/modelConfig";
@@ -253,16 +253,25 @@ const EditImageModal = ({
             )}
           </div>
 
-          {/* 右：发送按钮 */}
-          <button
-            disabled={!canSubmit}
-            onClick={handleGenerate}
-            className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:opacity-60 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-gradient-to-r from-primary to-workspace-neon h-8 w-8 sm:w-auto sm:px-3 text-sm font-bold rounded-full text-white gap-1"
-          >
-            <span className="hidden sm:inline">发送</span>
-            <span>⚡</span>
-            <span className="hidden sm:inline text-white/70">{selectedModel?.price ?? 5}</span>
-          </button>
+          {/* 右：提示词生成器 + 发送按钮 */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => console.log("open prompt generator")}
+              className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 h-8 text-xs font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer shrink-0"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">提示词生成器</span>
+            </button>
+            <button
+              disabled={!canSubmit}
+              onClick={handleGenerate}
+              className="inline-flex items-center justify-center whitespace-nowrap transition-all disabled:opacity-60 disabled:cursor-not-allowed shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-gradient-to-r from-primary to-workspace-neon h-8 w-8 sm:w-auto sm:px-3 text-sm font-bold rounded-full text-white gap-1"
+            >
+              <span className="hidden sm:inline">发送</span>
+              <span>⚡</span>
+              <span className="hidden sm:inline text-white/70">{selectedModel?.price ?? 5}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
