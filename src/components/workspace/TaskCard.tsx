@@ -33,6 +33,20 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
   const isSuccess = task.status === "success";
   const aspectRatio = ratioToAspect(task.ratio);
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<(() => void) | null>(null);
+
+  const requestDelete = (action: () => void) => {
+    setPendingDelete(() => action);
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    pendingDelete?.();
+    setConfirmOpen(false);
+    setPendingDelete(null);
+  };
+
   const handleCopyResultImage = async (url: string) => {
     try {
       const res = await fetch(url);
