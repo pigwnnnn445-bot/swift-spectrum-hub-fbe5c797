@@ -104,6 +104,7 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabl
                 </button>
               </div>
             </div>
+            {children && <div className="mt-1">{children}</div>}
           </div>
         </div>
       </div>
