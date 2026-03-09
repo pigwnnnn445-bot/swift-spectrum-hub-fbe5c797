@@ -504,15 +504,16 @@ const ImageGenDarkPage = () => {
                   <MobileParamBar
                     selectedModel={selectedModel}
                     models={models}
-                    onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+                    onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImagesByType({}); setSimilarityByType({}); }}
                     imageCount={imageCount}
                     onImageCountChange={setImageCount}
                     onRatioChange={setSidebarRatio}
                     onResolutionChange={setSidebarResolution}
                     onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-                    onSimilarityChange={setSidebarSimilarity}
-                    referenceImages={referenceImages}
-                    onReferenceImagesChange={setReferenceImages}
+                    referenceImagesByType={referenceImagesByType}
+                    onReferenceImagesByTypeChange={setReferenceImagesByType}
+                    similarityByType={similarityByType}
+                    onSimilarityByTypeChange={setSimilarityByType}
                   />
                 </div>
               )}
