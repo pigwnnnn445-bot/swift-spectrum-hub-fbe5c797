@@ -91,8 +91,8 @@ const ImageGenDarkPage = () => {
               const scrollRect = scrollEl.getBoundingClientRect();
               // textarea top relative to scroll container top
               const relativeTop = textareaRect.top - scrollRect.top;
-              // header is 41px; trigger when textarea is within 60px of header bottom
-              if (relativeTop <= 41 + 60) {
+              // trigger when textarea top touches header bottom (41px)
+              if (relativeTop <= 41) {
                 if (promptContainerRef.current) {
                   setHeroFullHeight(promptContainerRef.current.offsetHeight);
                 }
