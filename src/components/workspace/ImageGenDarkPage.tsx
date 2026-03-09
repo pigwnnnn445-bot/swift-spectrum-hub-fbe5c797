@@ -453,7 +453,7 @@ const ImageGenDarkPage = () => {
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         selectedModel={selectedModel}
-        onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+        onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImagesByType({}); setSimilarityByType({}); }}
         models={models}
         providers={providers}
         onExtraCostChange={handleExtraCostChange}
@@ -462,9 +462,10 @@ const ImageGenDarkPage = () => {
         onRatioChange={setSidebarRatio}
         onResolutionChange={setSidebarResolution}
         onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-        onSimilarityChange={setSidebarSimilarity}
-        referenceImages={referenceImages}
-        onReferenceImagesChange={setReferenceImages}
+        referenceImagesByType={referenceImagesByType}
+        onReferenceImagesByTypeChange={setReferenceImagesByType}
+        similarityByType={similarityByType}
+        onSimilarityByTypeChange={setSimilarityByType}
       />
 
       <main ref={mainScrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
