@@ -19,7 +19,7 @@ const useAutoResize = (value: string) => {
     const el = ref.current;
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = el.scrollHeight + "px";
+    el.style.height = Math.max(100, el.scrollHeight) + "px";
   }, []);
 
   useEffect(() => { resize(); }, [value, resize]);
