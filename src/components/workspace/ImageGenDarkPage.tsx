@@ -31,6 +31,7 @@ const ImageGenDarkPage = () => {
   const [isInspirationBrowsing, setIsInspirationBrowsing] = useState(false);
   const promptContainerRef = useRef<HTMLDivElement>(null);
   const [heroFullHeight, setHeroFullHeight] = useState(0);
+  const stickyEnterScrollTop = useRef(0);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
   const [imageCount, setImageCount] = useState(1);
