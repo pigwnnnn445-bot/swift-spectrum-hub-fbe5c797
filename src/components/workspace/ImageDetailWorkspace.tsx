@@ -231,7 +231,16 @@ const ImageDetailWorkspace = ({
               }}
               onDelete={onDeleteImage ? () => {
                 onDeleteImage(selectedTask.id, selectedImageIndex);
-                onClose();
+                // Stay on detail page: navigate to next/prev image, or close if none left
+                const remaining = allImages.filter(
+                  (item) => !(item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex)
+                );
+                if (remaining.length === 0) {
+                  onClose();
+                } else {
+                  const nextIdx = Math.min(currentIdx, remaining.length - 1);
+                  handleHistorySelect(remaining[nextIdx]);
+                }
               } : undefined}
             />
           </div>
