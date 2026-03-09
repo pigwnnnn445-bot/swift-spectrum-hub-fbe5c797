@@ -1,13 +1,13 @@
 /**
  * 移动端首页参数选择栏
- * 仅在小屏（< sm）显示，对齐详情页 ImageEditComposer 的入口样式与面板结构
+ * 使用底部抽屉（Drawer）替代桌面端 Popover，适配移动端和平板端触控体验
  */
-import { useState, useEffect, useRef } from "react";
-import { Proportions, ScanLine, Palette, ImagePlus, Hash } from "lucide-react";
-import ModelSelector from "./ModelSelector";
+import { useState, useEffect } from "react";
+import { Proportions, ScanLine, Palette, ImagePlus, Hash, ChevronDown } from "lucide-react";
 import UploadReferencePanel from "./UploadReferencePanel";
 import type { ReferenceImagesByType, SimilarityByType } from "./UploadReferencePanel";
 import { getTotalImagesByTypeCount } from "./UploadReferencePanel";
+import MobileDrawerPicker from "./MobileDrawerPicker";
 import {
   getModelCapabilities,
   getDefaultRatio,
@@ -19,64 +19,7 @@ import {
 import type { ModelConfig } from "@/config/modelConfig";
 import { cn } from "@/lib/utils";
 
-/* ── tiny popover wrapper (same as ImageEditComposer) ── */
-function EntryPopover({
-  open,
-  onClose,
-  children,
-  className: extraClassName,
-}: {
-  open: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open, onClose]);
-
-  useEffect(() => {
-    if (!open || !ref.current) return;
-    const clamp = () => {
-      const el = ref.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      if (rect.right > window.innerWidth) {
-        el.style.left = "auto";
-        el.style.right = "0";
-      }
-      if (rect.left < 0) {
-        el.style.left = "0";
-        el.style.right = "auto";
-      }
-    };
-    requestAnimationFrame(clamp);
-    window.addEventListener("resize", clamp);
-    return () => window.removeEventListener("resize", clamp);
-  }, [open]);
-
-  if (!open) return null;
-  return (
-    <div
-      ref={ref}
-      className={cn(
-        "absolute left-0 bottom-full mb-2 z-50 rounded-2xl border border-workspace-border bg-workspace-panel shadow-lg p-4 max-w-[calc(100vw-2rem)]",
-        extraClassName,
-      )}
-    >
-      {children}
-    </div>
-  );
-}
-
-/* ── icon entry button (same as ImageEditComposer) ── */
+/* ── icon entry button ── */
 function EntryButton({
   icon: Icon,
   label,
@@ -92,7 +35,7 @@ function EntryButton({
     <button
       onClick={onClick}
       className={cn(
-        "flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-all cursor-pointer",
+        "flex items-center gap-1.5 rounded-lg border px-2.5 py-2 text-xs font-medium transition-all cursor-pointer min-h-[36px]",
         active
           ? "bg-primary/10 text-primary border-primary/30"
           : "bg-workspace-chip/50 text-workspace-panel-foreground/80 border-workspace-border hover:bg-workspace-chip",
@@ -139,7 +82,8 @@ const MobileParamBar = ({
   const [resolution, setResolutionLocal] = useState(getDefaultResolution(selectedModel));
   const [styleId, setStyleIdLocal] = useState<number | null>(getDefaultStyleId(selectedModel));
 
-  // Popover toggles
+  // Drawer toggles
+  const [modelOpen, setModelOpen] = useState(false);
   const [ratioOpen, setRatioOpen] = useState(false);
   const [resolutionOpen, setResolutionOpen] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
@@ -158,14 +102,6 @@ const MobileParamBar = ({
   const setStyleId = (id: number | null) => {
     setStyleIdLocal(id);
     onStyleChange?.(id, getStyleNameById(selectedModel, id));
-  };
-
-  const closeAll = () => {
-    setRatioOpen(false);
-    setResolutionOpen(false);
-    setStyleOpen(false);
-    setCountOpen(false);
-    setUploadOpen(false);
   };
 
   // Init on mount
@@ -193,6 +129,7 @@ const MobileParamBar = ({
 
   const handleModelChange = (model: ModelConfig) => {
     onModelChange(model);
+    setModelOpen(false);
   };
 
   const caps = getModelCapabilities(selectedModel);
@@ -200,193 +137,209 @@ const MobileParamBar = ({
   const styleResources = getStyleResources(selectedModel);
   const currentStyleName = styleResources.find((r) => r.id === styleId)?.resource_name ?? "自动";
   const totalUploaded = getTotalImagesByTypeCount(referenceImagesByType ?? {});
-  const uploadLabel = totalUploaded > 0 ? `已上传(${totalUploaded})` : "上传参考图";
+  const uploadLabel = totalUploaded > 0 ? `已上传(${totalUploaded})` : "参考图";
 
   return (
     <div className="lg:hidden px-4 pb-2">
       <div className="flex items-center gap-2 flex-wrap">
         {/* Model */}
         {showModel && (
-          <ModelSelector models={models} selected={selectedModel} onSelect={handleModelChange} />
+          <button
+            onClick={() => setModelOpen(true)}
+            className="flex items-center gap-2 rounded-lg border border-workspace-border bg-workspace-chip/50 px-2.5 py-2 cursor-pointer hover:bg-workspace-chip transition-colors text-left min-h-[36px]"
+          >
+            <img src={selectedModel.image} alt={selectedModel.name} className="h-5 w-5 rounded object-cover shrink-0" />
+            <span className="text-xs font-medium text-workspace-surface-foreground truncate max-w-[100px]">{selectedModel.name}</span>
+            <ChevronDown className="h-3 w-3 shrink-0 text-muted-foreground" />
+          </button>
         )}
 
         {/* Ratio */}
         {caps.showRatio && (
-          <div className="relative">
-            <EntryButton
-              icon={Proportions}
-              label={ratio}
-              active={ratioOpen}
-              onClick={() => { closeAll(); setRatioOpen(!ratioOpen); }}
-            />
-            <EntryPopover open={ratioOpen} onClose={() => setRatioOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
-              <p className="text-sm text-muted-foreground mb-3">比例</p>
-              <div className="flex flex-col gap-0.5 overflow-y-auto overscroll-contain workspace-scroll" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
-                {selectedModel.ratio.map((opt) => {
-                  const isSelected = ratio === opt;
-                  return (
-                    <button
-                      key={opt}
-                      onClick={() => { setRatio(opt); setRatioOpen(false); }}
-                      className={cn(
-                        "flex items-center px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left text-sm font-medium",
-                        isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : "hover:bg-workspace-chip/60 text-workspace-panel-foreground",
-                      )}
-                    >
-                      <span className="truncate">{opt}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </EntryPopover>
-          </div>
+          <EntryButton
+            icon={Proportions}
+            label={ratio}
+            active={ratioOpen}
+            onClick={() => setRatioOpen(true)}
+          />
         )}
 
         {/* Resolution */}
         {caps.showResolution && (
-          <div className="relative">
-            <EntryButton
-              icon={ScanLine}
-              label={resolution}
-              active={resolutionOpen}
-              onClick={() => { closeAll(); setResolutionOpen(!resolutionOpen); }}
-            />
-            <EntryPopover open={resolutionOpen} onClose={() => setResolutionOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
-              <p className="text-sm text-muted-foreground mb-3">分辨率</p>
-              <div className="flex flex-col gap-0.5 overflow-y-auto overscroll-contain workspace-scroll" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
-                {selectedModel.resolution.map((r) => {
-                  const isSelected = resolution === r.resolution;
-                  return (
-                    <button
-                      key={r.resolution}
-                      onClick={() => { setResolution(r.resolution); setResolutionOpen(false); }}
-                      className={cn(
-                        "flex items-center px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left text-sm font-medium",
-                        isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : "hover:bg-workspace-chip/60 text-workspace-panel-foreground",
-                      )}
-                    >
-                      <span className="truncate">{r.resolution}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </EntryPopover>
-          </div>
+          <EntryButton
+            icon={ScanLine}
+            label={resolution}
+            active={resolutionOpen}
+            onClick={() => setResolutionOpen(true)}
+          />
         )}
 
         {/* Image Count */}
         {caps.showImageCount && (
-          <div className="relative">
-            <EntryButton
-              icon={Hash}
-              label={`${imageCount}张`}
-              active={countOpen}
-              onClick={() => { closeAll(); setCountOpen(!countOpen); }}
-            />
-            <EntryPopover open={countOpen} onClose={() => setCountOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
-              <p className="text-sm text-muted-foreground mb-3">生图数量</p>
-              <div className="flex flex-col gap-0.5 overflow-y-auto overscroll-contain workspace-scroll" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
-                {[1, 2, 3, 4].map((n) => {
-                  const isSelected = imageCount === n;
-                  return (
-                    <button
-                      key={n}
-                      onClick={() => { onImageCountChange(n); setCountOpen(false); }}
-                      className={cn(
-                        "flex items-center px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left text-sm font-medium",
-                        isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : "hover:bg-workspace-chip/60 text-workspace-panel-foreground",
-                      )}
-                    >
-                      {n} 张
-                    </button>
-                  );
-                })}
-              </div>
-            </EntryPopover>
-          </div>
+          <EntryButton
+            icon={Hash}
+            label={`${imageCount}张`}
+            active={countOpen}
+            onClick={() => setCountOpen(true)}
+          />
         )}
 
         {/* Style */}
         {caps.showStyle && (
-          <div className="relative">
-            <EntryButton
-              icon={Palette}
-              label={currentStyleName}
-              active={styleOpen}
-              onClick={() => { closeAll(); setStyleOpen(!styleOpen); }}
-            />
-            <EntryPopover open={styleOpen} onClose={() => setStyleOpen(false)} className="w-fit min-w-[200px] max-w-[calc(100vw-24px)]">
-              <p className="text-sm text-muted-foreground mb-3">风格</p>
-              <div className="flex flex-col gap-0.5 overflow-y-auto overscroll-contain workspace-scroll" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
-                {styleResources.map((res) => {
-                  const isSelected = styleId === res.id;
-                  return (
-                    <button
-                      key={res.id}
-                      ref={(el) => {
-                        if (isSelected && el && styleOpen) {
-                          requestAnimationFrame(() => {
-                            el.scrollIntoView({ block: "center", behavior: "instant" });
-                          });
-                        }
-                      }}
-                      onClick={() => { setStyleId(res.id); setStyleOpen(false); }}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors cursor-pointer text-left",
-                        isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : "hover:bg-workspace-chip/60 text-workspace-panel-foreground",
-                      )}
-                    >
-                      <img
-                        src={res.image}
-                        alt={res.resource_name}
-                        className="h-10 w-10 rounded-lg object-cover shrink-0"
-                      />
-                      <span className="text-sm font-medium truncate">{res.resource_name}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </EntryPopover>
-          </div>
+          <EntryButton
+            icon={Palette}
+            label={currentStyleName}
+            active={styleOpen}
+            onClick={() => setStyleOpen(true)}
+          />
         )}
 
-        {/* Upload Reference (with per-type similarity built in) */}
+        {/* Upload Reference */}
         {caps.showUpload && (
-          <div className="relative">
-            <EntryButton
-              icon={ImagePlus}
-              label={uploadLabel}
-              active={uploadOpen || totalUploaded > 0}
-              onClick={() => { closeAll(); setUploadOpen(!uploadOpen); }}
-            />
-            <EntryPopover open={uploadOpen} onClose={() => setUploadOpen(false)}>
-              <div className="min-w-[280px] space-y-4 overflow-y-auto overscroll-contain" style={{ maxHeight: "min(340px, calc(100dvh - 120px))" }}>
-                <div className="space-y-2.5">
-                  <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50">
-                    上传参考图
-                  </h3>
-                  <UploadReferencePanel
-                    key={selectedModel.id}
-                    model={selectedModel}
-                    imagesByType={referenceImagesByType}
-                    onImagesByTypeChange={onReferenceImagesByTypeChange}
-                    similarityByType={similarityByType}
-                    onSimilarityByTypeChange={onSimilarityByTypeChange}
-                  />
-                </div>
-              </div>
-            </EntryPopover>
-          </div>
+          <EntryButton
+            icon={ImagePlus}
+            label={uploadLabel}
+            active={uploadOpen || totalUploaded > 0}
+            onClick={() => setUploadOpen(true)}
+          />
         )}
       </div>
+
+      {/* ── Drawers ── */}
+
+      {/* Model Drawer */}
+      {showModel && (
+        <MobileDrawerPicker open={modelOpen} onClose={() => setModelOpen(false)} title="切换模型">
+          <div className="flex flex-col gap-1">
+            {models.map((model) => (
+              <button
+                key={model.id}
+                onClick={() => handleModelChange(model)}
+                className={cn(
+                  "flex w-full items-center gap-3 p-3 rounded-xl text-left transition-colors cursor-pointer",
+                  model.id === selectedModel.id
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-muted text-foreground",
+                )}
+              >
+                <img src={model.image} alt={model.name} className="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium">{model.name}</div>
+                  <div className={cn("text-xs line-clamp-1", model.id === selectedModel.id ? "text-primary-foreground/70" : "text-muted-foreground")}>{model.content}</div>
+                </div>
+                <span className={cn("text-xs shrink-0", model.id === selectedModel.id ? "text-primary-foreground/70" : "text-muted-foreground")}>⚡{model.price}</span>
+              </button>
+            ))}
+          </div>
+        </MobileDrawerPicker>
+      )}
+
+      {/* Ratio Drawer */}
+      {caps.showRatio && (
+        <MobileDrawerPicker open={ratioOpen} onClose={() => setRatioOpen(false)} title="比例">
+          <div className="flex flex-col gap-1">
+            {selectedModel.ratio.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => { setRatio(opt); setRatioOpen(false); }}
+                className={cn(
+                  "flex items-center px-4 py-3 rounded-xl transition-colors cursor-pointer text-left text-sm font-medium",
+                  ratio === opt
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-muted text-foreground",
+                )}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        </MobileDrawerPicker>
+      )}
+
+      {/* Resolution Drawer */}
+      {caps.showResolution && (
+        <MobileDrawerPicker open={resolutionOpen} onClose={() => setResolutionOpen(false)} title="分辨率">
+          <div className="flex flex-col gap-1">
+            {selectedModel.resolution.map((r) => (
+              <button
+                key={r.resolution}
+                onClick={() => { setResolution(r.resolution); setResolutionOpen(false); }}
+                className={cn(
+                  "flex items-center px-4 py-3 rounded-xl transition-colors cursor-pointer text-left text-sm font-medium",
+                  resolution === r.resolution
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-muted text-foreground",
+                )}
+              >
+                {r.resolution}
+              </button>
+            ))}
+          </div>
+        </MobileDrawerPicker>
+      )}
+
+      {/* Image Count Drawer */}
+      {caps.showImageCount && (
+        <MobileDrawerPicker open={countOpen} onClose={() => setCountOpen(false)} title="生图数量">
+          <div className="flex flex-col gap-1">
+            {[1, 2, 3, 4].map((n) => (
+              <button
+                key={n}
+                onClick={() => { onImageCountChange(n); setCountOpen(false); }}
+                className={cn(
+                  "flex items-center px-4 py-3 rounded-xl transition-colors cursor-pointer text-left text-sm font-medium",
+                  imageCount === n
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-muted text-foreground",
+                )}
+              >
+                {n} 张
+              </button>
+            ))}
+          </div>
+        </MobileDrawerPicker>
+      )}
+
+      {/* Style Drawer */}
+      {caps.showStyle && (
+        <MobileDrawerPicker open={styleOpen} onClose={() => setStyleOpen(false)} title="风格">
+          <div className="flex flex-col gap-1">
+            {styleResources.map((res) => (
+              <button
+                key={res.id}
+                onClick={() => { setStyleId(res.id); setStyleOpen(false); }}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors cursor-pointer text-left",
+                  styleId === res.id
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-muted text-foreground",
+                )}
+              >
+                <img
+                  src={res.image}
+                  alt={res.resource_name}
+                  className="h-10 w-10 rounded-lg object-cover shrink-0"
+                />
+                <span className="text-sm font-medium truncate">{res.resource_name}</span>
+              </button>
+            ))}
+          </div>
+        </MobileDrawerPicker>
+      )}
+
+      {/* Upload Reference Drawer */}
+      {caps.showUpload && (
+        <MobileDrawerPicker open={uploadOpen} onClose={() => setUploadOpen(false)} title="上传参考图">
+          <UploadReferencePanel
+            key={selectedModel.id}
+            model={selectedModel}
+            imagesByType={referenceImagesByType}
+            onImagesByTypeChange={onReferenceImagesByTypeChange}
+            similarityByType={similarityByType}
+            onSimilarityByTypeChange={onSimilarityByTypeChange}
+          />
+        </MobileDrawerPicker>
+      )}
     </div>
   );
 };
