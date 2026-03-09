@@ -290,7 +290,7 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
               value={editPrompt}
               onChange={(e) => setEditPrompt(e.target.value)}
               placeholder={mode === "edit" ? "在图像的基础上调整，您可以尝试输入：将图像中人物的衣服颜色调整为红色，或将图像中的人物带上圣诞帽" : "输入您的提示词，比如，可爱的猫"}
-              className="flex-1 min-w-0 resize-none bg-transparent pb-2 pt-0 text-sm text-workspace-surface-foreground placeholder:text-muted-foreground focus:outline-none min-h-[100px] max-sm:min-h-[140px] max-h-[220px] overflow-y-auto prompt-textarea"
+              className="flex-1 min-w-0 resize-none bg-transparent pb-2 pt-0 text-sm text-workspace-surface-foreground placeholder:text-muted-foreground focus:outline-none min-h-[100px] max-sm:min-h-[140px] overflow-y-auto prompt-textarea max-h-[min(260px,calc(100dvh-260px))] md:max-h-[220px]"
               style={{ wordBreak: "break-word", overflowWrap: "break-word" }}
               rows={2}
             />

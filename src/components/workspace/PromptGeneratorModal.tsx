@@ -64,8 +64,8 @@ const PromptGeneratorModal = ({ open, onClose, onOptimize }: PromptGeneratorModa
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="输入你的提示，例如：可爱的猫"
-                className="w-full resize-none bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
-                style={{ minHeight: 200, maxHeight: 320 }}
+                className="w-full resize-none bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none overflow-y-auto prompt-textarea max-h-[min(260px,calc(100dvh-260px))] md:max-h-[320px]"
+                style={{ minHeight: 200 }}
                 rows={6}
               />
               <div className="flex justify-end px-3 pb-3">
