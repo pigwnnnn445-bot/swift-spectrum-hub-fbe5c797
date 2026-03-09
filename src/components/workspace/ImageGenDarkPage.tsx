@@ -502,7 +502,25 @@ const ImageGenDarkPage = () => {
             cost={totalCost}
             isSubmitDisabled={isSubmitting || isCooldown}
             onSubmit={handleSubmit}
-          />
+          >
+            {/* 移动端/平板端：吸顶时也展示参数选择 */}
+            <div className="lg:hidden">
+              <MobileParamBar
+                selectedModel={selectedModel}
+                models={models}
+                onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImagesByType({}); setSimilarityByType({}); }}
+                imageCount={imageCount}
+                onImageCountChange={setImageCount}
+                onRatioChange={setSidebarRatio}
+                onResolutionChange={setSidebarResolution}
+                onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
+                referenceImagesByType={referenceImagesByType}
+                onReferenceImagesByTypeChange={setReferenceImagesByType}
+                similarityByType={similarityByType}
+                onSimilarityByTypeChange={setSimilarityByType}
+              />
+            </div>
+          </StickyPromptBar>
         )}
 
         {/* ── 统一提示词输入区：HeroPromptBar + MobileParamBar ── */}
