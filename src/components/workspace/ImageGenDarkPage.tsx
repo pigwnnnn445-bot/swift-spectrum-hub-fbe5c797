@@ -4,7 +4,7 @@ import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
 import MobileParamBar from "./MobileParamBar";
 import MasonryGallery from "./MasonryGallery";
-import StickyPromptBar from "./StickyPromptBar";
+// StickyPromptBar removed — unified into HeroPromptBar with scrollTop-based sticky
 import TopNavBar from "./TopNavBar";
 import TaskList from "./TaskList";
 import EditImageModal from "./EditImageModal";

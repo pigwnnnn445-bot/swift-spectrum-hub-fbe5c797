@@ -60,7 +60,7 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost, isSubmitDisabled, onSubmi
 
   return (
     <>
-      <div className={`relative w-full bg-workspace-panel ${hasActiveTask ? "sticky top-[41px] z-40" : ""}`}>
+      <div className="relative w-full bg-workspace-panel">
         <div className={`relative z-10 flex flex-col items-center justify-center px-4 ${hasActiveTask ? "py-2.5 sm:py-2.5" : "py-12 sm:py-16"}`}>
           {/* 引导文案：生成中时隐藏 */}
           {!hasActiveTask && (
