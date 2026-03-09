@@ -54,17 +54,17 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabl
       <div className="w-full">
         <div className="bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm">
           <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-            <div className="flex items-end rounded-2xl border border-workspace-border/60 bg-workspace-surface shadow-sm">
+            <div className="flex items-end rounded-2xl border border-workspace-border/60 bg-workspace-surface shadow-sm min-w-0">
               <textarea
                 ref={textareaRef}
                 value={prompt}
                 onChange={(e) => onPromptChange(e.target.value)}
                 placeholder="输入您的提示词，比如：可爱的猫"
                 rows={1}
-                className="prompt-textarea flex-1 resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/40 focus:outline-none"
-                style={{ maxHeight: 220, minHeight: 100 }}
+                className="prompt-textarea flex-1 min-w-0 resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/40 focus:outline-none overflow-y-auto"
+                style={{ maxHeight: 220, minHeight: 100, wordBreak: "break-word", overflowWrap: "break-word" }}
               />
-              <div className="flex items-center gap-2 mr-2 mb-2">
+              <div className="flex items-center gap-2 mr-2 mb-2 shrink-0">
                 <button
                   onClick={() => setGenOpen(true)}
                   className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 h-8 text-xs font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer shrink-0"

@@ -70,15 +70,15 @@ const HeroPromptBar = ({ prompt, onPromptChange, cost, isSubmitDisabled, onSubmi
           )}
 
           <div className={`relative w-full ${hasActiveTask ? "" : "max-w-[760px]"}`}>
-            <div className="flex flex-col rounded-2xl border border-workspace-border/60 bg-workspace-surface shadow-lg">
+            <div className="flex flex-col rounded-2xl border border-workspace-border/60 bg-workspace-surface shadow-lg min-w-0">
               <textarea
                 ref={setRefs}
                 value={prompt}
                 onChange={(e) => onPromptChange(e.target.value)}
                 placeholder="输入您的提示词，比如：可爱的猫"
                 rows={1}
-                className="prompt-textarea w-full resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/50 focus:outline-none sm:text-base"
-                style={{ maxHeight: 220, minHeight: 100 }}
+                className="prompt-textarea w-full resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/50 focus:outline-none sm:text-base overflow-y-auto"
+                style={{ maxHeight: 220, minHeight: 100, wordBreak: "break-word", overflowWrap: "break-word" }}
               />
               <div className="flex items-center justify-end gap-2 px-3 pb-3">
                 <button
