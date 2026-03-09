@@ -435,10 +435,13 @@ const ImageGenDarkPage = () => {
               });
             }}
             onDeleteImage={(taskId, imageIndex) => {
-              setTasks((prev) => prev.map((t) => {
-                if (t.id !== taskId) return t;
-                return { ...t, images: t.images.filter((_, i) => i !== imageIndex) };
-              }));
+              setTasks((prev) => prev
+                .map((t) => {
+                  if (t.id !== taskId) return t;
+                  return { ...t, images: t.images.filter((_, i) => i !== imageIndex) };
+                })
+                .filter((t) => !(t.status === "success" && t.images.length === 0))
+              );
             }}
             onClose={() => { setDetailOpen(false); setDetailTask(null); }}
           />
