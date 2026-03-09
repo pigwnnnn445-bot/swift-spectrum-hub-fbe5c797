@@ -684,7 +684,7 @@ const ImageGenDarkPage = () => {
               resolution: taskResolution,
               style_id: sidebarStyleId,
               generation_mode: "image-to-image",
-              similarity: sidebarSimilarity,
+              similarity: getActiveSimilarity(referenceImagesByType, similarityByType),
               base_image: payload.baseImageUrl,
               mask_data: payload.maskDataUrl,
             },
