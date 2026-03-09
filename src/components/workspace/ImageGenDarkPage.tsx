@@ -26,9 +26,7 @@ const ImageGenDarkPage = () => {
   const [models, setModels] = useState<ModelConfig[]>([]);
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isSticky, setIsSticky] = useState(false);
-  const [stickyHeight, setStickyHeight] = useState(0);
-  const promptContainerRef = useRef<HTMLDivElement>(null);
+  const [isInspirationBrowsing, setIsInspirationBrowsing] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
   const [imageCount, setImageCount] = useState(1);
@@ -69,7 +67,7 @@ const ImageGenDarkPage = () => {
     };
   }, []);
 
-  // scrollTop-based sticky with hysteresis (enter: 80, exit: 40) to prevent thrashing
+  // scrollTop-based inspiration browsing mode with hysteresis (enter: 40, exit: 10)
   useEffect(() => {
     const scrollEl = mainScrollRef.current;
     if (!scrollEl) return;
@@ -79,9 +77,9 @@ const ImageGenDarkPage = () => {
       ticking = true;
       requestAnimationFrame(() => {
         const scrollTop = scrollEl.scrollTop;
-        setIsSticky((prev) => {
-          if (!prev && scrollTop > 80) return true;
-          if (prev && scrollTop < 40) return false;
+        setIsInspirationBrowsing((prev) => {
+          if (!prev && scrollTop > 40) return true;
+          if (prev && scrollTop < 10) return false;
           return prev;
         });
         ticking = false;
@@ -89,17 +87,6 @@ const ImageGenDarkPage = () => {
     };
     scrollEl.addEventListener("scroll", handleScroll, { passive: true });
     return () => scrollEl.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Track prompt container height for placeholder
-  useEffect(() => {
-    const el = promptContainerRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) => {
-      setStickyHeight(entry.contentRect.height);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
   }, []);
 
   useEffect(() => {
@@ -474,29 +461,23 @@ const ImageGenDarkPage = () => {
 
         {/* ── 统一提示词输入区：单实例 HeroPromptBar + MobileParamBar ── */}
         {!detailOpen && (
-          <>
-            {/* Placeholder: prevents scroll position shift when sticky kicks in */}
-            {isSticky && <div style={{ height: stickyHeight }} aria-hidden />}
-            <div
-              ref={promptContainerRef}
-              className={cn(
-                "sticky top-[41px] z-40 transition-shadow duration-200",
-                isSticky
-                  ? "bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm"
-                  : "bg-transparent"
-              )}
-            >
-              {/* 移动端/平板端 */}
-              <div className="lg:hidden mx-3 my-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
-                <HeroPromptBar
-                  prompt={prompt}
-                  onPromptChange={setPrompt}
-                  cost={totalCost}
-                  isSubmitDisabled={isSubmitting || isCooldown}
-                  onSubmit={handleSubmit}
-                  hasActiveTask={hasEnteredCreationMode}
-                  promptInputRef={promptInputRef}
-                />
+          <div
+            className={cn(
+              isInspirationBrowsing && "sticky top-[41px] z-40 bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm"
+            )}
+          >
+            {/* 移动端/平板端 */}
+            <div className="lg:hidden mx-3 my-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
+              <HeroPromptBar
+                prompt={prompt}
+                onPromptChange={setPrompt}
+                cost={totalCost}
+                isSubmitDisabled={isSubmitting || isCooldown}
+                onSubmit={handleSubmit}
+                hasActiveTask={hasEnteredCreationMode || isInspirationBrowsing}
+                promptInputRef={promptInputRef}
+              />
+              {!isInspirationBrowsing && (
                 <div className="mt-2">
                   <MobileParamBar
                     selectedModel={selectedModel}
@@ -512,21 +493,21 @@ const ImageGenDarkPage = () => {
                     onReferenceImagesChange={setReferenceImages}
                   />
                 </div>
-              </div>
-              {/* PC 端 */}
-              <div className="hidden lg:block">
-                <HeroPromptBar
-                  prompt={prompt}
-                  onPromptChange={setPrompt}
-                  cost={totalCost}
-                  isSubmitDisabled={isSubmitting || isCooldown}
-                  onSubmit={handleSubmit}
-                  hasActiveTask={hasEnteredCreationMode}
-                  promptInputRef={promptInputRef}
-                />
-              </div>
+              )}
             </div>
-          </>
+            {/* PC 端 */}
+            <div className="hidden lg:block">
+              <HeroPromptBar
+                prompt={prompt}
+                onPromptChange={setPrompt}
+                cost={totalCost}
+                isSubmitDisabled={isSubmitting || isCooldown}
+                onSubmit={handleSubmit}
+                hasActiveTask={hasEnteredCreationMode || isInspirationBrowsing}
+                promptInputRef={promptInputRef}
+              />
+            </div>
+          </div>
         )}
 
         {/* 空状态：创作模式下任务全删且未点击去灵感显影室 */}
