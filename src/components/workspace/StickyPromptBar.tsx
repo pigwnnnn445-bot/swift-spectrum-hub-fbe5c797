@@ -28,7 +28,7 @@ const useAutoResize = (value: string) => {
   return ref;
 };
 
-const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabled, onSubmit }: StickyPromptBarProps) => {
+const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabled, onSubmit, children }: StickyPromptBarProps) => {
   const textareaRef = useAutoResize(prompt);
   const [genOpen, setGenOpen] = useState(false);
   const [optOpen, setOptOpen] = useState(false);
