@@ -454,8 +454,8 @@ const ImageGenDarkPage = () => {
         {/* ── 哨兵元素：用于 IntersectionObserver 检测 Hero 是否在视口 ── */}
         <div ref={heroRef} className="h-px w-full" />
 
-        {/* ── 移动端：输入框 + 参数栏整体卡片（仅 Hero 可见时显示） ── */}
-        {isHeroVisible && (
+        {/* ── 移动端：输入框 + 参数栏整体卡片（仅 Hero 可见时显示，且详情未打开） ── */}
+        {isHeroVisible && !detailOpen && (
           <div className="sm:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
             <HeroPromptBar
               prompt={prompt}
