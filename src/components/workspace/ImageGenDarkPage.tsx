@@ -27,6 +27,7 @@ const ImageGenDarkPage = () => {
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
+  const [stickyHeight, setStickyHeight] = useState(0);
   const promptContainerRef = useRef<HTMLDivElement>(null);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
