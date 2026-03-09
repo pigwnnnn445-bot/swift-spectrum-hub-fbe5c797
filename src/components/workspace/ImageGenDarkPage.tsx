@@ -104,7 +104,11 @@ const ImageGenDarkPage = () => {
             return false;
           }
           // Exit sticky when scrolled back to or above the enter point
-          if (prev && scrollTop <= stickyEnterScrollTop.current) return false;
+          if (prev && scrollTop <= stickyEnterScrollTop.current) {
+            // Reset scroll to top so the full hero is visible without gray gap
+            scrollEl.scrollTop = 0;
+            return false;
+          }
           return prev;
         });
         ticking = false;
