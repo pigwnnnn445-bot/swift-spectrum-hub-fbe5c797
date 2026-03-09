@@ -201,7 +201,7 @@ const ImageGenDarkPage = () => {
         )
       );
     });
-  }, [selectedModel, prompt, isSubmitting, isCooldown, imageCount, referenceImages, sidebarRatio, sidebarResolution, sidebarStyleId, sidebarStyleName, sidebarSimilarity]);
+  }, [selectedModel, prompt, isSubmitting, isCooldown, imageCount, referenceImagesByType, similarityByType, sidebarRatio, sidebarResolution, sidebarStyleId, sidebarStyleName]);
 
   // ── 重试任务（从快照新建，count=1，原任务保留） ──
   const handleRetry = useCallback(async (taskId: string) => {
