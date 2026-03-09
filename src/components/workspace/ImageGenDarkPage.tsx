@@ -499,8 +499,7 @@ const ImageGenDarkPage = () => {
                 hasActiveTask={hasEnteredCreationMode || isInspirationBrowsing}
                 promptInputRef={promptInputRef}
               />
-              {!isInspirationBrowsing && (
-                <div className="mt-2">
+              <div className={isInspirationBrowsing ? "mt-1" : "mt-2"}>
                   <MobileParamBar
                     selectedModel={selectedModel}
                     models={models}
@@ -516,7 +515,6 @@ const ImageGenDarkPage = () => {
                     onSimilarityByTypeChange={setSimilarityByType}
                   />
                 </div>
-              )}
             </div>
             {/* PC 端 */}
             <div className="hidden lg:block">
