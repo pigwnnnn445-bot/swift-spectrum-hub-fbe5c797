@@ -31,7 +31,7 @@ const useAutoResize = (value: string) => {
 };
 
 const HeroPromptBar = ({ prompt, onPromptChange, cost, isSubmitDisabled, onSubmit, hasActiveTask, promptInputRef }: HeroPromptBarProps) => {
-  const autoRef = useAutoResize(prompt, 220);
+  const autoRef = useAutoResize(prompt);
   const [genOpen, setGenOpen] = useState(false);
   const [optOpen, setOptOpen] = useState(false);
   const [seed, setSeed] = useState("");

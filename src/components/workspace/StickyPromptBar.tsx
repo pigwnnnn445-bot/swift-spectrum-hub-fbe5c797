@@ -12,14 +12,14 @@ interface StickyPromptBarProps {
   onSubmit?: () => void;
 }
 
-const useAutoResize = (value: string, maxHeight: number) => {
+const useAutoResize = (value: string) => {
   const ref = useRef<HTMLTextAreaElement>(null);
   const resize = useCallback(() => {
     const el = ref.current;
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = Math.min(el.scrollHeight, maxHeight) + "px";
-  }, [maxHeight]);
+    el.style.height = el.scrollHeight + "px";
+  }, []);
 
   useEffect(() => { resize(); }, [value, resize]);
 
@@ -27,7 +27,7 @@ const useAutoResize = (value: string, maxHeight: number) => {
 };
 
 const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabled, onSubmit }: StickyPromptBarProps) => {
-  const textareaRef = useAutoResize(prompt, 240);
+  const textareaRef = useAutoResize(prompt);
   const [genOpen, setGenOpen] = useState(false);
   const [optOpen, setOptOpen] = useState(false);
   const [seed, setSeed] = useState("");
