@@ -495,7 +495,7 @@ const ImageGenDarkPage = () => {
             hasActiveTask={hasEnteredCreationMode}
             promptInputRef={promptInputRef}
           />
-        </div>
+        </div>}
 
         {/* 吸顶输入条：仅当 Hero 哨兵滚出视口时显示 */}
         {!isHeroVisible && (
