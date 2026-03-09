@@ -24,7 +24,7 @@ const ConfirmDialog = ({ open, onOpenChange, onConfirm }: ConfirmDialogProps) =>
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>取消</AlertDialogCancel>
-        <AlertDialogAction onClick={onConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+        <AlertDialogAction onClick={onConfirm} className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
           删除
         </AlertDialogAction>
       </AlertDialogFooter>

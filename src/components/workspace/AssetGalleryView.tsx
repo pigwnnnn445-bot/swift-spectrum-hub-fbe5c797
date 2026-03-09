@@ -260,7 +260,7 @@ const AssetCard = ({
           <div className="flex gap-2">
             <button
               onClick={handleConfirmDelete}
-              className="rounded-md bg-destructive px-4 py-1.5 text-xs font-medium text-destructive-foreground hover:bg-destructive/90 transition-colors"
+              className="rounded-md bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               删除
             </button>
