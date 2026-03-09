@@ -209,7 +209,7 @@ const MobileParamBar = ({
   const uploadLabel = totalUploaded > 0 ? `已上传(${totalUploaded})` : "上传参考图";
 
   return (
-    <div className="sm:hidden px-4 pb-2">
+    <div className="lg:hidden px-4 pb-2">
       <div className="flex items-center gap-2 flex-wrap">
         {/* Model */}
         {showModel && (
