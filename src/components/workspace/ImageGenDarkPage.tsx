@@ -670,7 +670,7 @@ const ImageGenDarkPage = () => {
             styleName: sidebarStyleName || undefined,
             styleId: sidebarStyleId,
             generationMode: "image-to-image",
-            similarity: sidebarSimilarity,
+            similarity: getActiveSimilarity(referenceImagesByType, similarityByType),
             count: 1,
             images: [],
             baseImage: payload.baseImageUrl,
