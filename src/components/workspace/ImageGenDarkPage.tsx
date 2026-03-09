@@ -515,7 +515,6 @@ const ImageGenDarkPage = () => {
                     onSimilarityByTypeChange={setSimilarityByType}
                   />
                 </div>
-              )}
             </div>
             {/* PC 端 */}
             <div className="hidden lg:block">
