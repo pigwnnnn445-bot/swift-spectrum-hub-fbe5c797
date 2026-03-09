@@ -68,23 +68,21 @@ const ImageGenDarkPage = () => {
     };
   }, []);
 
-  // scrollTop-based sticky detection (stable, no flicker)
+  // scrollTop-based sticky visual detection (for title hiding & background blur)
   useEffect(() => {
     const scrollEl = mainScrollRef.current;
     if (!scrollEl) return;
     let ticking = false;
-    const HYSTERESIS = 16;
+    const THRESHOLD = 100; // when scrolled past ~100px, hide title and show sticky visual
+    const HYSTERESIS = 24;
     const handleScroll = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        const container = promptContainerRef.current;
-        if (!container) { ticking = false; return; }
-        const threshold = container.offsetTop + HYSTERESIS;
         const scrollTop = scrollEl.scrollTop;
         setIsSticky((prev) => {
-          if (!prev && scrollTop >= threshold) return true;
-          if (prev && scrollTop < threshold - HYSTERESIS) return false;
+          if (!prev && scrollTop >= THRESHOLD) return true;
+          if (prev && scrollTop < THRESHOLD - HYSTERESIS) return false;
           return prev;
         });
         ticking = false;
