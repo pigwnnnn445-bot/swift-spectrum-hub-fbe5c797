@@ -83,12 +83,18 @@ const ImageGenDarkPage = () => {
       requestAnimationFrame(() => {
         const scrollTop = scrollEl.scrollTop;
         setIsInspirationBrowsing((prev) => {
-          if (!prev && scrollTop > 40) {
-            // Capture full height before switching to compact
-            if (promptContainerRef.current) {
-              setHeroFullHeight(promptContainerRef.current.offsetHeight);
+          if (!prev) {
+            // Trigger when the prompt container top is close to the header bottom (41px)
+            const promptTop = promptContainerRef.current?.offsetTop ?? 0;
+            const headerBottom = 41;
+            const earlyOffset = 20; // trigger 20px before touching header
+            if (scrollTop + headerBottom >= promptTop - earlyOffset) {
+              if (promptContainerRef.current) {
+                setHeroFullHeight(promptContainerRef.current.offsetHeight);
+              }
+              return true;
             }
-            return true;
+            return false;
           }
           if (prev && scrollTop < 10) return false;
           return prev;
