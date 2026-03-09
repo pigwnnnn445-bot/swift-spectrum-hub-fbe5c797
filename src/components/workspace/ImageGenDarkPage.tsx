@@ -134,8 +134,10 @@ const ImageGenDarkPage = () => {
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const count = imageCount;
 
-    const hasRefImages = referenceImages.length > 0;
+    const allRefImages = flattenImagesByType(referenceImagesByType);
+    const hasRefImages = allRefImages.length > 0;
     const generationMode: GenerationMode = hasRefImages ? "image-to-image" : "text-to-image";
+    const activeSimilarity = getActiveSimilarity(referenceImagesByType, similarityByType);
 
     const newTask: GenerateTask = {
       id: taskId,
@@ -149,10 +151,10 @@ const ImageGenDarkPage = () => {
       styleName: sidebarStyleName || undefined,
       styleId: sidebarStyleId,
       generationMode,
-      similarity: hasRefImages ? sidebarSimilarity : undefined,
+      similarity: hasRefImages ? activeSimilarity : undefined,
       count,
       images: [],
-      referenceImages: hasRefImages ? [...referenceImages] : undefined,
+      referenceImages: hasRefImages ? [...allRefImages] : undefined,
       createdAt: Date.now(),
       requestPayload: {
         model_id: selectedModel.id,
@@ -162,8 +164,8 @@ const ImageGenDarkPage = () => {
         resolution: sidebarResolution || selectedModel.resolution?.[0]?.resolution || "",
         style_id: sidebarStyleId,
         generation_mode: generationMode,
-        similarity: hasRefImages ? sidebarSimilarity : undefined,
-        reference_images: hasRefImages ? [...referenceImages] : undefined,
+        similarity: hasRefImages ? activeSimilarity : undefined,
+        reference_images: hasRefImages ? [...allRefImages] : undefined,
       },
     };
 
