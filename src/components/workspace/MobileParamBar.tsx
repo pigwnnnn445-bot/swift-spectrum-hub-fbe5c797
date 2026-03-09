@@ -3,10 +3,11 @@
  * 仅在小屏（< sm）显示，对齐详情页 ImageEditComposer 的入口样式与面板结构
  */
 import { useState, useEffect, useRef } from "react";
-import { Proportions, ScanLine, Palette, ImagePlus, Hash, Minus, Plus } from "lucide-react";
+import { Proportions, ScanLine, Palette, ImagePlus, Hash } from "lucide-react";
 import ModelSelector from "./ModelSelector";
-import StyleSelector from "./StyleSelector";
 import UploadReferencePanel from "./UploadReferencePanel";
+import type { ReferenceImagesByType, SimilarityByType } from "./UploadReferencePanel";
+import { getTotalImagesByTypeCount } from "./UploadReferencePanel";
 import {
   getModelCapabilities,
   getDefaultRatio,
@@ -14,7 +15,6 @@ import {
   getDefaultStyleId,
   getStyleNameById,
   getStyleResources,
-  DEFAULT_SIMILARITY,
 } from "@/config/modelConfig";
 import type { ModelConfig } from "@/config/modelConfig";
 import { cn } from "@/lib/utils";
@@ -114,9 +114,10 @@ interface MobileParamBarProps {
   onRatioChange?: (ratio: string) => void;
   onResolutionChange?: (resolution: string) => void;
   onStyleChange?: (styleId: number | null, styleName: string) => void;
-  onSimilarityChange?: (similarity: number) => void;
-  referenceImages?: string[];
-  onReferenceImagesChange?: (images: string[]) => void;
+  referenceImagesByType?: ReferenceImagesByType;
+  onReferenceImagesByTypeChange?: (byType: ReferenceImagesByType) => void;
+  similarityByType?: SimilarityByType;
+  onSimilarityByTypeChange?: (byType: SimilarityByType) => void;
 }
 
 const MobileParamBar = ({
@@ -128,15 +129,15 @@ const MobileParamBar = ({
   onRatioChange,
   onResolutionChange,
   onStyleChange,
-  onSimilarityChange,
-  referenceImages,
-  onReferenceImagesChange,
+  referenceImagesByType,
+  onReferenceImagesByTypeChange,
+  similarityByType,
+  onSimilarityByTypeChange,
 }: MobileParamBarProps) => {
   // Local state (mirrors sidebar pattern)
   const [ratio, setRatioLocal] = useState(getDefaultRatio(selectedModel));
   const [resolution, setResolutionLocal] = useState(getDefaultResolution(selectedModel));
   const [styleId, setStyleIdLocal] = useState<number | null>(getDefaultStyleId(selectedModel));
-  const [similarity, setSimilarityLocal] = useState(DEFAULT_SIMILARITY);
 
   // Popover toggles
   const [ratioOpen, setRatioOpen] = useState(false);
@@ -158,10 +159,6 @@ const MobileParamBar = ({
     setStyleIdLocal(id);
     onStyleChange?.(id, getStyleNameById(selectedModel, id));
   };
-  const setSimilarity = (v: number) => {
-    setSimilarityLocal(v);
-    onSimilarityChange?.(v);
-  };
 
   const closeAll = () => {
     setRatioOpen(false);
@@ -177,7 +174,6 @@ const MobileParamBar = ({
     onResolutionChange?.(getDefaultResolution(selectedModel));
     const initStyleId = getDefaultStyleId(selectedModel);
     onStyleChange?.(initStyleId, getStyleNameById(selectedModel, initStyleId));
-    onSimilarityChange?.(DEFAULT_SIMILARITY);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -189,11 +185,9 @@ const MobileParamBar = ({
     setRatioLocal(newRatio);
     setResolutionLocal(newRes);
     setStyleIdLocal(newStyleId);
-    setSimilarityLocal(DEFAULT_SIMILARITY);
     onRatioChange?.(newRatio);
     onResolutionChange?.(newRes);
     onStyleChange?.(newStyleId, getStyleNameById(selectedModel, newStyleId));
-    onSimilarityChange?.(DEFAULT_SIMILARITY);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedModel.id]);
 
@@ -205,7 +199,7 @@ const MobileParamBar = ({
   const showModel = models.length > 1;
   const styleResources = getStyleResources(selectedModel);
   const currentStyleName = styleResources.find((r) => r.id === styleId)?.resource_name ?? "自动";
-  const totalUploaded = referenceImages?.length ?? 0;
+  const totalUploaded = getTotalImagesByTypeCount(referenceImagesByType ?? {});
   const uploadLabel = totalUploaded > 0 ? `已上传(${totalUploaded})` : "上传参考图";
 
   return (
@@ -364,7 +358,7 @@ const MobileParamBar = ({
           </div>
         )}
 
-        {/* Upload Reference */}
+        {/* Upload Reference (with per-type similarity built in) */}
         {caps.showUpload && (
           <div className="relative">
             <EntryButton
@@ -382,36 +376,12 @@ const MobileParamBar = ({
                   <UploadReferencePanel
                     key={selectedModel.id}
                     model={selectedModel}
-                    images={referenceImages}
-                    onImagesChange={onReferenceImagesChange}
+                    imagesByType={referenceImagesByType}
+                    onImagesByTypeChange={onReferenceImagesByTypeChange}
+                    similarityByType={similarityByType}
+                    onSimilarityByTypeChange={onSimilarityByTypeChange}
                   />
                 </div>
-
-                {/* Similarity */}
-                {caps.showSimilarity && (
-                  <div className="space-y-2.5">
-                    <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50 text-center">
-                      相似度
-                    </h3>
-                    <div className="flex items-center justify-center gap-4">
-                      <button
-                        onClick={() => setSimilarity(Math.max(0, similarity - 1))}
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
-                      >
-                        <Minus className="h-4 w-4 text-workspace-panel-foreground" />
-                      </button>
-                      <span className="min-w-[2.5rem] text-center text-sm font-medium text-workspace-panel-foreground">
-                        {similarity}
-                      </span>
-                      <button
-                        onClick={() => setSimilarity(Math.min(100, similarity + 1))}
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
-                      >
-                        <Plus className="h-4 w-4 text-workspace-panel-foreground" />
-                      </button>
-                    </div>
-                  </div>
-                )}
               </div>
             </EntryPopover>
           </div>

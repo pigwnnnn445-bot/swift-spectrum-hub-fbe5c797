@@ -492,8 +492,8 @@ const ImageEditComposer = forwardRef<ImageEditComposerHandle, ImageEditComposerP
                     <UploadReferencePanel
                       key={selectedModel.id}
                       model={selectedModel}
-                      images={referenceImages}
-                      onImagesChange={setReferenceImages}
+                      imagesByType={{ 0: referenceImages }}
+                      onImagesByTypeChange={(byType) => setReferenceImages(Object.values(byType).flat())}
                     />
 
                     {/* 相似度 */}
