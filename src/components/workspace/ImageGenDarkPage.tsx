@@ -80,7 +80,13 @@ const ImageGenDarkPage = () => {
       requestAnimationFrame(() => {
         const scrollTop = scrollEl.scrollTop;
         setIsInspirationBrowsing((prev) => {
-          if (!prev && scrollTop > 40) return true;
+          if (!prev && scrollTop > 40) {
+            // Capture full height before switching to compact
+            if (promptContainerRef.current) {
+              setHeroFullHeight(promptContainerRef.current.offsetHeight);
+            }
+            return true;
+          }
           if (prev && scrollTop < 10) return false;
           return prev;
         });
