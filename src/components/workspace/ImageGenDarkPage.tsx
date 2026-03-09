@@ -496,14 +496,45 @@ const ImageGenDarkPage = () => {
         {/* 吸顶输入条：仅当 Hero 哨兵滚出视口时显示 */}
         {!isHeroVisible && (
           <div className="sticky top-[41px] z-40">
-            <StickyPromptBar
-              visible={true}
-              prompt={prompt}
-              onPromptChange={setPrompt}
-              cost={totalCost}
-              isSubmitDisabled={isSubmitting || isCooldown}
-              onSubmit={handleSubmit}
-            />
+            {/* 移动端：吸顶输入框 + 参数栏 */}
+            <div className="sm:hidden bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm px-3 py-2">
+              <div className="rounded-2xl bg-muted/30 px-3 py-2 mobile-input-module">
+                <StickyPromptBar
+                  visible={true}
+                  prompt={prompt}
+                  onPromptChange={setPrompt}
+                  cost={totalCost}
+                  isSubmitDisabled={isSubmitting || isCooldown}
+                  onSubmit={handleSubmit}
+                />
+                <div className="mt-2">
+                  <MobileParamBar
+                    selectedModel={selectedModel}
+                    models={models}
+                    onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+                    imageCount={imageCount}
+                    onImageCountChange={setImageCount}
+                    onRatioChange={setSidebarRatio}
+                    onResolutionChange={setSidebarResolution}
+                    onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
+                    onSimilarityChange={setSidebarSimilarity}
+                    referenceImages={referenceImages}
+                    onReferenceImagesChange={setReferenceImages}
+                  />
+                </div>
+              </div>
+            </div>
+            {/* PC端：只吸顶输入条 */}
+            <div className="hidden sm:block">
+              <StickyPromptBar
+                visible={true}
+                prompt={prompt}
+                onPromptChange={setPrompt}
+                cost={totalCost}
+                isSubmitDisabled={isSubmitting || isCooldown}
+                onSubmit={handleSubmit}
+              />
+            </div>
           </div>
         )}
 
