@@ -69,21 +69,19 @@ const ImageGenDarkPage = () => {
     };
   }, []);
 
-  // scrollTop-based sticky visual detection (for title hiding & background blur)
+  // scrollTop-based sticky with hysteresis (enter: 80, exit: 40) to prevent thrashing
   useEffect(() => {
     const scrollEl = mainScrollRef.current;
     if (!scrollEl) return;
     let ticking = false;
-    const THRESHOLD = 100; // when scrolled past ~100px, hide title and show sticky visual
-    const HYSTERESIS = 24;
     const handleScroll = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
         const scrollTop = scrollEl.scrollTop;
         setIsSticky((prev) => {
-          if (!prev && scrollTop >= THRESHOLD) return true;
-          if (prev && scrollTop < THRESHOLD - HYSTERESIS) return false;
+          if (!prev && scrollTop > 80) return true;
+          if (prev && scrollTop < 40) return false;
           return prev;
         });
         ticking = false;
@@ -91,6 +89,17 @@ const ImageGenDarkPage = () => {
     };
     scrollEl.addEventListener("scroll", handleScroll, { passive: true });
     return () => scrollEl.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Track prompt container height for placeholder
+  useEffect(() => {
+    const el = promptContainerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setStickyHeight(entry.contentRect.height);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   useEffect(() => {
