@@ -467,10 +467,10 @@ const ImageGenDarkPage = () => {
           <div
             ref={promptContainerRef}
             className={cn(
-              "transition-shadow duration-200",
+              "sticky top-[41px] z-40 transition-shadow duration-200",
               isSticky
-                ? "sticky top-[41px] z-40 bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm"
-                : ""
+                ? "bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm"
+                : "bg-transparent"
             )}
           >
             {/* 移动端/平板端 */}
