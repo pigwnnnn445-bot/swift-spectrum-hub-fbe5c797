@@ -528,8 +528,8 @@ const ImageGenDarkPage = () => {
                 </div>
               </div>
             </div>
-            {/* PC端：只吸顶输入条 */}
-            <div className="hidden sm:block">
+            {/* PC端：只吸顶输入条（仅 lg 及以上） */}
+            <div className="hidden lg:block">
               <StickyPromptBar
                 visible={true}
                 prompt={prompt}
