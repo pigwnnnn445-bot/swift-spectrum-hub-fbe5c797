@@ -97,12 +97,14 @@ const ImageGenDarkPage = () => {
                 if (promptContainerRef.current) {
                   setHeroFullHeight(promptContainerRef.current.offsetHeight);
                 }
+                stickyEnterScrollTop.current = scrollTop;
                 return true;
               }
             }
             return false;
           }
-          if (prev && scrollTop < 10) return false;
+          // Exit sticky when scrolled back to or above the enter point
+          if (prev && scrollTop <= stickyEnterScrollTop.current) return false;
           return prev;
         });
         ticking = false;
