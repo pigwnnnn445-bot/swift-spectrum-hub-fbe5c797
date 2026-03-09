@@ -70,6 +70,7 @@ const ImageGenDarkPage = () => {
   }, []);
 
   // scrollTop-based inspiration browsing mode with hysteresis (enter: 40, exit: 10)
+  // Depend on selectedModel so the effect re-runs once <main> is rendered
   useEffect(() => {
     const scrollEl = mainScrollRef.current;
     if (!scrollEl) return;
@@ -95,7 +96,7 @@ const ImageGenDarkPage = () => {
     };
     scrollEl.addEventListener("scroll", handleScroll, { passive: true });
     return () => scrollEl.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [selectedModel]);
 
   useEffect(() => {
     fetchModelsData().then((data) => {
