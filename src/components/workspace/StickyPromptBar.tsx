@@ -11,6 +11,7 @@ interface StickyPromptBarProps {
   cost: number;
   isSubmitDisabled?: boolean;
   onSubmit?: () => void;
+  children?: React.ReactNode;
 }
 
 const useAutoResize = (value: string) => {
@@ -27,7 +28,7 @@ const useAutoResize = (value: string) => {
   return ref;
 };
 
-const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabled, onSubmit }: StickyPromptBarProps) => {
+const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabled, onSubmit, children }: StickyPromptBarProps) => {
   const textareaRef = useAutoResize(prompt);
   const [genOpen, setGenOpen] = useState(false);
   const [optOpen, setOptOpen] = useState(false);
@@ -103,6 +104,7 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabl
                 </button>
               </div>
             </div>
+            {children && <div className="mt-1">{children}</div>}
           </div>
         </div>
       </div>
