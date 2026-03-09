@@ -376,14 +376,6 @@ const ImageGenDarkPage = () => {
           onImageClick={handleImageClick}
           onGoToGallery={() => {
             setViewMode("gen");
-            setHasEnteredCreationMode(false);
-            setShowInspirationOnly(false);
-            setTimeout(() => {
-              // 滚动容器回到顶部，确保从标题开始展示
-              if (mainScrollRef.current) {
-                mainScrollRef.current.scrollTo({ top: 0, behavior: "smooth" });
-              }
-            }, 100);
           }}
           onDeleteImage={(taskId, imageIndex) => {
             setTasks((prev) => prev
