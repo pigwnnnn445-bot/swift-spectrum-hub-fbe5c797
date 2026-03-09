@@ -538,7 +538,10 @@ const ImageGenDarkPage = () => {
             <p className="text-lg font-semibold text-foreground">哎呀，您的作品为空</p>
             <p className="mt-2 text-sm text-muted-foreground">快去灵感显影室看看吧</p>
             <button
-              onClick={() => setShowInspirationOnly(true)}
+              onClick={() => {
+                setShowInspirationOnly(true);
+                setHasEnteredCreationMode(false);
+              }}
               className="mt-5 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               去灵感显影室
