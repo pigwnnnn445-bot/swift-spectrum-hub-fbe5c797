@@ -27,6 +27,7 @@ const ImageGenDarkPage = () => {
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
+  const [stickyHeight, setStickyHeight] = useState(0);
   const promptContainerRef = useRef<HTMLDivElement>(null);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
@@ -68,21 +69,19 @@ const ImageGenDarkPage = () => {
     };
   }, []);
 
-  // scrollTop-based sticky visual detection (for title hiding & background blur)
+  // scrollTop-based sticky with hysteresis (enter: 80, exit: 40) to prevent thrashing
   useEffect(() => {
     const scrollEl = mainScrollRef.current;
     if (!scrollEl) return;
     let ticking = false;
-    const THRESHOLD = 100; // when scrolled past ~100px, hide title and show sticky visual
-    const HYSTERESIS = 24;
     const handleScroll = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
         const scrollTop = scrollEl.scrollTop;
         setIsSticky((prev) => {
-          if (!prev && scrollTop >= THRESHOLD) return true;
-          if (prev && scrollTop < THRESHOLD - HYSTERESIS) return false;
+          if (!prev && scrollTop > 80) return true;
+          if (prev && scrollTop < 40) return false;
           return prev;
         });
         ticking = false;
@@ -90,6 +89,17 @@ const ImageGenDarkPage = () => {
     };
     scrollEl.addEventListener("scroll", handleScroll, { passive: true });
     return () => scrollEl.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Track prompt container height for placeholder
+  useEffect(() => {
+    const el = promptContainerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setStickyHeight(entry.contentRect.height);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   useEffect(() => {
@@ -464,55 +474,59 @@ const ImageGenDarkPage = () => {
 
         {/* ── 统一提示词输入区：单实例 HeroPromptBar + MobileParamBar ── */}
         {!detailOpen && (
-          <div
-            ref={promptContainerRef}
-            className={cn(
-              "sticky top-[41px] z-40 transition-shadow duration-200",
-              isSticky
-                ? "bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm"
-                : "bg-transparent"
-            )}
-          >
-            {/* 移动端/平板端 */}
-            <div className="lg:hidden mx-3 my-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
-              <HeroPromptBar
-                prompt={prompt}
-                onPromptChange={setPrompt}
-                cost={totalCost}
-                isSubmitDisabled={isSubmitting || isCooldown}
-                onSubmit={handleSubmit}
-                hasActiveTask={hasEnteredCreationMode || isSticky}
-                promptInputRef={promptInputRef}
-              />
-              <div className="mt-2">
-                <MobileParamBar
-                  selectedModel={selectedModel}
-                  models={models}
-                  onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
-                  imageCount={imageCount}
-                  onImageCountChange={setImageCount}
-                  onRatioChange={setSidebarRatio}
-                  onResolutionChange={setSidebarResolution}
-                  onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-                  onSimilarityChange={setSidebarSimilarity}
-                  referenceImages={referenceImages}
-                  onReferenceImagesChange={setReferenceImages}
+          <>
+            {/* Placeholder: prevents scroll position shift when sticky kicks in */}
+            {isSticky && <div style={{ height: stickyHeight }} aria-hidden />}
+            <div
+              ref={promptContainerRef}
+              className={cn(
+                "sticky top-[41px] z-40 transition-shadow duration-200",
+                isSticky
+                  ? "bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm"
+                  : "bg-transparent"
+              )}
+            >
+              {/* 移动端/平板端 */}
+              <div className="lg:hidden mx-3 my-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
+                <HeroPromptBar
+                  prompt={prompt}
+                  onPromptChange={setPrompt}
+                  cost={totalCost}
+                  isSubmitDisabled={isSubmitting || isCooldown}
+                  onSubmit={handleSubmit}
+                  hasActiveTask={hasEnteredCreationMode}
+                  promptInputRef={promptInputRef}
+                />
+                <div className="mt-2">
+                  <MobileParamBar
+                    selectedModel={selectedModel}
+                    models={models}
+                    onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+                    imageCount={imageCount}
+                    onImageCountChange={setImageCount}
+                    onRatioChange={setSidebarRatio}
+                    onResolutionChange={setSidebarResolution}
+                    onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
+                    onSimilarityChange={setSidebarSimilarity}
+                    referenceImages={referenceImages}
+                    onReferenceImagesChange={setReferenceImages}
+                  />
+                </div>
+              </div>
+              {/* PC 端 */}
+              <div className="hidden lg:block">
+                <HeroPromptBar
+                  prompt={prompt}
+                  onPromptChange={setPrompt}
+                  cost={totalCost}
+                  isSubmitDisabled={isSubmitting || isCooldown}
+                  onSubmit={handleSubmit}
+                  hasActiveTask={hasEnteredCreationMode}
+                  promptInputRef={promptInputRef}
                 />
               </div>
             </div>
-            {/* PC 端 */}
-            <div className="hidden lg:block">
-              <HeroPromptBar
-                prompt={prompt}
-                onPromptChange={setPrompt}
-                cost={totalCost}
-                isSubmitDisabled={isSubmitting || isCooldown}
-                onSubmit={handleSubmit}
-                hasActiveTask={hasEnteredCreationMode || isSticky}
-                promptInputRef={promptInputRef}
-              />
-            </div>
-          </div>
+          </>
         )}
 
         {/* 空状态：创作模式下任务全删且未点击去灵感显影室 */}
