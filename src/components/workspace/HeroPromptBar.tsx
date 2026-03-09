@@ -15,14 +15,15 @@ interface HeroPromptBarProps {
   promptInputRef?: RefObject<HTMLTextAreaElement | null>;
 }
 
-const useAutoResize = (value: string, maxHeight: number) => {
+const useAutoResize = (value: string) => {
   const ref = useRef<HTMLTextAreaElement>(null);
   const resize = useCallback(() => {
     const el = ref.current;
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = Math.min(el.scrollHeight, maxHeight) + "px";
-  }, [maxHeight]);
+    // Let CSS max-h-[] handle the cap; just grow to scrollHeight
+    el.style.height = el.scrollHeight + "px";
+  }, []);
 
   useEffect(() => { resize(); }, [value, resize]);
 
