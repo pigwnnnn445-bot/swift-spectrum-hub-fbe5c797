@@ -85,6 +85,13 @@ const ImageDetailWorkspace = ({
     setSelectedImageIndex(initialImageIndex);
   }, [initialImageUrl, initialTask, initialImageIndex]);
 
+  // Safety net: if all images are gone after deletion, close the detail view
+  useEffect(() => {
+    if (allImages.length === 0) {
+      onClose();
+    }
+  }, [allImages.length, onClose]);
+
   const handleHistorySelect = useCallback((item: HistoryImageItem) => {
     setSelectedImageUrl(item.imageUrl);
     setSelectedTask(item.task);
