@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Menu } from "lucide-react";
 import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
+import StickyPromptBar from "./StickyPromptBar";
 import MobileParamBar from "./MobileParamBar";
 import MasonryGallery from "./MasonryGallery";
 import { cn } from "@/lib/utils";
