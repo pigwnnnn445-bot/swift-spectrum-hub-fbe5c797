@@ -84,15 +84,20 @@ const ImageGenDarkPage = () => {
         const scrollTop = scrollEl.scrollTop;
         setIsInspirationBrowsing((prev) => {
           if (!prev) {
-            // Trigger when the prompt container top is close to the header bottom (41px)
-            const promptTop = promptContainerRef.current?.offsetTop ?? 0;
-            const headerBottom = 41;
-            const earlyOffset = 20; // trigger 20px before touching header
-            if (scrollTop + headerBottom >= promptTop - earlyOffset) {
-              if (promptContainerRef.current) {
-                setHeroFullHeight(promptContainerRef.current.offsetHeight);
+            // Use the textarea element's position to detect when it's near the header bottom
+            const textarea = promptInputRef.current;
+            if (textarea) {
+              const textareaRect = textarea.getBoundingClientRect();
+              const scrollRect = scrollEl.getBoundingClientRect();
+              // textarea top relative to scroll container top
+              const relativeTop = textareaRect.top - scrollRect.top;
+              // header is 41px; trigger when textarea is within 60px of header bottom
+              if (relativeTop <= 41 + 60) {
+                if (promptContainerRef.current) {
+                  setHeroFullHeight(promptContainerRef.current.offsetHeight);
+                }
+                return true;
               }
-              return true;
             }
             return false;
           }
