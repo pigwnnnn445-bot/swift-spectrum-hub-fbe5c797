@@ -11,6 +11,7 @@ interface StickyPromptBarProps {
   cost: number;
   isSubmitDisabled?: boolean;
   onSubmit?: () => void;
+  children?: React.ReactNode;
 }
 
 const useAutoResize = (value: string) => {
