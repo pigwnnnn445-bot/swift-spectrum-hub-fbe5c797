@@ -104,6 +104,13 @@ const ImageDetailWorkspace = ({
     return items;
   }, [tasks]);
 
+  // Safety net: if all images are gone after deletion, close the detail view
+  useEffect(() => {
+    if (allImages.length === 0) {
+      onClose();
+    }
+  }, [allImages.length, onClose]);
+
   // Keyboard navigation
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
