@@ -68,17 +68,30 @@ const ImageGenDarkPage = () => {
     };
   }, []);
 
-  // IntersectionObserver: 监听 HeroPromptBar 是否在视口内
+  // scrollTop-based sticky detection (stable, no flicker)
   useEffect(() => {
-    const root = mainScrollRef.current;
-    const target = heroRef.current;
-    if (!target) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsHeroVisible(entry.isIntersecting),
-      { root, threshold: 0 }
-    );
-    observer.observe(target);
-    return () => observer.disconnect();
+    const scrollEl = mainScrollRef.current;
+    if (!scrollEl) return;
+    let ticking = false;
+    const HYSTERESIS = 16;
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const container = promptContainerRef.current;
+        if (!container) { ticking = false; return; }
+        const threshold = container.offsetTop + HYSTERESIS;
+        const scrollTop = scrollEl.scrollTop;
+        setIsSticky((prev) => {
+          if (!prev && scrollTop >= threshold) return true;
+          if (prev && scrollTop < threshold - HYSTERESIS) return false;
+          return prev;
+        });
+        ticking = false;
+      });
+    };
+    scrollEl.addEventListener("scroll", handleScroll, { passive: true });
+    return () => scrollEl.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
