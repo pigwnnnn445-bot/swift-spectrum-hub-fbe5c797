@@ -484,8 +484,8 @@ const ImageGenDarkPage = () => {
           </div>
         )}
 
-        {/* ── PC 端：原 HeroPromptBar ── */}
-        <div className="hidden sm:block">
+        {/* ── PC 端：原 HeroPromptBar（详情未打开时显示） ── */}
+        {!detailOpen && <div className="hidden sm:block">
           <HeroPromptBar
             prompt={prompt}
             onPromptChange={setPrompt}
