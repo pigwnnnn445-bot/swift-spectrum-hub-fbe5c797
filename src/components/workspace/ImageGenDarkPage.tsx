@@ -73,50 +73,54 @@ const ImageGenDarkPage = () => {
     };
   }, []);
 
-  // scrollTop-based inspiration browsing mode with hysteresis (enter: 40, exit: 10)
-  // Depend on selectedModel so the effect re-runs once <main> is rendered
+  // IntersectionObserver-based sticky logic:
+  // Show sticky when hero prompt is partially hidden behind header;
+  // Hide sticky when hero prompt reappears from fully hidden state
   useEffect(() => {
     const scrollEl = mainScrollRef.current;
-    if (!scrollEl) return;
-    let ticking = false;
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const scrollTop = scrollEl.scrollTop;
-        setIsInspirationBrowsing((prev) => {
-          if (!prev) {
-            // Use the textarea element's position to detect when it's near the header bottom
-            const textarea = promptInputRef.current;
-            if (textarea) {
-              const textareaRect = textarea.getBoundingClientRect();
-              const scrollRect = scrollEl.getBoundingClientRect();
-              // textarea top relative to scroll container top
-              const relativeTop = textareaRect.top - scrollRect.top;
-              // trigger when textarea top touches header bottom (41px)
-              if (relativeTop <= 41) {
-                if (promptContainerRef.current) {
-                  setHeroFullHeight(promptContainerRef.current.offsetHeight);
-                }
-                stickyEnterScrollTop.current = scrollTop;
-                return true;
-              }
-            }
-            return false;
+    const promptEl = promptContainerRef.current;
+    if (!scrollEl || !promptEl) return;
+
+    const HEADER_HEIGHT = 41;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+
+        const ratio = entry.intersectionRatio;
+        const isFullyHidden = ratio === 0;
+        const isFullyVisible = ratio >= 0.99;
+
+        if (isFullyVisible) {
+          // Fully visible → no sticky needed
+          setShowStickyBar(false);
+          wasFullyHiddenRef.current = false;
+        } else if (isFullyHidden) {
+          // Fully hidden → show sticky, mark state
+          setShowStickyBar(true);
+          wasFullyHiddenRef.current = true;
+        } else {
+          // Partially visible
+          if (wasFullyHiddenRef.current) {
+            // Coming back from fully hidden → hide sticky (scrolling up)
+            setShowStickyBar(false);
+            wasFullyHiddenRef.current = false;
+          } else {
+            // Being scrolled out → show sticky
+            setShowStickyBar(true);
           }
-          // Exit sticky when scrolled back to or above the enter point
-          if (prev && scrollTop <= stickyEnterScrollTop.current) {
-            // Reset scroll to top so the full hero is visible without gray gap
-            scrollEl.scrollTop = 0;
-            return false;
-          }
-          return prev;
-        });
-        ticking = false;
-      });
-    };
-    scrollEl.addEventListener("scroll", handleScroll, { passive: true });
-    return () => scrollEl.removeEventListener("scroll", handleScroll);
+        }
+      },
+      {
+        root: scrollEl,
+        rootMargin: `-${HEADER_HEIGHT}px 0px 0px 0px`,
+        threshold: [0, 0.01, 0.5, 0.99, 1],
+      }
+    );
+
+    observer.observe(promptEl);
+    return () => observer.disconnect();
   }, [selectedModel]);
 
   useEffect(() => {
