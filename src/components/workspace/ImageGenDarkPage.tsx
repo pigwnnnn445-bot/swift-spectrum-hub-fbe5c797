@@ -31,8 +31,8 @@ const ImageGenDarkPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isInspirationBrowsing, setIsInspirationBrowsing] = useState(false);
   const promptContainerRef = useRef<HTMLDivElement>(null);
-  const [heroFullHeight, setHeroFullHeight] = useState(0);
-  const stickyEnterScrollTop = useRef(0);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const wasFullyHiddenRef = useRef(false);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
   const [imageCount, setImageCount] = useState(1);
