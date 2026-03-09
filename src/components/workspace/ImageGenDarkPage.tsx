@@ -27,6 +27,8 @@ const ImageGenDarkPage = () => {
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isInspirationBrowsing, setIsInspirationBrowsing] = useState(false);
+  const promptContainerRef = useRef<HTMLDivElement>(null);
+  const [heroFullHeight, setHeroFullHeight] = useState(0);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
   const [imageCount, setImageCount] = useState(1);
@@ -78,7 +80,13 @@ const ImageGenDarkPage = () => {
       requestAnimationFrame(() => {
         const scrollTop = scrollEl.scrollTop;
         setIsInspirationBrowsing((prev) => {
-          if (!prev && scrollTop > 40) return true;
+          if (!prev && scrollTop > 40) {
+            // Capture full height before switching to compact
+            if (promptContainerRef.current) {
+              setHeroFullHeight(promptContainerRef.current.offsetHeight);
+            }
+            return true;
+          }
           if (prev && scrollTop < 10) return false;
           return prev;
         });
@@ -461,11 +469,17 @@ const ImageGenDarkPage = () => {
 
         {/* ── 统一提示词输入区：单实例 HeroPromptBar + MobileParamBar ── */}
         {!detailOpen && (
-          <div
-            className={cn(
-              isInspirationBrowsing && "sticky top-[41px] z-40 bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm"
+          <>
+            {/* Placeholder: prevents scroll jump when hero collapses to compact */}
+            {isInspirationBrowsing && heroFullHeight > 0 && (
+              <div style={{ height: heroFullHeight }} aria-hidden />
             )}
-          >
+            <div
+              ref={promptContainerRef}
+              className={cn(
+                isInspirationBrowsing && "sticky top-[41px] z-40 bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm"
+              )}
+            >
             {/* 移动端/平板端 */}
             <div className="lg:hidden mx-3 my-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
               <HeroPromptBar
@@ -508,6 +522,7 @@ const ImageGenDarkPage = () => {
               />
             </div>
           </div>
+          </>
         )}
 
         {/* 空状态：创作模式下任务全删且未点击去灵感显影室 */}
