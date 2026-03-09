@@ -144,11 +144,11 @@
   background: transparent;
 }
 .prompt-textarea::-webkit-scrollbar-thumb {
-  background: hsl(240 10% 75%);
+  background: hsl(var(--workspace-border));
   border-radius: 3px;
 }
 .prompt-textarea::-webkit-scrollbar-thumb:hover {
-  background: hsl(240 10% 65%);
+  background: hsl(var(--muted-foreground));
 }
 
 /* TaskCard generating overlay arrow animation */
