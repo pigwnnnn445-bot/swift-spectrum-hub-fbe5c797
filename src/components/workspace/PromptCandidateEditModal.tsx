@@ -71,8 +71,8 @@ const PromptCandidateEditModal = ({ open, index, initialText, onClose, onGenerat
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="编辑提示词..."
-                className="w-full resize-none bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
-                style={{ minHeight: 200, maxHeight: 320 }}
+                className="w-full resize-none bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none overflow-y-auto prompt-textarea max-h-[min(260px,calc(100dvh-260px))] md:max-h-[320px]"
+                style={{ minHeight: 200 }}
                 rows={6}
               />
               <div className="flex justify-end px-3 pb-3">

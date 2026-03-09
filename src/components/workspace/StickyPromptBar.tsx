@@ -12,14 +12,14 @@ interface StickyPromptBarProps {
   onSubmit?: () => void;
 }
 
-const useAutoResize = (value: string, maxHeight: number) => {
+const useAutoResize = (value: string) => {
   const ref = useRef<HTMLTextAreaElement>(null);
   const resize = useCallback(() => {
     const el = ref.current;
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = Math.min(el.scrollHeight, maxHeight) + "px";
-  }, [maxHeight]);
+    el.style.height = el.scrollHeight + "px";
+  }, []);
 
   useEffect(() => { resize(); }, [value, resize]);
 
@@ -27,7 +27,7 @@ const useAutoResize = (value: string, maxHeight: number) => {
 };
 
 const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabled, onSubmit }: StickyPromptBarProps) => {
-  const textareaRef = useAutoResize(prompt, 240);
+  const textareaRef = useAutoResize(prompt);
   const [genOpen, setGenOpen] = useState(false);
   const [optOpen, setOptOpen] = useState(false);
   const [seed, setSeed] = useState("");
@@ -61,8 +61,8 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabl
                 onChange={(e) => onPromptChange(e.target.value)}
                 placeholder="输入您的提示词，比如：可爱的猫"
                 rows={1}
-                className="prompt-textarea flex-1 min-w-0 resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/40 focus:outline-none overflow-y-auto"
-                style={{ maxHeight: 220, minHeight: 100, wordBreak: "break-word", overflowWrap: "break-word" }}
+                className="prompt-textarea flex-1 min-w-0 resize-none bg-transparent px-5 py-4 text-sm text-workspace-surface-foreground placeholder:text-workspace-panel-foreground/40 focus:outline-none overflow-y-auto max-h-[min(260px,calc(100dvh-260px))] md:max-h-[220px]"
+                style={{ minHeight: 100, wordBreak: "break-word", overflowWrap: "break-word" }}
               />
               <div className="flex items-center gap-2 mr-2 mb-2 shrink-0">
                 <button
