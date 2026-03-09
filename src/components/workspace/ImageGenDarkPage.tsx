@@ -286,23 +286,25 @@ const ImageGenDarkPage = () => {
       return;
     }
 
-    // 检查重复
-    if (referenceImages.includes(imageUrl)) {
+    // 检查重复 (across all types)
+    const allCurrentImages = flattenImagesByType(referenceImagesByType);
+    if (allCurrentImages.includes(imageUrl)) {
       toast({ title: "请不要上传重复图片", variant: "destructive" });
       return;
     }
 
-    // 上限：使用 UploadReferencePanel 的 MAX_MULTI_IMAGES = 5
+    // Add to the first enabled type (default: whole=4, or type 0 for simple mode)
+    const defaultType = enabledLikes.length > 0 ? enabledLikes[0].like_type : 0;
     const maxImages = 5;
-    setReferenceImages((prev) => {
-      if (prev.length >= maxImages) {
-        // FIFO 替换最早一张
-        return [...prev.slice(1), imageUrl];
+    setReferenceImagesByType((prev) => {
+      const typeImages = prev[defaultType] ?? [];
+      if (typeImages.length >= maxImages) {
+        return { ...prev, [defaultType]: [...typeImages.slice(1), imageUrl] };
       }
-      return [...prev, imageUrl];
+      return { ...prev, [defaultType]: [...typeImages, imageUrl] };
     });
     toast({ title: "参考图已添加" });
-  }, [selectedModel, referenceImages]);
+  }, [selectedModel, referenceImagesByType]);
 
   // ── 点击成功图片打开详情视图 ──
   const handleImageClick = useCallback((imageUrl: string, task: GenerateTask, imageIndex: number) => {
