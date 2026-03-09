@@ -31,6 +31,7 @@ const ImageGenDarkPage = () => {
   const [isInspirationBrowsing, setIsInspirationBrowsing] = useState(false);
   const promptContainerRef = useRef<HTMLDivElement>(null);
   const [heroFullHeight, setHeroFullHeight] = useState(0);
+  const stickyEnterScrollTop = useRef(0);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
   const [imageCount, setImageCount] = useState(1);
@@ -96,12 +97,14 @@ const ImageGenDarkPage = () => {
                 if (promptContainerRef.current) {
                   setHeroFullHeight(promptContainerRef.current.offsetHeight);
                 }
+                stickyEnterScrollTop.current = scrollTop;
                 return true;
               }
             }
             return false;
           }
-          if (prev && scrollTop < 10) return false;
+          // Exit sticky when scrolled back to or above the enter point
+          if (prev && scrollTop <= stickyEnterScrollTop.current) return false;
           return prev;
         });
         ticking = false;
