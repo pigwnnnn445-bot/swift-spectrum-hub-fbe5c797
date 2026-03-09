@@ -1,5 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
 import PromptGeneratorModal from "./PromptGeneratorModal";
 import PromptOptimizerModal from "./PromptOptimizerModal";
 
@@ -31,6 +32,18 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabl
   const [genOpen, setGenOpen] = useState(false);
   const [optOpen, setOptOpen] = useState(false);
   const [seed, setSeed] = useState("");
+  // Track whether we should render at all (delayed unmount for exit animation)
+  const [shouldRender, setShouldRender] = useState(false);
+
+  useEffect(() => {
+    if (visible) {
+      setShouldRender(true);
+    } else {
+      // Delay unmount to allow exit animation
+      const timer = setTimeout(() => setShouldRender(false), 250);
+      return () => clearTimeout(timer);
+    }
+  }, [visible]);
 
   const handleOptimize = (s: string) => {
     setSeed(s);
@@ -47,11 +60,18 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabl
     });
   };
 
-  if (!visible) return null;
+  if (!shouldRender) return null;
 
   return (
     <>
-      <div className="w-full">
+      <div
+        className={cn(
+          "w-full sticky top-[41px] z-40 transition-all duration-200 ease-out",
+          visible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-2 pointer-events-none"
+        )}
+      >
         <div className="bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm">
           <div className="px-4 sm:px-6 lg:px-8 py-2.5">
             <div className="flex items-end rounded-2xl border border-workspace-border/60 bg-workspace-surface shadow-sm min-w-0">

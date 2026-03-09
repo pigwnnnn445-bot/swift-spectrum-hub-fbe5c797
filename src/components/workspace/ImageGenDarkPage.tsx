@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Menu } from "lucide-react";
 import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
+import StickyPromptBar from "./StickyPromptBar";
 import MobileParamBar from "./MobileParamBar";
 import MasonryGallery from "./MasonryGallery";
 import { cn } from "@/lib/utils";
@@ -28,10 +29,10 @@ const ImageGenDarkPage = () => {
   const [models, setModels] = useState<ModelConfig[]>([]);
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isInspirationBrowsing, setIsInspirationBrowsing] = useState(false);
+  
   const promptContainerRef = useRef<HTMLDivElement>(null);
-  const [heroFullHeight, setHeroFullHeight] = useState(0);
-  const stickyEnterScrollTop = useRef(0);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const wasFullyHiddenRef = useRef(false);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
   const [imageCount, setImageCount] = useState(1);
@@ -72,50 +73,54 @@ const ImageGenDarkPage = () => {
     };
   }, []);
 
-  // scrollTop-based inspiration browsing mode with hysteresis (enter: 40, exit: 10)
-  // Depend on selectedModel so the effect re-runs once <main> is rendered
+  // IntersectionObserver-based sticky logic:
+  // Show sticky when hero prompt is partially hidden behind header;
+  // Hide sticky when hero prompt reappears from fully hidden state
   useEffect(() => {
     const scrollEl = mainScrollRef.current;
-    if (!scrollEl) return;
-    let ticking = false;
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const scrollTop = scrollEl.scrollTop;
-        setIsInspirationBrowsing((prev) => {
-          if (!prev) {
-            // Use the textarea element's position to detect when it's near the header bottom
-            const textarea = promptInputRef.current;
-            if (textarea) {
-              const textareaRect = textarea.getBoundingClientRect();
-              const scrollRect = scrollEl.getBoundingClientRect();
-              // textarea top relative to scroll container top
-              const relativeTop = textareaRect.top - scrollRect.top;
-              // trigger when textarea top touches header bottom (41px)
-              if (relativeTop <= 41) {
-                if (promptContainerRef.current) {
-                  setHeroFullHeight(promptContainerRef.current.offsetHeight);
-                }
-                stickyEnterScrollTop.current = scrollTop;
-                return true;
-              }
-            }
-            return false;
+    const promptEl = promptContainerRef.current;
+    if (!scrollEl || !promptEl) return;
+
+    const HEADER_HEIGHT = 41;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+
+        const ratio = entry.intersectionRatio;
+        const isFullyHidden = ratio === 0;
+        const isFullyVisible = ratio >= 0.99;
+
+        if (isFullyVisible) {
+          // Fully visible → no sticky needed
+          setShowStickyBar(false);
+          wasFullyHiddenRef.current = false;
+        } else if (isFullyHidden) {
+          // Fully hidden → show sticky, mark state
+          setShowStickyBar(true);
+          wasFullyHiddenRef.current = true;
+        } else {
+          // Partially visible
+          if (wasFullyHiddenRef.current) {
+            // Coming back from fully hidden → hide sticky (scrolling up)
+            setShowStickyBar(false);
+            wasFullyHiddenRef.current = false;
+          } else {
+            // Being scrolled out → show sticky
+            setShowStickyBar(true);
           }
-          // Exit sticky when scrolled back to or above the enter point
-          if (prev && scrollTop <= stickyEnterScrollTop.current) {
-            // Reset scroll to top so the full hero is visible without gray gap
-            scrollEl.scrollTop = 0;
-            return false;
-          }
-          return prev;
-        });
-        ticking = false;
-      });
-    };
-    scrollEl.addEventListener("scroll", handleScroll, { passive: true });
-    return () => scrollEl.removeEventListener("scroll", handleScroll);
+        }
+      },
+      {
+        root: scrollEl,
+        rootMargin: `-${HEADER_HEIGHT}px 0px 0px 0px`,
+        threshold: [0, 0.01, 0.5, 0.99, 1],
+      }
+    );
+
+    observer.observe(promptEl);
+    return () => observer.disconnect();
   }, [selectedModel]);
 
   useEffect(() => {
@@ -488,17 +493,26 @@ const ImageGenDarkPage = () => {
           </div>
         </div>
 
-        {/* ── 统一提示词输入区：单实例 HeroPromptBar + MobileParamBar ── */}
+        {/* ── 吸顶提示词输入框 ── */}
+        {!detailOpen && (
+          <StickyPromptBar
+            visible={showStickyBar}
+            prompt={prompt}
+            onPromptChange={setPrompt}
+            cost={totalCost}
+            isSubmitDisabled={isSubmitting || isCooldown}
+            onSubmit={handleSubmit}
+          />
+        )}
+
+        {/* ── 统一提示词输入区：HeroPromptBar + MobileParamBar ── */}
         {!detailOpen && (
           <>
-            {/* Placeholder: prevents scroll jump when hero collapses to compact */}
-            {isInspirationBrowsing && heroFullHeight > 0 && (
-              <div style={{ height: heroFullHeight }} aria-hidden />
-            )}
             <div
               ref={promptContainerRef}
               className={cn(
-                isInspirationBrowsing && "sticky top-[41px] z-40 bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm"
+                "transition-opacity duration-200",
+                showStickyBar ? "opacity-0" : "opacity-100"
               )}
             >
             {/* 移动端/平板端 */}
@@ -509,10 +523,10 @@ const ImageGenDarkPage = () => {
                 cost={totalCost}
                 isSubmitDisabled={isSubmitting || isCooldown}
                 onSubmit={handleSubmit}
-                hasActiveTask={hasEnteredCreationMode || isInspirationBrowsing}
+                hasActiveTask={hasEnteredCreationMode || showStickyBar}
                 promptInputRef={promptInputRef}
               />
-              <div className={isInspirationBrowsing ? "mt-1" : "mt-2"}>
+              <div className={showStickyBar ? "mt-1" : "mt-2"}>
                   <MobileParamBar
                     selectedModel={selectedModel}
                     models={models}
@@ -537,7 +551,7 @@ const ImageGenDarkPage = () => {
                 cost={totalCost}
                 isSubmitDisabled={isSubmitting || isCooldown}
                 onSubmit={handleSubmit}
-                hasActiveTask={hasEnteredCreationMode || isInspirationBrowsing}
+                hasActiveTask={hasEnteredCreationMode || showStickyBar}
                 promptInputRef={promptInputRef}
               />
             </div>
