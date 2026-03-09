@@ -18,6 +18,8 @@ import { fetchModelsData } from "@/api/modelService";
 import { mockGenerate } from "@/api/mockGenerate";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
 import { getEnabledImageLikes } from "@/config/modelConfig";
+import type { ReferenceImagesByType, SimilarityByType } from "./UploadReferencePanel";
+import { flattenImagesByType, getActiveSimilarity } from "./UploadReferencePanel";
 import type { GenerateTask, GenerationMode } from "@/types/task";
 import { toast } from "@/hooks/use-toast";
 
@@ -40,14 +42,14 @@ const ImageGenDarkPage = () => {
   const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const promptInputRef = useRef<HTMLTextAreaElement | null>(null);
   const mainScrollRef = useRef<HTMLElement>(null);
-  // 参考图状态（用于"应用为参考图"回填）
-  const [referenceImages, setReferenceImages] = useState<string[]>([]);
+  // 参考图状态（按类型隔离）
+  const [referenceImagesByType, setReferenceImagesByType] = useState<ReferenceImagesByType>({});
+  const [similarityByType, setSimilarityByType] = useState<SimilarityByType>({});
   // Sidebar 参数追踪（用于构建任务快照）
   const [sidebarRatio, setSidebarRatio] = useState("");
   const [sidebarResolution, setSidebarResolution] = useState("");
   const [sidebarStyleId, setSidebarStyleId] = useState<number | null>(null);
   const [sidebarStyleName, setSidebarStyleName] = useState("");
-  const [sidebarSimilarity, setSidebarSimilarity] = useState(50);
   // 编辑图像弹窗状态
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingImageUrl, setEditingImageUrl] = useState("");
@@ -132,8 +134,10 @@ const ImageGenDarkPage = () => {
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const count = imageCount;
 
-    const hasRefImages = referenceImages.length > 0;
+    const allRefImages = flattenImagesByType(referenceImagesByType);
+    const hasRefImages = allRefImages.length > 0;
     const generationMode: GenerationMode = hasRefImages ? "image-to-image" : "text-to-image";
+    const activeSimilarity = getActiveSimilarity(referenceImagesByType, similarityByType);
 
     const newTask: GenerateTask = {
       id: taskId,
@@ -147,10 +151,10 @@ const ImageGenDarkPage = () => {
       styleName: sidebarStyleName || undefined,
       styleId: sidebarStyleId,
       generationMode,
-      similarity: hasRefImages ? sidebarSimilarity : undefined,
+      similarity: hasRefImages ? activeSimilarity : undefined,
       count,
       images: [],
-      referenceImages: hasRefImages ? [...referenceImages] : undefined,
+      referenceImages: hasRefImages ? [...allRefImages] : undefined,
       createdAt: Date.now(),
       requestPayload: {
         model_id: selectedModel.id,
@@ -160,8 +164,8 @@ const ImageGenDarkPage = () => {
         resolution: sidebarResolution || selectedModel.resolution?.[0]?.resolution || "",
         style_id: sidebarStyleId,
         generation_mode: generationMode,
-        similarity: hasRefImages ? sidebarSimilarity : undefined,
-        reference_images: hasRefImages ? [...referenceImages] : undefined,
+        similarity: hasRefImages ? activeSimilarity : undefined,
+        reference_images: hasRefImages ? [...allRefImages] : undefined,
       },
     };
 
@@ -197,7 +201,7 @@ const ImageGenDarkPage = () => {
         )
       );
     });
-  }, [selectedModel, prompt, isSubmitting, isCooldown, imageCount, referenceImages, sidebarRatio, sidebarResolution, sidebarStyleId, sidebarStyleName, sidebarSimilarity]);
+  }, [selectedModel, prompt, isSubmitting, isCooldown, imageCount, referenceImagesByType, similarityByType, sidebarRatio, sidebarResolution, sidebarStyleId, sidebarStyleName]);
 
   // ── 重试任务（从快照新建，count=1，原任务保留） ──
   const handleRetry = useCallback(async (taskId: string) => {
@@ -282,23 +286,25 @@ const ImageGenDarkPage = () => {
       return;
     }
 
-    // 检查重复
-    if (referenceImages.includes(imageUrl)) {
+    // 检查重复 (across all types)
+    const allCurrentImages = flattenImagesByType(referenceImagesByType);
+    if (allCurrentImages.includes(imageUrl)) {
       toast({ title: "请不要上传重复图片", variant: "destructive" });
       return;
     }
 
-    // 上限：使用 UploadReferencePanel 的 MAX_MULTI_IMAGES = 5
+    // Add to the first enabled type (default: whole=4, or type 0 for simple mode)
+    const defaultType = enabledLikes.length > 0 ? enabledLikes[0].like_type : 0;
     const maxImages = 5;
-    setReferenceImages((prev) => {
-      if (prev.length >= maxImages) {
-        // FIFO 替换最早一张
-        return [...prev.slice(1), imageUrl];
+    setReferenceImagesByType((prev) => {
+      const typeImages = prev[defaultType] ?? [];
+      if (typeImages.length >= maxImages) {
+        return { ...prev, [defaultType]: [...typeImages.slice(1), imageUrl] };
       }
-      return [...prev, imageUrl];
+      return { ...prev, [defaultType]: [...typeImages, imageUrl] };
     });
     toast({ title: "参考图已添加" });
-  }, [selectedModel, referenceImages]);
+  }, [selectedModel, referenceImagesByType]);
 
   // ── 点击成功图片打开详情视图 ──
   const handleImageClick = useCallback((imageUrl: string, task: GenerateTask, imageIndex: number) => {
@@ -447,7 +453,7 @@ const ImageGenDarkPage = () => {
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         selectedModel={selectedModel}
-        onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+        onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImagesByType({}); setSimilarityByType({}); }}
         models={models}
         providers={providers}
         onExtraCostChange={handleExtraCostChange}
@@ -456,9 +462,10 @@ const ImageGenDarkPage = () => {
         onRatioChange={setSidebarRatio}
         onResolutionChange={setSidebarResolution}
         onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-        onSimilarityChange={setSidebarSimilarity}
-        referenceImages={referenceImages}
-        onReferenceImagesChange={setReferenceImages}
+        referenceImagesByType={referenceImagesByType}
+        onReferenceImagesByTypeChange={setReferenceImagesByType}
+        similarityByType={similarityByType}
+        onSimilarityByTypeChange={setSimilarityByType}
       />
 
       <main ref={mainScrollRef} className="relative flex-1 overflow-y-auto bg-workspace-surface workspace-scroll">
@@ -497,15 +504,16 @@ const ImageGenDarkPage = () => {
                   <MobileParamBar
                     selectedModel={selectedModel}
                     models={models}
-                    onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+                    onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImagesByType({}); setSimilarityByType({}); }}
                     imageCount={imageCount}
                     onImageCountChange={setImageCount}
                     onRatioChange={setSidebarRatio}
                     onResolutionChange={setSidebarResolution}
                     onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-                    onSimilarityChange={setSidebarSimilarity}
-                    referenceImages={referenceImages}
-                    onReferenceImagesChange={setReferenceImages}
+                    referenceImagesByType={referenceImagesByType}
+                    onReferenceImagesByTypeChange={setReferenceImagesByType}
+                    similarityByType={similarityByType}
+                    onSimilarityByTypeChange={setSimilarityByType}
                   />
                 </div>
               )}
@@ -662,7 +670,7 @@ const ImageGenDarkPage = () => {
             styleName: sidebarStyleName || undefined,
             styleId: sidebarStyleId,
             generationMode: "image-to-image",
-            similarity: sidebarSimilarity,
+            similarity: getActiveSimilarity(referenceImagesByType, similarityByType),
             count: 1,
             images: [],
             baseImage: payload.baseImageUrl,
@@ -676,7 +684,7 @@ const ImageGenDarkPage = () => {
               resolution: taskResolution,
               style_id: sidebarStyleId,
               generation_mode: "image-to-image",
-              similarity: sidebarSimilarity,
+              similarity: getActiveSimilarity(referenceImagesByType, similarityByType),
               base_image: payload.baseImageUrl,
               mask_data: payload.maskDataUrl,
             },

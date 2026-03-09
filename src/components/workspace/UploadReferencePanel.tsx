@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import type { ModelConfig } from "@/config/modelConfig";
 import { getEnabledImageLikes, getLikeTypeLabel, hasTypedUpload } from "@/config/modelConfig";
@@ -8,22 +8,58 @@ import { getEnabledImageLikes, getLikeTypeLabel, hasTypedUpload } from "@/config
 const ACCEPTED_FORMATS = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
 const MAX_SIZE_MB = 10;
 const MIN_RESOLUTION = 300;
+const MAX_MULTI_IMAGES = 5;
+
+/** Per-type images + similarity keyed by like_type */
+export type ReferenceImagesByType = Record<number, string[]>;
+export type SimilarityByType = Record<number, number>;
 
 interface UploadReferencePanelProps {
   model: ModelConfig;
-  /** 受控：当前参考图列表 */
-  images?: string[];
-  /** 受控：参考图变更回调 */
-  onImagesChange?: (images: string[]) => void;
+  /** Per-type images map: { [like_type]: string[] } */
+  imagesByType?: ReferenceImagesByType;
+  onImagesByTypeChange?: (imagesByType: ReferenceImagesByType) => void;
+  /** Per-type similarity map */
+  similarityByType?: SimilarityByType;
+  onSimilarityByTypeChange?: (similarityByType: SimilarityByType) => void;
 }
 
-const UploadReferencePanel = ({ model, images: controlledImages, onImagesChange }: UploadReferencePanelProps) => {
+const UploadReferencePanel = ({
+  model,
+  imagesByType: controlledByType,
+  onImagesByTypeChange,
+  similarityByType: controlledSim,
+  onSimilarityByTypeChange,
+}: UploadReferencePanelProps) => {
   const enabledLikes = getEnabledImageLikes(model);
   const isTyped = hasTypedUpload(model);
 
   const [activeType, setActiveType] = useState(enabledLikes[0]?.like_type ?? 0);
 
-  // Simple mode: no enabled image_like types, just a basic upload zone
+  const byType = controlledByType ?? {};
+  const simByType = controlledSim ?? {};
+
+  const getTypeImages = (likeType: number): string[] => byType[likeType] ?? [];
+
+  const setTypeImages = useCallback(
+    (likeType: number, images: string[]) => {
+      const next = { ...controlledByType, [likeType]: images };
+      onImagesByTypeChange?.(next);
+    },
+    [controlledByType, onImagesByTypeChange]
+  );
+
+  const getTypeSimilarity = (likeType: number): number => simByType[likeType] ?? 50;
+
+  const setTypeSimilarity = useCallback(
+    (likeType: number, value: number) => {
+      const next = { ...controlledSim, [likeType]: value };
+      onSimilarityByTypeChange?.(next);
+    },
+    [controlledSim, onSimilarityByTypeChange]
+  );
+
+  // Simple mode: no typed uploads
   if (!isTyped) {
     return (
       <div className="space-y-3">
@@ -31,8 +67,8 @@ const UploadReferencePanel = ({ model, images: controlledImages, onImagesChange 
           key="simple"
           multi={true}
           placeholder="将图片拖至此处或单击上传"
-          images={controlledImages}
-          onImagesChange={onImagesChange}
+          images={getTypeImages(0)}
+          onImagesChange={(imgs) => setTypeImages(0, imgs)}
         />
       </div>
     );
@@ -48,7 +84,7 @@ const UploadReferencePanel = ({ model, images: controlledImages, onImagesChange 
               key={item.like_type}
               onClick={() => setActiveType(item.like_type)}
               className={cn(
-                "flex-1 rounded-lg px-2 py-1.5 text-xs font-medium transition-all",
+                "flex-1 rounded-lg px-2 py-1.5 text-xs font-medium transition-all cursor-pointer",
                 activeType === item.like_type
                   ? "bg-primary text-primary-foreground"
                   : "text-workspace-panel-foreground/60 hover:text-workspace-panel-foreground/80"
@@ -65,9 +101,38 @@ const UploadReferencePanel = ({ model, images: controlledImages, onImagesChange 
           <UploadZone
             multi={item.more_image_flg === 1}
             placeholder="单击或拖动图像即可上传"
-            images={controlledImages}
-            onImagesChange={onImagesChange}
+            images={getTypeImages(item.like_type)}
+            onImagesChange={(imgs) => setTypeImages(item.like_type, imgs)}
           />
+          {/* Per-type similarity */}
+          {item.similarity_flg === 1 && (
+            <div className="mt-3 space-y-2.5">
+              <h3 className="text-xs font-medium uppercase tracking-wider text-workspace-panel-foreground/50 text-center">
+                相似度
+              </h3>
+              <div className="flex items-center justify-center gap-4">
+                <button
+                  onClick={() =>
+                    setTypeSimilarity(item.like_type, Math.max(0, getTypeSimilarity(item.like_type) - 1))
+                  }
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
+                >
+                  <Minus className="h-4 w-4 text-workspace-panel-foreground" />
+                </button>
+                <span className="min-w-[2.5rem] text-center text-sm font-medium text-workspace-panel-foreground">
+                  {getTypeSimilarity(item.like_type)}
+                </span>
+                <button
+                  onClick={() =>
+                    setTypeSimilarity(item.like_type, Math.min(100, getTypeSimilarity(item.like_type) + 1))
+                  }
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-workspace-chip hover:bg-workspace-chip-active/30 cursor-pointer transition-colors"
+                >
+                  <Plus className="h-4 w-4 text-workspace-panel-foreground" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       ))}
     </div>
@@ -102,26 +167,31 @@ const validateFile = (file: File): Promise<{ valid: boolean; preview?: string }>
   });
 };
 
-const MAX_MULTI_IMAGES = 5;
-
-const UploadZone = ({ multi, placeholder, images: controlledImages, onImagesChange }: { multi: boolean; placeholder: string; images?: string[]; onImagesChange?: (images: string[]) => void }) => {
+const UploadZone = ({
+  multi,
+  placeholder,
+  images,
+  onImagesChange,
+}: {
+  multi: boolean;
+  placeholder: string;
+  images: string[];
+  onImagesChange: (images: string[]) => void;
+}) => {
   const single = !multi;
-  const isControlled = controlledImages !== undefined && onImagesChange !== undefined;
-  const [localImages, setLocalImages] = useState<string[]>([]);
-  const images = isControlled ? controlledImages : localImages;
   const addInputRef = useRef<HTMLInputElement | null>(null);
   const replaceInputRef = useRef<HTMLInputElement | null>(null);
-  const setImages = isControlled
-    ? (updater: string[] | ((prev: string[]) => string[])) => {
-        const next = typeof updater === "function" ? updater(controlledImages) : updater;
-        onImagesChange(next);
-      }
-    : setLocalImages;
   const [replaceIndex, setReplaceIndex] = useState<number>(-1);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   if (single) {
-    return <SingleUploadZone placeholder={placeholder} />;
+    return (
+      <SingleUploadZone
+        placeholder={placeholder}
+        image={images[0] ?? null}
+        onImageChange={(img) => onImagesChange(img ? [img] : [])}
+      />
+    );
   }
 
   const canAddMore = images.length < MAX_MULTI_IMAGES;
@@ -138,9 +208,9 @@ const UploadZone = ({ multi, placeholder, images: controlledImages, onImagesChan
     }
     const result = await validateFile(file);
     if (result.valid && result.preview) {
-      setImages((prev) => [...prev, result.preview!]);
+      onImagesChange([...images, result.preview]);
       setTimeout(() => {
-        scrollRef.current?.scrollTo({ left: scrollRef.current.scrollWidth, behavior: "smooth" });
+        scrollRef.current?.scrollTo({ left: scrollRef.current!.scrollWidth, behavior: "smooth" });
       }, 50);
     }
   };
@@ -156,21 +226,17 @@ const UploadZone = ({ multi, placeholder, images: controlledImages, onImagesChan
     e.target.value = "";
     const result = await validateFile(file);
     if (result.valid && result.preview) {
-      setImages((prev) => {
-        const next = [...prev];
-        if (prev[replaceIndex]) URL.revokeObjectURL(prev[replaceIndex]);
-        next[replaceIndex] = result.preview!;
-        return next;
-      });
+      const next = [...images];
+      if (images[replaceIndex]) URL.revokeObjectURL(images[replaceIndex]);
+      next[replaceIndex] = result.preview;
+      onImagesChange(next);
     }
   };
 
   const handleRemove = (e: React.MouseEvent, index: number) => {
     e.stopPropagation();
-    setImages((prev) => {
-      URL.revokeObjectURL(prev[index]);
-      return prev.filter((_, i) => i !== index);
-    });
+    URL.revokeObjectURL(images[index]);
+    onImagesChange(images.filter((_, i) => i !== index));
   };
 
   return (
@@ -240,8 +306,15 @@ const UploadZone = ({ multi, placeholder, images: controlledImages, onImagesChan
   );
 };
 
-const SingleUploadZone = ({ placeholder }: { placeholder: string }) => {
-  const [preview, setPreview] = useState<string | null>(null);
+const SingleUploadZone = ({
+  placeholder,
+  image,
+  onImageChange,
+}: {
+  placeholder: string;
+  image: string | null;
+  onImageChange: (img: string | null) => void;
+}) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleClick = () => inputRef.current?.click();
@@ -252,15 +325,15 @@ const SingleUploadZone = ({ placeholder }: { placeholder: string }) => {
     e.target.value = "";
     const result = await validateFile(file);
     if (result.valid && result.preview) {
-      if (preview) URL.revokeObjectURL(preview);
-      setPreview(result.preview);
+      if (image) URL.revokeObjectURL(image);
+      onImageChange(result.preview);
     }
   };
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (preview) URL.revokeObjectURL(preview);
-    setPreview(null);
+    if (image) URL.revokeObjectURL(image);
+    onImageChange(null);
   };
 
   return (
@@ -269,9 +342,9 @@ const SingleUploadZone = ({ placeholder }: { placeholder: string }) => {
       className="relative flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-workspace-border/60 bg-workspace-chip/20 transition-colors hover:border-primary/40 hover:bg-workspace-chip/40 overflow-hidden aspect-video"
     >
       <input ref={inputRef} type="file" accept=".jpeg,.jpg,.png,.webp" className="hidden" onChange={handleFile} />
-      {preview ? (
+      {image ? (
         <>
-          <img src={preview} alt="preview" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={image} alt="preview" className="absolute inset-0 h-full w-full object-cover" />
           <button
             onClick={handleRemove}
             className="absolute top-1.5 right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-black/50 hover:bg-black/70 transition-colors"
@@ -288,5 +361,28 @@ const SingleUploadZone = ({ placeholder }: { placeholder: string }) => {
     </div>
   );
 };
+
+/** Flatten all per-type images into a single array */
+export function flattenImagesByType(byType: ReferenceImagesByType): string[] {
+  return Object.values(byType).flat();
+}
+
+/** Get total image count across all types */
+export function getTotalImagesByTypeCount(byType: ReferenceImagesByType): number {
+  return Object.values(byType).reduce((sum, imgs) => sum + imgs.length, 0);
+}
+
+/** Get the first available similarity from types that have images */
+export function getActiveSimilarity(
+  byType: ReferenceImagesByType,
+  simByType: SimilarityByType
+): number {
+  for (const [key, imgs] of Object.entries(byType)) {
+    if (imgs.length > 0 && simByType[Number(key)] !== undefined) {
+      return simByType[Number(key)];
+    }
+  }
+  return 50;
+}
 
 export default UploadReferencePanel;
