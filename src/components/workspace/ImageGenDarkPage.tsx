@@ -493,17 +493,26 @@ const ImageGenDarkPage = () => {
           </div>
         </div>
 
-        {/* ── 统一提示词输入区：单实例 HeroPromptBar + MobileParamBar ── */}
+        {/* ── 吸顶提示词输入框 ── */}
+        {!detailOpen && (
+          <StickyPromptBar
+            visible={showStickyBar}
+            prompt={prompt}
+            onPromptChange={setPrompt}
+            cost={totalCost}
+            isSubmitDisabled={isSubmitting || isCooldown}
+            onSubmit={handleSubmit}
+          />
+        )}
+
+        {/* ── 统一提示词输入区：HeroPromptBar + MobileParamBar ── */}
         {!detailOpen && (
           <>
-            {/* Placeholder: prevents scroll jump when hero collapses to compact */}
-            {isInspirationBrowsing && heroFullHeight > 0 && (
-              <div style={{ height: heroFullHeight }} aria-hidden />
-            )}
             <div
               ref={promptContainerRef}
               className={cn(
-                isInspirationBrowsing && "sticky top-[41px] z-40 bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm"
+                "transition-opacity duration-200",
+                showStickyBar ? "opacity-0" : "opacity-100"
               )}
             >
             {/* 移动端/平板端 */}
@@ -514,10 +523,10 @@ const ImageGenDarkPage = () => {
                 cost={totalCost}
                 isSubmitDisabled={isSubmitting || isCooldown}
                 onSubmit={handleSubmit}
-                hasActiveTask={hasEnteredCreationMode || isInspirationBrowsing}
+                hasActiveTask={hasEnteredCreationMode || showStickyBar}
                 promptInputRef={promptInputRef}
               />
-              <div className={isInspirationBrowsing ? "mt-1" : "mt-2"}>
+              <div className={showStickyBar ? "mt-1" : "mt-2"}>
                   <MobileParamBar
                     selectedModel={selectedModel}
                     models={models}
@@ -542,7 +551,7 @@ const ImageGenDarkPage = () => {
                 cost={totalCost}
                 isSubmitDisabled={isSubmitting || isCooldown}
                 onSubmit={handleSubmit}
-                hasActiveTask={hasEnteredCreationMode || isInspirationBrowsing}
+                hasActiveTask={hasEnteredCreationMode || showStickyBar}
                 promptInputRef={promptInputRef}
               />
             </div>
