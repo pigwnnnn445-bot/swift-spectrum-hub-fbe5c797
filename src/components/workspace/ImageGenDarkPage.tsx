@@ -452,33 +452,35 @@ const ImageGenDarkPage = () => {
         {/* ── 哨兵元素：用于 IntersectionObserver 检测 Hero 是否在视口 ── */}
         <div ref={heroRef} className="h-px w-full" />
 
-        {/* ── 移动端：输入框 + 参数栏整体卡片 ── */}
-        <div className="sm:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
-          <HeroPromptBar
-            prompt={prompt}
-            onPromptChange={setPrompt}
-            cost={totalCost}
-            isSubmitDisabled={isSubmitting || isCooldown}
-            onSubmit={handleSubmit}
-            hasActiveTask={hasEnteredCreationMode}
-            promptInputRef={promptInputRef}
-          />
-          <div className="mt-2">
-            <MobileParamBar
-              selectedModel={selectedModel}
-              models={models}
-              onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
-              imageCount={imageCount}
-              onImageCountChange={setImageCount}
-              onRatioChange={setSidebarRatio}
-              onResolutionChange={setSidebarResolution}
-              onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-              onSimilarityChange={setSidebarSimilarity}
-              referenceImages={referenceImages}
-              onReferenceImagesChange={setReferenceImages}
+        {/* ── 移动端：输入框 + 参数栏整体卡片（仅 Hero 可见时显示） ── */}
+        {isHeroVisible && (
+          <div className="sm:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
+            <HeroPromptBar
+              prompt={prompt}
+              onPromptChange={setPrompt}
+              cost={totalCost}
+              isSubmitDisabled={isSubmitting || isCooldown}
+              onSubmit={handleSubmit}
+              hasActiveTask={hasEnteredCreationMode}
+              promptInputRef={promptInputRef}
             />
+            <div className="mt-2">
+              <MobileParamBar
+                selectedModel={selectedModel}
+                models={models}
+                onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+                imageCount={imageCount}
+                onImageCountChange={setImageCount}
+                onRatioChange={setSidebarRatio}
+                onResolutionChange={setSidebarResolution}
+                onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
+                onSimilarityChange={setSidebarSimilarity}
+                referenceImages={referenceImages}
+                onReferenceImagesChange={setReferenceImages}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* ── PC 端：原 HeroPromptBar ── */}
         <div className="hidden sm:block">
