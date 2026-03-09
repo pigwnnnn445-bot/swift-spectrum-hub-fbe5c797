@@ -119,6 +119,7 @@
 }
 
 /* Scrollbar styling for workspace */
+/* Scrollbar styling for workspace */
 .workspace-scroll::-webkit-scrollbar {
   width: 4px;
 }
@@ -126,7 +127,7 @@
   background: transparent;
 }
 .workspace-scroll::-webkit-scrollbar-thumb {
-  background: hsl(240 10% 80%);
+  background: hsl(var(--workspace-border));
   border-radius: 4px;
 }
 
@@ -143,11 +144,11 @@
   background: transparent;
 }
 .prompt-textarea::-webkit-scrollbar-thumb {
-  background: hsl(240 10% 75%);
+  background: hsl(var(--workspace-border));
   border-radius: 3px;
 }
 .prompt-textarea::-webkit-scrollbar-thumb:hover {
-  background: hsl(240 10% 65%);
+  background: hsl(var(--muted-foreground));
 }
 
 /* TaskCard generating overlay arrow animation */
