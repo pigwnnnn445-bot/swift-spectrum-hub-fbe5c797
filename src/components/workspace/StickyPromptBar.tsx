@@ -67,7 +67,7 @@ const StickyPromptBar = ({ visible, prompt, onPromptChange, cost, isSubmitDisabl
               <div className="flex items-center gap-2 mr-2 mb-2 shrink-0">
                 <button
                   onClick={() => setGenOpen(true)}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 h-8 text-xs font-medium text-primary hover:bg-primary/20 transition-colors cursor-pointer shrink-0"
+                  className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] px-3 h-8 text-sm rounded-full text-muted-foreground border border-workspace-border hover:bg-workspace-chip hover:text-foreground transition cursor-pointer"
                 >
                   <Sparkles className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">提示词生成器</span>
