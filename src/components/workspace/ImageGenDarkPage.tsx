@@ -67,7 +67,7 @@ const ImageGenDarkPage = () => {
     };
   }, []);
 
-  // scrollTop-based sticky with hysteresis (enter: 80, exit: 40) to prevent thrashing
+  // scrollTop-based inspiration browsing mode with hysteresis (enter: 40, exit: 10)
   useEffect(() => {
     const scrollEl = mainScrollRef.current;
     if (!scrollEl) return;
@@ -77,9 +77,9 @@ const ImageGenDarkPage = () => {
       ticking = true;
       requestAnimationFrame(() => {
         const scrollTop = scrollEl.scrollTop;
-        setIsSticky((prev) => {
-          if (!prev && scrollTop > 80) return true;
-          if (prev && scrollTop < 40) return false;
+        setIsInspirationBrowsing((prev) => {
+          if (!prev && scrollTop > 40) return true;
+          if (prev && scrollTop < 10) return false;
           return prev;
         });
         ticking = false;
@@ -87,17 +87,6 @@ const ImageGenDarkPage = () => {
     };
     scrollEl.addEventListener("scroll", handleScroll, { passive: true });
     return () => scrollEl.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Track prompt container height for placeholder
-  useEffect(() => {
-    const el = promptContainerRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) => {
-      setStickyHeight(entry.contentRect.height);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
   }, []);
 
   useEffect(() => {
