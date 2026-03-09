@@ -454,9 +454,9 @@ const ImageGenDarkPage = () => {
         {/* ── 哨兵元素：用于 IntersectionObserver 检测 Hero 是否在视口 ── */}
         <div ref={heroRef} className="h-px w-full" />
 
-        {/* ── 移动端/平板端：输入框 + 参数栏整体卡片（吸顶效果，详情未打开时显示） ── */}
-        {!detailOpen && (
-          <div className="lg:hidden sticky top-[41px] z-40 mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
+        {/* ── 移动端/平板端：输入框 + 参数栏整体卡片（仅 Hero 可见时显示，详情未打开） ── */}
+        {isHeroVisible && !detailOpen && (
+          <div className="lg:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
             <HeroPromptBar
               prompt={prompt}
               onPromptChange={setPrompt}
