@@ -454,9 +454,9 @@ const ImageGenDarkPage = () => {
         {/* ── 哨兵元素：用于 IntersectionObserver 检测 Hero 是否在视口 ── */}
         <div ref={heroRef} className="h-px w-full" />
 
-        {/* ── 移动端：输入框 + 参数栏整体卡片（仅 Hero 可见时显示，且详情未打开） ── */}
+        {/* ── 移动端/平板端：输入框 + 参数栏整体卡片（仅 Hero 可见时显示，且详情未打开） ── */}
         {isHeroVisible && !detailOpen && (
-          <div className="sm:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
+          <div className="lg:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
             <HeroPromptBar
               prompt={prompt}
               onPromptChange={setPrompt}
@@ -484,8 +484,8 @@ const ImageGenDarkPage = () => {
           </div>
         )}
 
-        {/* ── PC 端：原 HeroPromptBar（详情未打开时显示） ── */}
-        {!detailOpen && <div className="hidden sm:block">
+        {/* ── PC 端：原 HeroPromptBar（详情未打开时显示，仅 lg 及以上） ── */}
+        {!detailOpen && <div className="hidden lg:block">
           <HeroPromptBar
             prompt={prompt}
             onPromptChange={setPrompt}
@@ -500,8 +500,8 @@ const ImageGenDarkPage = () => {
         {/* 吸顶输入条：仅当 Hero 哨兵滚出视口时显示，且详情未打开 */}
         {!isHeroVisible && !detailOpen && (
           <div className="sticky top-[41px] z-40">
-            {/* 移动端：吸顶输入框 + 参数栏 */}
-            <div className="sm:hidden bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm px-3 py-2">
+            {/* 移动端/平板端：吸顶输入框 + 参数栏 */}
+            <div className="lg:hidden bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm px-3 py-2">
               <div className="rounded-2xl bg-muted/30 px-3 py-2 mobile-input-module">
                 <StickyPromptBar
                   visible={true}
@@ -528,8 +528,8 @@ const ImageGenDarkPage = () => {
                 </div>
               </div>
             </div>
-            {/* PC端：只吸顶输入条 */}
-            <div className="hidden sm:block">
+            {/* PC端：只吸顶输入条（仅 lg 及以上） */}
+            <div className="hidden lg:block">
               <StickyPromptBar
                 visible={true}
                 prompt={prompt}
