@@ -497,8 +497,8 @@ const ImageGenDarkPage = () => {
           />
         </div>}
 
-        {/* 吸顶输入条：仅当 Hero 哨兵滚出视口时显示 */}
-        {!isHeroVisible && (
+        {/* 吸顶输入条：仅当 Hero 哨兵滚出视口时显示，且详情未打开 */}
+        {!isHeroVisible && !detailOpen && (
           <div className="sticky top-[41px] z-40">
             {/* 移动端：吸顶输入框 + 参数栏 */}
             <div className="sm:hidden bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm px-3 py-2">
