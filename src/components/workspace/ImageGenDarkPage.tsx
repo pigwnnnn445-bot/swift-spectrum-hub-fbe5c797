@@ -4,7 +4,7 @@ import SettingsSidebar from "./SettingsSidebar";
 import HeroPromptBar from "./HeroPromptBar";
 import MobileParamBar from "./MobileParamBar";
 import MasonryGallery from "./MasonryGallery";
-import StickyPromptBar from "./StickyPromptBar";
+import { cn } from "@/lib/utils";
 import TopNavBar from "./TopNavBar";
 import TaskList from "./TaskList";
 import EditImageModal from "./EditImageModal";
@@ -26,8 +26,8 @@ const ImageGenDarkPage = () => {
   const [models, setModels] = useState<ModelConfig[]>([]);
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isHeroVisible, setIsHeroVisible] = useState(true);
-  const heroRef = useRef<HTMLDivElement>(null);
+  const [isSticky, setIsSticky] = useState(false);
+  const promptContainerRef = useRef<HTMLDivElement>(null);
   const [prompt, setPrompt] = useState("");
   const [extraCost, setExtraCost] = useState(0);
   const [imageCount, setImageCount] = useState(1);
@@ -68,17 +68,30 @@ const ImageGenDarkPage = () => {
     };
   }, []);
 
-  // IntersectionObserver: 监听 HeroPromptBar 是否在视口内
+  // scrollTop-based sticky detection (stable, no flicker)
   useEffect(() => {
-    const root = mainScrollRef.current;
-    const target = heroRef.current;
-    if (!target) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsHeroVisible(entry.isIntersecting),
-      { root, threshold: 0 }
-    );
-    observer.observe(target);
-    return () => observer.disconnect();
+    const scrollEl = mainScrollRef.current;
+    if (!scrollEl) return;
+    let ticking = false;
+    const HYSTERESIS = 16;
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const container = promptContainerRef.current;
+        if (!container) { ticking = false; return; }
+        const threshold = container.offsetTop + HYSTERESIS;
+        const scrollTop = scrollEl.scrollTop;
+        setIsSticky((prev) => {
+          if (!prev && scrollTop >= threshold) return true;
+          if (prev && scrollTop < threshold - HYSTERESIS) return false;
+          return prev;
+        });
+        ticking = false;
+      });
+    };
+    scrollEl.addEventListener("scroll", handleScroll, { passive: true });
+    return () => scrollEl.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -451,92 +464,54 @@ const ImageGenDarkPage = () => {
           </div>
         </div>
 
-        {/* ── 哨兵元素：用于 IntersectionObserver 检测 Hero 是否在视口 ── */}
-        <div ref={heroRef} className="h-px w-full" />
-
-        {/* ── 移动端/平板端：输入框 + 参数栏整体卡片（仅 Hero 可见时显示，详情未打开） ── */}
-        {isHeroVisible && !detailOpen && (
-          <div className="lg:hidden mx-3 mb-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
-            <HeroPromptBar
-              prompt={prompt}
-              onPromptChange={setPrompt}
-              cost={totalCost}
-              isSubmitDisabled={isSubmitting || isCooldown}
-              onSubmit={handleSubmit}
-              hasActiveTask={hasEnteredCreationMode}
-              promptInputRef={promptInputRef}
-            />
-            <div className="mt-2">
-              <MobileParamBar
-                selectedModel={selectedModel}
-                models={models}
-                onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
-                imageCount={imageCount}
-                onImageCountChange={setImageCount}
-                onRatioChange={setSidebarRatio}
-                onResolutionChange={setSidebarResolution}
-                onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-                onSimilarityChange={setSidebarSimilarity}
-                referenceImages={referenceImages}
-                onReferenceImagesChange={setReferenceImages}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* ── PC 端：原 HeroPromptBar（详情未打开时显示，仅 lg 及以上） ── */}
-        {!detailOpen && <div className="hidden lg:block">
-          <HeroPromptBar
-            prompt={prompt}
-            onPromptChange={setPrompt}
-            cost={totalCost}
-            isSubmitDisabled={isSubmitting || isCooldown}
-            onSubmit={handleSubmit}
-            hasActiveTask={hasEnteredCreationMode}
-            promptInputRef={promptInputRef}
-          />
-        </div>}
-
-        {/* 吸顶输入条：仅当 Hero 哨兵滚出视口时显示，且详情未打开 */}
-        {!isHeroVisible && !detailOpen && (
-          <div className="sticky top-[41px] z-40">
-            {/* 移动端/平板端：吸顶输入框 + 参数栏 */}
-            <div className="lg:hidden bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm px-3 py-2">
-              <div className="rounded-2xl bg-muted/30 px-3 py-2 mobile-input-module">
-                <StickyPromptBar
-                  visible={true}
-                  prompt={prompt}
-                  onPromptChange={setPrompt}
-                  cost={totalCost}
-                  isSubmitDisabled={isSubmitting || isCooldown}
-                  onSubmit={handleSubmit}
-                />
-                <div className="mt-2">
-                  <MobileParamBar
-                    selectedModel={selectedModel}
-                    models={models}
-                    onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
-                    imageCount={imageCount}
-                    onImageCountChange={setImageCount}
-                    onRatioChange={setSidebarRatio}
-                    onResolutionChange={setSidebarResolution}
-                    onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
-                    onSimilarityChange={setSidebarSimilarity}
-                    referenceImages={referenceImages}
-                    onReferenceImagesChange={setReferenceImages}
-                  />
-                </div>
-              </div>
-            </div>
-            {/* PC端：只吸顶输入条（仅 lg 及以上） */}
-            <div className="hidden lg:block">
-              <StickyPromptBar
-                visible={true}
+        {/* ── 统一提示词输入区：单实例 HeroPromptBar + MobileParamBar ── */}
+        {!detailOpen && (
+          <div
+            ref={promptContainerRef}
+            className={cn(
+              "transition-shadow duration-200",
+              isSticky
+                ? "sticky top-[41px] z-40 bg-workspace-panel/95 backdrop-blur-xl border-b border-workspace-border/60 shadow-sm"
+                : ""
+            )}
+          >
+            {/* 移动端/平板端 */}
+            <div className="lg:hidden mx-3 my-2 rounded-2xl bg-muted/30 px-3 py-3 overflow-visible mobile-input-module">
+              <HeroPromptBar
                 prompt={prompt}
                 onPromptChange={setPrompt}
                 cost={totalCost}
                 isSubmitDisabled={isSubmitting || isCooldown}
                 onSubmit={handleSubmit}
+                hasActiveTask={hasEnteredCreationMode || isSticky}
+                promptInputRef={promptInputRef}
+              />
+              <div className="mt-2">
+                <MobileParamBar
+                  selectedModel={selectedModel}
+                  models={models}
+                  onModelChange={(model) => { setSelectedModel(model); setImageCount(1); setReferenceImages([]); }}
+                  imageCount={imageCount}
+                  onImageCountChange={setImageCount}
+                  onRatioChange={setSidebarRatio}
+                  onResolutionChange={setSidebarResolution}
+                  onStyleChange={(id, name) => { setSidebarStyleId(id); setSidebarStyleName(name); }}
+                  onSimilarityChange={setSidebarSimilarity}
+                  referenceImages={referenceImages}
+                  onReferenceImagesChange={setReferenceImages}
+                />
+              </div>
+            </div>
+            {/* PC 端 */}
+            <div className="hidden lg:block">
+              <HeroPromptBar
+                prompt={prompt}
+                onPromptChange={setPrompt}
+                cost={totalCost}
+                isSubmitDisabled={isSubmitting || isCooldown}
+                onSubmit={handleSubmit}
+                hasActiveTask={hasEnteredCreationMode || isSticky}
+                promptInputRef={promptInputRef}
               />
             </div>
           </div>
