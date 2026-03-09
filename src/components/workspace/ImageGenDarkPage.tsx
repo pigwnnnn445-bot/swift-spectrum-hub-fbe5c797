@@ -29,7 +29,7 @@ const ImageGenDarkPage = () => {
   const [models, setModels] = useState<ModelConfig[]>([]);
   const [selectedModel, setSelectedModel] = useState<ModelConfig | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isInspirationBrowsing, setIsInspirationBrowsing] = useState(false);
+  
   const promptContainerRef = useRef<HTMLDivElement>(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const wasFullyHiddenRef = useRef(false);
