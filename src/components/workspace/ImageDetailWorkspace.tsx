@@ -264,6 +264,37 @@ const ImageDetailWorkspace = ({
         </div>
       </div>
 
+      {/* Mobile action buttons */}
+      <ImageDetailMobileActions
+        imageUrl={selectedImageUrl}
+        onRegenerate={() => {
+          const model = models.find(m => m.id === selectedTask.modelId) || models[0];
+          onGenerate({
+            editPrompt: selectedTask.prompt,
+            model,
+            ratio: selectedTask.ratio || "1:1",
+            resolution: selectedTask.resolution || "",
+            styleId: selectedTask.styleId ?? null,
+            styleName: selectedTask.styleName || "",
+            similarity: selectedTask.similarity ?? 50,
+            referenceImages: selectedTask.referenceImages || [],
+            imageCount: 1,
+          });
+        }}
+        onDelete={onDeleteImage ? () => {
+          onDeleteImage(selectedTask.id, selectedImageIndex);
+          const remaining = allImages.filter(
+            (item) => !(item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex)
+          );
+          if (remaining.length === 0) {
+            onClose();
+          } else {
+            const nextIdx = Math.min(currentIdx, remaining.length - 1);
+            handleHistorySelect(remaining[nextIdx]);
+          }
+        } : undefined}
+      />
+
       {/* Bottom composer */}
       <ImageEditComposer
         ref={composerRef}
