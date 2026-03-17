@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import ImageDetailRightPanel from "./ImageDetailRightPanel";
+import ImageDetailMobileActions from "./ImageDetailMobileActions";
 import ImageHistoryRail from "./ImageHistoryRail";
 import ImageEditComposer from "./ImageEditComposer";
 import type { HistoryImageItem } from "./ImageHistoryRail";
