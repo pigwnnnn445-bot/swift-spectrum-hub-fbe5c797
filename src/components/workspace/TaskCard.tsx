@@ -18,6 +18,7 @@ interface TaskCardProps {
   onImageClick?: (imageUrl: string, task: GenerateTask, imageIndex: number) => void;
   onDeleteImage?: (taskId: string, imageIndex: number) => void;
   onDeleteTask?: (taskId: string) => void;
+  onMjAction?: (task: GenerateTask, action: MjAction, selectedImageIndex?: number) => void;
 }
 
 const ratioToAspect = (ratio?: string): string => {
