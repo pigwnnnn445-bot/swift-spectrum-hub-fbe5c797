@@ -831,8 +831,7 @@ const ImageGenDarkPage = () => {
           onGenerate={handleDetailGenerate}
           onInpaintGenerate={(payload: InpaintPayload, originTask: GenerateTask) => {
             // Close detail view first
-            setDetailOpen(false);
-            setDetailTask(null);
+            closeDetailAndScrollTop();
 
             const newTaskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
