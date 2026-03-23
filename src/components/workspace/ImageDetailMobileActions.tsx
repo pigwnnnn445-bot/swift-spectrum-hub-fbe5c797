@@ -60,74 +60,41 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
 
   const isMj = task?.isMj && task?.mjStage;
 
-  // Build action list dynamically
   const actions = useMemo<ActionItem[]>(() => {
     const list: ActionItem[] = [];
-    list.push({
-      key: "copy",
-      icon: <Copy className="h-4 w-4" />,
-      label: "复制图片",
-      onClick: handleCopyImage,
-    });
-    list.push({
-      key: "download",
-      icon: <Download className="h-4 w-4" />,
-      label: "下载图片",
-      onClick: handleDownloadImage,
-    });
+    list.push({ key: "copy", icon: <Copy className="h-4 w-4" />, label: "复制图片", onClick: handleCopyImage });
+    list.push({ key: "download", icon: <Download className="h-4 w-4" />, label: "下载图片", onClick: handleDownloadImage });
     if (!isMj && onRegenerate) {
-      list.push({
-        key: "regenerate",
-        icon: <RefreshCw className="h-4 w-4" />,
-        label: "重新生成",
-        onClick: onRegenerate,
-      });
+      list.push({ key: "regenerate", icon: <RefreshCw className="h-4 w-4" />, label: "重新生成", onClick: onRegenerate });
     }
     if (onDelete) {
-      list.push({
-        key: "delete",
-        icon: <Trash2 className="h-4 w-4" />,
-        label: "删除图片",
-        onClick: () => setDeleteDialogOpen(true),
-        destructive: true,
-      });
+      list.push({ key: "delete", icon: <Trash2 className="h-4 w-4" />, label: "删除图片", onClick: () => setDeleteDialogOpen(true), destructive: true });
     }
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUrl, isMj, !!onRegenerate, !!onDelete]);
 
   const MAX_VISIBLE = 3;
-  const needsMore = actions.length > MAX_VISIBLE;
+  const hasOverflow = actions.length > MAX_VISIBLE;
+  const hasMjActions = !!(isMj && task && onMjAction);
+  const needsMore = hasOverflow || hasMjActions;
   const visibleActions = needsMore ? actions.slice(0, MAX_VISIBLE - 1) : actions;
   const overflowActions = needsMore ? actions.slice(MAX_VISIBLE - 1) : [];
 
   const handleOverflowAction = (action: ActionItem) => {
     setMoreOpen(false);
-    // Small delay so drawer closes before action fires
     setTimeout(() => action.onClick(), 150);
   };
 
   return (
-    <div className="shrink-0 lg:hidden overflow-y-auto" style={{ maxHeight: '50vh' }}>
-      {/* Midjourney action bar — show BEFORE utility buttons for visibility */}
-      {isMj && task && onMjAction && (
-        <div className="px-4 pt-2 pb-1">
-          <MidjourneyActionBar
-            stage={task.mjStage!}
-            onAction={(action) => onMjAction(task, action)}
-          />
-        </div>
-      )}
-
+    <div className="shrink-0 lg:hidden">
       {/* Action buttons */}
       <div className="flex items-center justify-center gap-3 px-4 py-2 border-t border-workspace-border/40">
         <TooltipProvider delayDuration={200}>
           {visibleActions.map((action) => (
             <Tooltip key={action.key}>
               <TooltipTrigger asChild>
-                <button onClick={action.onClick} className={btnClass}>
-                  {action.icon}
-                </button>
+                <button onClick={action.onClick} className={btnClass}>{action.icon}</button>
               </TooltipTrigger>
               <TooltipContent side="top">{action.label}</TooltipContent>
             </Tooltip>
@@ -145,10 +112,21 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
         </TooltipProvider>
       </div>
 
-      {/* Overflow drawer */}
+      {/* Overflow drawer: MJ actions + utility overflow */}
       <Drawer open={moreOpen} onOpenChange={setMoreOpen}>
         <DrawerContent className="z-[200] pb-safe" overlayClassName="z-[200]">
           <div className="px-4 pb-6 pt-2 flex flex-col gap-1">
+            {hasMjActions && (
+              <div className="pb-2 mb-2 border-b border-workspace-border/30">
+                <MidjourneyActionBar
+                  stage={task!.mjStage!}
+                  onAction={(action) => {
+                    setMoreOpen(false);
+                    setTimeout(() => onMjAction!(task!, action), 150);
+                  }}
+                />
+              </div>
+            )}
             {overflowActions.map((action) => (
               <button
                 key={action.key}
@@ -167,13 +145,8 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
         </DrawerContent>
       </Drawer>
 
-      {/* Delete confirm dialog */}
       {onDelete && (
-        <ConfirmDialog
-          open={deleteDialogOpen}
-          onOpenChange={setDeleteDialogOpen}
-          onConfirm={onDelete}
-        />
+        <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} onConfirm={onDelete} />
       )}
     </div>
   );
