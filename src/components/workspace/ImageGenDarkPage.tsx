@@ -399,10 +399,15 @@ const ImageGenDarkPage = () => {
     setDetailOpen(true);
   }, []);
 
-  // ── 详情视图 Generate 回调 ──
-  const handleDetailGenerate = useCallback((payload: ComposerPayload) => {
+  const closeDetailAndScrollTop = useCallback(() => {
     setDetailOpen(false);
     setDetailTask(null);
+    mainScrollRef.current?.scrollTo({ top: 0 });
+  }, []);
+
+  // ── 详情视图 Generate 回调 ──
+  const handleDetailGenerate = useCallback((payload: ComposerPayload) => {
+    closeDetailAndScrollTop();
     const newTaskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const hasRef = payload.referenceImages && payload.referenceImages.length > 0;
     const newTask: GenerateTask = {
