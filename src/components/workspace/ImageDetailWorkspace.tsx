@@ -76,6 +76,20 @@ const ImageDetailWorkspace = ({
   const [selectedImageIndex, setSelectedImageIndex] = useState(initialImageIndex);
   const composerRef = useRef<ImageEditComposerHandle>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [displayUrl, setDisplayUrl] = useState(initialImageUrl);
+
+  // Keep old image visible until new one loads to prevent flicker
+  useEffect(() => {
+    if (selectedImageUrl === displayUrl) return;
+    const img = new Image();
+    img.src = selectedImageUrl;
+    if (img.complete) {
+      setDisplayUrl(selectedImageUrl);
+    } else {
+      img.onload = () => setDisplayUrl(selectedImageUrl);
+      img.onerror = () => setDisplayUrl(selectedImageUrl);
+    }
+  }, [selectedImageUrl, displayUrl]);
 
   const handleApplyPrompt = useCallback((prompt: string) => {
     composerRef.current?.applyPrompt(prompt);
@@ -115,6 +129,20 @@ const ImageDetailWorkspace = ({
     }
     return items;
   }, [tasks]);
+
+  // Preload adjacent images for instant switching
+  useEffect(() => {
+    const idx = allImages.findIndex(
+      (item) => item.imageUrl === selectedImageUrl && item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex
+    );
+    const toPreload: string[] = [];
+    if (idx > 0) toPreload.push(allImages[idx - 1].imageUrl);
+    if (idx < allImages.length - 1) toPreload.push(allImages[idx + 1].imageUrl);
+    toPreload.forEach((url) => {
+      const img = new Image();
+      img.src = url;
+    });
+  }, [allImages, selectedImageUrl, selectedTask.id, selectedImageIndex]);
 
   // Safety net: if all images are gone after deletion, close the detail view
   useEffect(() => {
@@ -203,7 +231,7 @@ const ImageDetailWorkspace = ({
           {/* Big image */}
           <div className="relative flex-1 flex items-center justify-center p-6 overflow-auto min-w-0">
             <img
-              src={selectedImageUrl}
+              src={displayUrl}
               alt="大图预览"
               className="max-w-full max-h-full object-contain rounded-lg cursor-zoom-in active:scale-[0.98] transition-transform"
               onClick={() => setLightboxOpen(true)}
