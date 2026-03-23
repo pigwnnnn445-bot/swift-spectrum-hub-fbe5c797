@@ -66,6 +66,7 @@ const ImageDetailWorkspace = ({
   onGenerate,
   onInpaintGenerate,
   onDeleteImage,
+  onMjAction,
   onClose,
 }: ImageDetailWorkspaceProps) => {
   const [selectedImageUrl, setSelectedImageUrl] = useState(initialImageUrl);
