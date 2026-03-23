@@ -60,6 +60,7 @@ const ModelListPage = () => {
               <TableHead className="text-center">局部重绘</TableHead>
               <TableHead className="text-center">编辑图像</TableHead>
               <TableHead className="text-center">生成数量</TableHead>
+              <TableHead className="text-center">MJ模型</TableHead>
               <TableHead className="text-center">状态</TableHead>
               <TableHead className="w-[80px]">操作</TableHead>
             </TableRow>
