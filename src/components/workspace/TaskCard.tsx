@@ -4,8 +4,9 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import TaskAttributePanel from "./TaskAttributePanel";
+import MidjourneyActionBar from "./MidjourneyActionBar";
 import ConfirmDialog from "./ConfirmDialog";
-import type { GenerateTask } from "@/types/task";
+import type { GenerateTask, MjAction } from "@/types/task";
 
 interface TaskCardProps {
   task: GenerateTask;
@@ -17,6 +18,7 @@ interface TaskCardProps {
   onImageClick?: (imageUrl: string, task: GenerateTask, imageIndex: number) => void;
   onDeleteImage?: (taskId: string, imageIndex: number) => void;
   onDeleteTask?: (taskId: string) => void;
+  onMjAction?: (task: GenerateTask, action: MjAction, selectedImageIndex?: number) => void;
 }
 
 const ratioToAspect = (ratio?: string): string => {
@@ -27,7 +29,7 @@ const ratioToAspect = (ratio?: string): string => {
   return map[ratio ?? ""] ?? "1/1";
 };
 
-const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage, onInpaint, onImageClick, onDeleteImage, onDeleteTask }: TaskCardProps) => {
+const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage, onInpaint, onImageClick, onDeleteImage, onDeleteTask, onMjAction }: TaskCardProps) => {
   const isGenerating = task.status === "generating" || task.status === "submitting";
   const isError = task.status === "error";
   const isSuccess = task.status === "success";
@@ -328,6 +330,19 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
             </div>
           )}
         </div>
+
+        {/* Midjourney 操作按钮 */}
+        {task.isMj && task.mjStage && isSuccess && (
+          <MidjourneyActionBar
+            stage={task.mjStage}
+            onAction={(action) => onMjAction?.(task, action)}
+            onDownload={() => {
+              if (task.images.length > 0) {
+                task.images.forEach((url, i) => handleDownloadImage(url, i));
+              }
+            }}
+          />
+        )}
 
         {/* 右侧：属性区 — flex-[2] ≈ 40%, min 280px, max 340px */}
         <div className="w-full lg:flex-[2] lg:min-w-[280px] lg:max-w-[340px] shrink-0 flex flex-col">

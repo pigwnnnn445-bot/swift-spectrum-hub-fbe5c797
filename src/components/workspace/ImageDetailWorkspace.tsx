@@ -2,12 +2,13 @@ import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import ImageDetailRightPanel from "./ImageDetailRightPanel";
 import ImageDetailMobileActions from "./ImageDetailMobileActions";
+import MidjourneyActionBar from "./MidjourneyActionBar";
 import ImageHistoryRail from "./ImageHistoryRail";
 import ImageEditComposer from "./ImageEditComposer";
 import type { HistoryImageItem } from "./ImageHistoryRail";
 import type { ComposerPayload, ImageEditComposerHandle } from "./ImageEditComposer";
 import type { InpaintPayload } from "./ImageInpaintModal";
-import type { GenerateTask } from "@/types/task";
+import type { GenerateTask, MjAction } from "@/types/task";
 import type { ModelConfig } from "@/config/modelConfig";
 
 interface ImageDetailWorkspaceProps {
@@ -27,6 +28,8 @@ interface ImageDetailWorkspaceProps {
   onInpaintGenerate?: (payload: InpaintPayload, task: GenerateTask) => void;
   /** Called to delete current image */
   onDeleteImage?: (taskId: string, imageIndex: number) => void;
+  /** Called for Midjourney actions */
+  onMjAction?: (task: GenerateTask, action: MjAction) => void;
   /** Called to close this view */
   onClose: () => void;
 }
@@ -64,6 +67,7 @@ const ImageDetailWorkspace = ({
   onGenerate,
   onInpaintGenerate,
   onDeleteImage,
+  onMjAction,
   onClose,
 }: ImageDetailWorkspaceProps) => {
   const [selectedImageUrl, setSelectedImageUrl] = useState(initialImageUrl);
@@ -223,7 +227,7 @@ const ImageDetailWorkspace = ({
               imageUrl={selectedImageUrl}
               onApplyPrompt={handleApplyPrompt}
               onOpenInpaint={onInpaintGenerate ? handleOpenInpaint : undefined}
-              onRegenerate={() => {
+              onRegenerate={!selectedTask.isMj ? () => {
                 const model = models.find(m => m.id === selectedTask.modelId) || models[0];
                 onGenerate({
                   editPrompt: selectedTask.prompt,
@@ -236,10 +240,9 @@ const ImageDetailWorkspace = ({
                   referenceImages: selectedTask.referenceImages || [],
                   imageCount: 1,
                 });
-              }}
+              } : undefined}
               onDelete={onDeleteImage ? () => {
                 onDeleteImage(selectedTask.id, selectedImageIndex);
-                // Stay on detail page: navigate to next/prev image, or close if none left
                 const remaining = allImages.filter(
                   (item) => !(item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex)
                 );
@@ -251,6 +254,15 @@ const ImageDetailWorkspace = ({
                 }
               } : undefined}
             />
+            {/* Desktop Midjourney action bar */}
+            {selectedTask.isMj && selectedTask.mjStage && onMjAction && (
+              <div className="mt-4 pt-4 border-t border-workspace-border/40">
+                <MidjourneyActionBar
+                  stage={selectedTask.mjStage}
+                  onAction={(action) => onMjAction(selectedTask, action)}
+                />
+              </div>
+            )}
           </div>
         </div>
 
@@ -267,7 +279,8 @@ const ImageDetailWorkspace = ({
       {/* Mobile action buttons */}
       <ImageDetailMobileActions
         imageUrl={selectedImageUrl}
-        onRegenerate={() => {
+        task={selectedTask}
+        onRegenerate={!selectedTask.isMj ? () => {
           const model = models.find(m => m.id === selectedTask.modelId) || models[0];
           onGenerate({
             editPrompt: selectedTask.prompt,
@@ -280,7 +293,7 @@ const ImageDetailWorkspace = ({
             referenceImages: selectedTask.referenceImages || [],
             imageCount: 1,
           });
-        }}
+        } : undefined}
         onDelete={onDeleteImage ? () => {
           onDeleteImage(selectedTask.id, selectedImageIndex);
           const remaining = allImages.filter(
@@ -293,6 +306,7 @@ const ImageDetailWorkspace = ({
             handleHistorySelect(remaining[nextIdx]);
           }
         } : undefined}
+        onMjAction={onMjAction}
       />
 
       {/* Bottom composer */}

@@ -21,7 +21,8 @@ import type { ModelConfig, Provider } from "@/config/modelConfig";
 import { getEnabledImageLikes } from "@/config/modelConfig";
 import type { ReferenceImagesByType, SimilarityByType } from "./UploadReferencePanel";
 import { flattenImagesByType, getActiveSimilarity } from "./UploadReferencePanel";
-import type { GenerateTask, GenerationMode } from "@/types/task";
+import type { GenerateTask, GenerationMode, MjAction } from "@/types/task";
+import { getMjActionResult } from "@/types/task";
 import { toast } from "@/hooks/use-toast";
 
 const ImageGenDarkPage = () => {
@@ -155,7 +156,8 @@ const ImageGenDarkPage = () => {
       cooldownRef.current = null;
     }, 2000);
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    const count = imageCount;
+    const isMj = selectedModel.is_mj;
+    const count = isMj ? 4 : imageCount;
 
     const allRefImages = flattenImagesByType(referenceImagesByType);
     const hasRefImages = allRefImages.length > 0;
@@ -190,6 +192,8 @@ const ImageGenDarkPage = () => {
         similarity: hasRefImages ? activeSimilarity : undefined,
         reference_images: hasRefImages ? [...allRefImages] : undefined,
       },
+      // Midjourney 专属
+      ...(isMj ? { isMj: true, mjStage: "initial" as const } : {}),
     };
 
     // 插入到列表顶部
@@ -329,6 +333,64 @@ const ImageGenDarkPage = () => {
     toast({ title: "参考图已添加" });
   }, [selectedModel, referenceImagesByType]);
 
+  // ── Midjourney 操作回调 ──
+  const handleMjAction = useCallback((originTask: GenerateTask, action: MjAction) => {
+    const { stage, count } = getMjActionResult(action);
+    const newTaskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+    // 对于 U 操作，记录选中的图片索引
+    let selectedIndex: number | undefined;
+    if (action.startsWith("U")) {
+      selectedIndex = parseInt(action.replace("U", "")) - 1;
+    }
+
+    const newTask: GenerateTask = {
+      id: newTaskId,
+      prompt: originTask.prompt,
+      status: "submitting",
+      modelId: originTask.modelId,
+      modelName: originTask.modelName,
+      modelImage: originTask.modelImage,
+      ratio: originTask.ratio,
+      resolution: originTask.resolution,
+      styleName: originTask.styleName,
+      styleId: originTask.styleId,
+      generationMode: originTask.generationMode,
+      similarity: originTask.similarity,
+      count,
+      images: [],
+      referenceImages: originTask.referenceImages ? [...originTask.referenceImages] : undefined,
+      createdAt: Date.now(),
+      requestPayload: {
+        ...originTask.requestPayload,
+        count,
+        mj_action: action,
+        mj_parent_task_id: originTask.id,
+        mj_selected_index: selectedIndex,
+      },
+      // Midjourney 专属
+      isMj: true,
+      mjStage: stage,
+      mjAction: action,
+      mjParentTaskId: originTask.id,
+      mjSelectedIndex: selectedIndex,
+    };
+
+    setHasEnteredCreationMode(true);
+    setTasks((prev) => [newTask, ...prev]);
+    setTasks((prev) => prev.map((t) => (t.id === newTaskId ? { ...t, status: "generating" as const } : t)));
+
+    mockGenerate(count).then((result) => {
+      setTasks((prev) => prev.map((t) => {
+        if (t.id !== newTaskId) return t;
+        if (result.success) return { ...t, status: "success" as const, images: result.images ?? [] };
+        return { ...t, status: "error" as const, errorMessage: result.errorMessage };
+      }));
+    }).catch(() => {
+      setTasks((prev) => prev.map((t) => t.id === newTaskId ? { ...t, status: "error" as const, errorMessage: "网络异常，请稍后重试" } : t));
+    });
+  }, []);
+
   // ── 点击成功图片打开详情视图 ──
   const handleImageClick = useCallback((imageUrl: string, task: GenerateTask, imageIndex: number) => {
     setDetailImageUrl(imageUrl);
@@ -458,6 +520,7 @@ const ImageGenDarkPage = () => {
                 .filter((t) => !(t.status === "success" && t.images.length === 0))
               );
             }}
+            onMjAction={handleMjAction}
             onClose={() => { setDetailOpen(false); setDetailTask(null); }}
           />
         )}
@@ -626,6 +689,7 @@ const ImageGenDarkPage = () => {
             onDeleteTask={(taskId) => {
               setTasks((prev) => prev.filter((t) => t.id !== taskId));
             }}
+            onMjAction={handleMjAction}
           />
         )}
 
@@ -820,6 +884,7 @@ const ImageGenDarkPage = () => {
               .filter((t) => !(t.status === "success" && t.images.length === 0))
             );
           }}
+          onMjAction={handleMjAction}
           onClose={() => { setDetailOpen(false); setDetailTask(null); }}
         />
       )}
