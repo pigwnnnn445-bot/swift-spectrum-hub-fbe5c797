@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import ImageLightbox from "./ImageLightbox";
 import ImageDetailRightPanel from "./ImageDetailRightPanel";
 import ImageDetailMobileActions from "./ImageDetailMobileActions";
 import MidjourneyActionBar from "./MidjourneyActionBar";
@@ -74,6 +75,7 @@ const ImageDetailWorkspace = ({
   const [selectedTask, setSelectedTask] = useState(initialTask);
   const [selectedImageIndex, setSelectedImageIndex] = useState(initialImageIndex);
   const composerRef = useRef<ImageEditComposerHandle>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const handleApplyPrompt = useCallback((prompt: string) => {
     composerRef.current?.applyPrompt(prompt);
@@ -82,6 +84,11 @@ const ImageDetailWorkspace = ({
   const handleOpenInpaint = useCallback(() => {
     composerRef.current?.openInpaint();
   }, []);
+
+  // Close lightbox when selected image changes
+  useEffect(() => {
+    setLightboxOpen(false);
+  }, [selectedImageUrl]);
 
   // When initial props change (shouldn't normally), sync
   useEffect(() => {
@@ -198,7 +205,8 @@ const ImageDetailWorkspace = ({
             <img
               src={selectedImageUrl}
               alt="大图预览"
-              className="max-w-full max-h-full object-contain rounded-lg"
+              className="max-w-full max-h-full object-contain rounded-lg cursor-zoom-in active:scale-[0.98] transition-transform"
+              onClick={() => setLightboxOpen(true)}
             />
             {/* Prev arrow */}
             <button
@@ -303,6 +311,12 @@ const ImageDetailWorkspace = ({
       />
 
       {/* Bottom composer */}
+
+      {/* Fullscreen lightbox */}
+      {lightboxOpen && (
+        <ImageLightbox src={selectedImageUrl} onClose={() => setLightboxOpen(false)} />
+      )}
+
       <ImageEditComposer
         ref={composerRef}
         key={`${selectedTask.id}-${selectedImageIndex}`}
