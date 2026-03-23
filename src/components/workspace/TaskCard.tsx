@@ -4,8 +4,9 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import TaskAttributePanel from "./TaskAttributePanel";
+import MidjourneyActionBar from "./MidjourneyActionBar";
 import ConfirmDialog from "./ConfirmDialog";
-import type { GenerateTask } from "@/types/task";
+import type { GenerateTask, MjAction } from "@/types/task";
 
 interface TaskCardProps {
   task: GenerateTask;
