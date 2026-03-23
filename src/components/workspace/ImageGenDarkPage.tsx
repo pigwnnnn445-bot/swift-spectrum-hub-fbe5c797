@@ -16,7 +16,7 @@ import BackToTopButton from "./BackToTopButton";
 import type { InpaintPayload } from "./ImageInpaintModal";
 import type { ComposerPayload } from "./ImageEditComposer";
 import { fetchModelsData } from "@/api/modelService";
-import { mockGenerate } from "@/api/mockGenerate";
+import { mockGenerate, mockMjGenerate } from "@/api/mockGenerate";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
 import { getEnabledImageLikes } from "@/config/modelConfig";
 import type { ReferenceImagesByType, SimilarityByType } from "./UploadReferencePanel";
