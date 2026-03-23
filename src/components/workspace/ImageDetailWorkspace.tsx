@@ -76,6 +76,20 @@ const ImageDetailWorkspace = ({
   const [selectedImageIndex, setSelectedImageIndex] = useState(initialImageIndex);
   const composerRef = useRef<ImageEditComposerHandle>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [displayUrl, setDisplayUrl] = useState(initialImageUrl);
+
+  // Keep old image visible until new one loads to prevent flicker
+  useEffect(() => {
+    if (selectedImageUrl === displayUrl) return;
+    const img = new Image();
+    img.src = selectedImageUrl;
+    if (img.complete) {
+      setDisplayUrl(selectedImageUrl);
+    } else {
+      img.onload = () => setDisplayUrl(selectedImageUrl);
+      img.onerror = () => setDisplayUrl(selectedImageUrl);
+    }
+  }, [selectedImageUrl, displayUrl]);
 
   const handleApplyPrompt = useCallback((prompt: string) => {
     composerRef.current?.applyPrompt(prompt);
