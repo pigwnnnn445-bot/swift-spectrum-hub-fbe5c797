@@ -78,6 +78,12 @@ const ImageGenDarkPage = () => {
   // Show sticky when hero prompt is partially hidden behind header;
   // Hide sticky when hero prompt reappears from fully hidden state
   useEffect(() => {
+    if (detailOpen) {
+      setShowStickyBar(false);
+      wasFullyHiddenRef.current = false;
+      return;
+    }
+
     const scrollEl = mainScrollRef.current;
     const promptEl = promptContainerRef.current;
     if (!scrollEl || !promptEl) return;
@@ -122,7 +128,7 @@ const ImageGenDarkPage = () => {
 
     observer.observe(promptEl);
     return () => observer.disconnect();
-  }, [selectedModel]);
+  }, [selectedModel, detailOpen]);
 
   useEffect(() => {
     fetchModelsData().then((data) => {
