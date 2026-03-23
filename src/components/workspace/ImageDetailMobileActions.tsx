@@ -137,7 +137,7 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
 
       {/* Overflow drawer */}
       <Drawer open={moreOpen} onOpenChange={setMoreOpen}>
-        <DrawerContent className="z-[200] pb-safe [&~[data-vaul-overlay]]:z-[200]">
+        <DrawerContent className="z-[200] pb-safe" overlayClassName="z-[200]">
           <div className="px-4 pb-6 pt-2 flex flex-col gap-1">
             {overflowActions.map((action) => (
               <button
