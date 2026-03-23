@@ -157,7 +157,7 @@ const ImageGenDarkPage = () => {
     }, 2000);
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const isMj = selectedModel.is_mj;
-    const count = isMj ? 4 : imageCount;
+    const count = isMj ? 1 : imageCount;
 
     const allRefImages = flattenImagesByType(referenceImagesByType);
     const hasRefImages = allRefImages.length > 0;
