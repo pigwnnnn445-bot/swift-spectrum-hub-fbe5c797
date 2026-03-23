@@ -34,7 +34,7 @@ export function getMjActionResult(action: MjAction): { stage: MjStage; count: nu
     case "zoom_out_2x": case "zoom_out_1_5x":
     case "pan_left": case "pan_right": case "pan_up": case "pan_down":
     case "refresh":
-      return { stage: "initial", count: 4 };
+      return { stage: "initial", count: 1 };
   }
 }
 

@@ -16,7 +16,7 @@ import BackToTopButton from "./BackToTopButton";
 import type { InpaintPayload } from "./ImageInpaintModal";
 import type { ComposerPayload } from "./ImageEditComposer";
 import { fetchModelsData } from "@/api/modelService";
-import { mockGenerate } from "@/api/mockGenerate";
+import { mockGenerate, mockMjGenerate } from "@/api/mockGenerate";
 import type { ModelConfig, Provider } from "@/config/modelConfig";
 import { getEnabledImageLikes } from "@/config/modelConfig";
 import type { ReferenceImagesByType, SimilarityByType } from "./UploadReferencePanel";
@@ -157,7 +157,7 @@ const ImageGenDarkPage = () => {
     }, 2000);
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const isMj = selectedModel.is_mj;
-    const count = isMj ? 4 : imageCount;
+    const count = isMj ? 1 : imageCount;
 
     const allRefImages = flattenImagesByType(referenceImagesByType);
     const hasRefImages = allRefImages.length > 0;
@@ -210,8 +210,8 @@ const ImageGenDarkPage = () => {
     setIsSubmitting(false);
 
     // ── 调用 mock 接口（发布时替换为真实 API） ──
-    // 闭包捕获 taskId，确保并发任务结果精确回写
-    mockGenerate(count).then((result) => {
+    const generatePromise = isMj ? mockMjGenerate("initial") : mockGenerate(count);
+    generatePromise.then((result) => {
       setTasks((prev) =>
         prev.map((t) => {
           if (t.id !== taskId) return t;
@@ -380,7 +380,7 @@ const ImageGenDarkPage = () => {
     setTasks((prev) => [newTask, ...prev]);
     setTasks((prev) => prev.map((t) => (t.id === newTaskId ? { ...t, status: "generating" as const } : t)));
 
-    mockGenerate(count).then((result) => {
+    mockMjGenerate(stage).then((result) => {
       setTasks((prev) => prev.map((t) => {
         if (t.id !== newTaskId) return t;
         if (result.success) return { ...t, status: "success" as const, images: result.images ?? [] };
