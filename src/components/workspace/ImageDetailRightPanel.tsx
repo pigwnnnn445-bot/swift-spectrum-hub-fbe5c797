@@ -19,7 +19,7 @@ interface ImageDetailRightPanelProps {
   onMjAction?: (action: MjAction) => void;
 }
 
-const ImageDetailRightPanel = ({ task, imageUrl, isMj, onApplyPrompt, onOpenInpaint, onRegenerate, onDelete }: ImageDetailRightPanelProps) => {
+const ImageDetailRightPanel = ({ task, imageUrl, isMj, onApplyPrompt, onOpenInpaint, onRegenerate, onDelete, onMjAction }: ImageDetailRightPanelProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const handleCopyImage = async () => {
     if (!imageUrl) return;
