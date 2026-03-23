@@ -254,7 +254,7 @@ const ImageDetailWorkspace = ({
                   handleHistorySelect(remaining[nextIdx]);
                 }
               } : undefined}
-              onMjAction={selectedTask.isMj && onMjAction ? (action) => onMjAction(selectedTask, action) : undefined}
+              onMjAction={selectedTask.isMj && onMjAction ? (action) => { onMjAction(selectedTask, action); onClose(); } : undefined}
             />
           </div>
         </div>
@@ -299,7 +299,7 @@ const ImageDetailWorkspace = ({
             handleHistorySelect(remaining[nextIdx]);
           }
         } : undefined}
-        onMjAction={onMjAction}
+        onMjAction={onMjAction ? (task, action) => { onMjAction(task, action); onClose(); } : undefined}
       />
 
       {/* Bottom composer */}
