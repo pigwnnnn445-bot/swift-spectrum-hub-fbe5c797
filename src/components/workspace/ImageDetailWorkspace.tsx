@@ -130,6 +130,20 @@ const ImageDetailWorkspace = ({
     return items;
   }, [tasks]);
 
+  // Preload adjacent images for instant switching
+  useEffect(() => {
+    const idx = allImages.findIndex(
+      (item) => item.imageUrl === selectedImageUrl && item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex
+    );
+    const toPreload: string[] = [];
+    if (idx > 0) toPreload.push(allImages[idx - 1].imageUrl);
+    if (idx < allImages.length - 1) toPreload.push(allImages[idx + 1].imageUrl);
+    toPreload.forEach((url) => {
+      const img = new Image();
+      img.src = url;
+    });
+  }, [allImages, selectedImageUrl, selectedTask.id, selectedImageIndex]);
+
   // Safety net: if all images are gone after deletion, close the detail view
   useEffect(() => {
     if (allImages.length === 0) {
