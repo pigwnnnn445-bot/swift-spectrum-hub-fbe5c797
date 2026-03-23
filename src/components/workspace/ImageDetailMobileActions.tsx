@@ -108,7 +108,17 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
   };
 
   return (
-    <div className="shrink-0 lg:hidden">
+    <div className="shrink-0 lg:hidden overflow-y-auto" style={{ maxHeight: '50vh' }}>
+      {/* Midjourney action bar — show BEFORE utility buttons for visibility */}
+      {isMj && task && onMjAction && (
+        <div className="px-4 pt-2 pb-1">
+          <MidjourneyActionBar
+            stage={task.mjStage!}
+            onAction={(action) => onMjAction(task, action)}
+          />
+        </div>
+      )}
+
       {/* Action buttons */}
       <div className="flex items-center justify-center gap-3 px-4 py-2 border-t border-workspace-border/40">
         <TooltipProvider delayDuration={200}>
@@ -164,16 +174,6 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
           onOpenChange={setDeleteDialogOpen}
           onConfirm={onDelete}
         />
-      )}
-
-      {/* Midjourney action bar */}
-      {isMj && task && onMjAction && (
-        <div className="px-4 pb-2">
-          <MidjourneyActionBar
-            stage={task.mjStage!}
-            onAction={(action) => onMjAction(task, action)}
-          />
-        </div>
       )}
     </div>
   );
