@@ -341,13 +341,12 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
 
         {/* Midjourney 操作按钮 — 显示在图片下方 */}
         {task.isMj && task.mjStage && isSuccess && (
-          <div className="flex-[3] min-w-0 -mt-2">
-            <MidjourneyActionBar
-              stage={task.mjStage}
-              onAction={(action) => onMjAction?.(task, action)}
-            />
-          </div>
+          <MidjourneyActionBar
+            stage={task.mjStage}
+            onAction={(action) => onMjAction?.(task, action)}
+          />
         )}
+        </div>
 
         {/* 右侧：属性区 — flex-[2] ≈ 40%, min 280px, max 340px */}
         <div className="w-full lg:flex-[2] lg:min-w-[280px] lg:max-w-[340px] shrink-0 flex flex-col">
