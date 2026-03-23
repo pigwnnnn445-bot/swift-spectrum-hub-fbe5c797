@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Copy, Download, RefreshCw, Trash2, MoreHorizontal } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { Drawer, DrawerContent, DrawerOverlay } from "@/components/ui/drawer";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import ConfirmDialog from "./ConfirmDialog";
 import MidjourneyActionBar from "./MidjourneyActionBar";
 import { toast } from "@/hooks/use-toast";
