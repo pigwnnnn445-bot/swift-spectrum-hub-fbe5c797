@@ -27,6 +27,8 @@ interface ImageDetailWorkspaceProps {
   onInpaintGenerate?: (payload: InpaintPayload, task: GenerateTask) => void;
   /** Called to delete current image */
   onDeleteImage?: (taskId: string, imageIndex: number) => void;
+  /** Called for Midjourney actions */
+  onMjAction?: (task: GenerateTask, action: MjAction) => void;
   /** Called to close this view */
   onClose: () => void;
 }
