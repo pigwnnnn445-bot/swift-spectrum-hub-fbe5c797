@@ -1,4 +1,4 @@
-import { Download, RefreshCw, ArrowLeft, ArrowRight, ArrowUp, ArrowDown, Maximize2, Wand2, ZoomOut } from "lucide-react";
+import { RefreshCw, ArrowLeft, ArrowRight, ArrowUp, ArrowDown, Maximize2, Wand2, ZoomOut } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import type { MjStage, MjAction } from "@/types/task";
 
@@ -18,7 +18,6 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
     return (
       <div className="flex flex-wrap items-center gap-2 pt-3">
         <TooltipProvider delayDuration={200}>
-          {/* U1-U4 + Refresh */}
           <div className="flex items-center gap-2">
             {(["U1", "U2", "U3", "U4"] as MjAction[]).map((a) => (
               <button key={a} onClick={() => onAction(a)} className={chipBtn}>{a}</button>
@@ -32,17 +31,10 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
               <TooltipContent side="top">重新生成</TooltipContent>
             </Tooltip>
           </div>
-          {/* V1-V4 + Download */}
           <div className="flex items-center gap-2">
             {(["V1", "V2", "V3", "V4"] as MjAction[]).map((a) => (
               <button key={a} onClick={() => onAction(a)} className={chipBtn}>{a}</button>
             ))}
-            {onDownload && (
-              <button onClick={onDownload} className={downloadBtn}>
-                <Download className="h-4 w-4" />
-                <span>下载</span>
-              </button>
-            )}
           </div>
         </TooltipProvider>
       </div>
@@ -53,7 +45,6 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
     return (
       <div className="flex flex-wrap items-center gap-2 pt-3">
         <TooltipProvider delayDuration={200}>
-          {/* Row 1: Upscale + Vary */}
           <div className="flex items-center gap-2 flex-wrap">
             <button onClick={() => onAction("upscale_subtle")} className={chipBtn}>
               <Maximize2 className="h-3.5 w-3.5" /> Upscale (Subtle)
@@ -68,7 +59,6 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
               <Wand2 className="h-3.5 w-3.5" /> Vary (Strong)
             </button>
           </div>
-          {/* Row 2: Zoom Out + Arrows + Download */}
           <div className="flex items-center gap-2 flex-wrap">
             <button onClick={() => onAction("zoom_out_2x")} className={chipBtn}>
               <ZoomOut className="h-3.5 w-3.5" /> Zoom Out 2x
@@ -108,12 +98,6 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
               </TooltipTrigger>
               <TooltipContent side="top">向下平移</TooltipContent>
             </Tooltip>
-            {onDownload && (
-              <button onClick={onDownload} className={downloadBtn}>
-                <Download className="h-4 w-4" />
-                <span>下载</span>
-              </button>
-            )}
           </div>
         </TooltipProvider>
       </div>
@@ -135,12 +119,6 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
         <button onClick={() => onAction("vary_strong")} className={chipBtn}>
           <Wand2 className="h-3.5 w-3.5" /> Vary (Strong)
         </button>
-        {onDownload && (
-          <button onClick={onDownload} className={downloadBtn}>
-            <Download className="h-4 w-4" />
-            <span>下载</span>
-          </button>
-        )}
       </div>
     );
   }

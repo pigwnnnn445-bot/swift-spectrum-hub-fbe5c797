@@ -107,7 +107,6 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
           <MidjourneyActionBar
             stage={task.mjStage!}
             onAction={(action) => onMjAction(task, action)}
-            onDownload={handleDownloadImage}
           />
         </div>
       )}
