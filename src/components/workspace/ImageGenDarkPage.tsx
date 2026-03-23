@@ -603,7 +603,7 @@ const ImageGenDarkPage = () => {
               ref={promptContainerRef}
               className={cn(
                 "transition-opacity duration-200",
-                showStickyBar ? "opacity-0" : "opacity-100"
+                showStickyBar ? "opacity-0 pointer-events-none max-lg:hidden" : "opacity-100"
               )}
             >
             {/* 移动端/平板端 */}
