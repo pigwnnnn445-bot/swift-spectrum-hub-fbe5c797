@@ -227,7 +227,7 @@ const ImageDetailWorkspace = ({
               imageUrl={selectedImageUrl}
               onApplyPrompt={handleApplyPrompt}
               onOpenInpaint={onInpaintGenerate ? handleOpenInpaint : undefined}
-              onRegenerate={() => {
+              onRegenerate={!selectedTask.isMj ? () => {
                 const model = models.find(m => m.id === selectedTask.modelId) || models[0];
                 onGenerate({
                   editPrompt: selectedTask.prompt,
@@ -240,10 +240,9 @@ const ImageDetailWorkspace = ({
                   referenceImages: selectedTask.referenceImages || [],
                   imageCount: 1,
                 });
-              }}
+              } : undefined}
               onDelete={onDeleteImage ? () => {
                 onDeleteImage(selectedTask.id, selectedImageIndex);
-                // Stay on detail page: navigate to next/prev image, or close if none left
                 const remaining = allImages.filter(
                   (item) => !(item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex)
                 );
@@ -255,6 +254,15 @@ const ImageDetailWorkspace = ({
                 }
               } : undefined}
             />
+            {/* Desktop Midjourney action bar */}
+            {selectedTask.isMj && selectedTask.mjStage && onMjAction && (
+              <div className="mt-4 pt-4 border-t border-workspace-border/40">
+                <MidjourneyActionBar
+                  stage={selectedTask.mjStage}
+                  onAction={(action) => onMjAction(selectedTask, action)}
+                />
+              </div>
+            )}
           </div>
         </div>
 
