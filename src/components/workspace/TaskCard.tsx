@@ -117,22 +117,26 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                         </TooltipTrigger>
                         <TooltipContent side="bottom">复制图片</TooltipContent>
                       </Tooltip>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button onClick={() => handleDownloadImage(task.images[0], 0)} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
-                            <Download className="h-3.5 w-3.5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom">下载图片</TooltipContent>
-                      </Tooltip>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button onClick={() => onRetry?.(task.id)} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
-                            <RotateCw className="h-3.5 w-3.5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom">重新生成图片</TooltipContent>
-                      </Tooltip>
+                      {!task.isMj && (
+                        <>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button onClick={() => handleDownloadImage(task.images[0], 0)} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                                <Download className="h-3.5 w-3.5" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom">下载图片</TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button onClick={() => onRetry?.(task.id)} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                                <RotateCw className="h-3.5 w-3.5" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom">重新生成图片</TooltipContent>
+                          </Tooltip>
+                        </>
+                      )}
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <button onClick={() => requestDelete(() => onDeleteImage?.(task.id, 0))} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-red-600/80 transition-colors cursor-pointer active:scale-90">
@@ -144,26 +148,28 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
                     </TooltipProvider>
                   </div>
                   {/* 底部右下角：局部重绘 + 编辑图像 */}
-                  <div className="absolute bottom-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
-                    <TooltipProvider delayDuration={200}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button onClick={() => onInpaint?.(task.images[0])} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
-                            <Paintbrush className="h-3.5 w-3.5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">局部重绘</TooltipContent>
-                      </Tooltip>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button onClick={() => onEditImage?.(task.images[0], task)} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
-                            <PenLine className="h-3.5 w-3.5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">编辑图像</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
+                  {!task.isMj && (
+                    <div className="absolute bottom-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover/img:opacity-100 transition-opacity duration-150">
+                      <TooltipProvider delayDuration={200}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button onClick={() => onInpaint?.(task.images[0])} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                              <Paintbrush className="h-3.5 w-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">局部重绘</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button onClick={() => onEditImage?.(task.images[0], task)} className="flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors cursor-pointer active:scale-90">
+                              <PenLine className="h-3.5 w-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">编辑图像</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  )}
                 </div>
               )}
               {isError && (
