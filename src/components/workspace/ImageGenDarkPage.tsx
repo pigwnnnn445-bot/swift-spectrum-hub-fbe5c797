@@ -888,7 +888,7 @@ const ImageGenDarkPage = () => {
             );
           }}
           onMjAction={handleMjAction}
-          onClose={() => { setDetailOpen(false); setDetailTask(null); }}
+          onClose={closeDetailAndScrollTop}
         />
       )}
     </div>
