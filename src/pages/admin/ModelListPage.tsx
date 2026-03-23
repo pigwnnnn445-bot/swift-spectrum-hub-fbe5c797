@@ -60,6 +60,7 @@ const ModelListPage = () => {
               <TableHead className="text-center">局部重绘</TableHead>
               <TableHead className="text-center">编辑图像</TableHead>
               <TableHead className="text-center">生成数量</TableHead>
+              <TableHead className="text-center">MJ模型</TableHead>
               <TableHead className="text-center">状态</TableHead>
               <TableHead className="w-[80px]">操作</TableHead>
             </TableRow>
@@ -88,6 +89,13 @@ const ModelListPage = () => {
                 <TableCell className="text-center"><FlagBadge value={model.edit_image_flg} /></TableCell>
                 <TableCell className="text-center text-sm">
                   {model.image_num > 0 ? `最多${model.image_num}` : "—"}
+                </TableCell>
+                <TableCell className="text-center">
+                  {model.is_mj ? (
+                    <Badge variant="default" className="text-[11px]">MJ</Badge>
+                  ) : (
+                    <X className="h-4 w-4 text-muted-foreground/40 mx-auto" />
+                  )}
                 </TableCell>
                 <TableCell className="text-center">
                   <Badge variant={model.show_flg === 1 ? "default" : "secondary"} className="text-[11px]">
