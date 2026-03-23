@@ -254,16 +254,8 @@ const ImageDetailWorkspace = ({
                   handleHistorySelect(remaining[nextIdx]);
                 }
               } : undefined}
+              onMjAction={selectedTask.isMj && onMjAction ? (action) => onMjAction(selectedTask, action) : undefined}
             />
-            {/* Desktop Midjourney action bar */}
-            {selectedTask.isMj && selectedTask.mjStage && onMjAction && (
-              <div className="mt-4 pt-4 border-t border-workspace-border/40">
-                <MidjourneyActionBar
-                  stage={selectedTask.mjStage}
-                  onAction={(action) => onMjAction(selectedTask, action)}
-                />
-              </div>
-            )}
           </div>
         </div>
 

@@ -67,6 +67,14 @@ const ImageDetailRightPanel = ({ task, imageUrl, isMj, onApplyPrompt, onOpenInpa
           </button>
         )}
 
+        {/* Midjourney action bar between inpaint and copy/delete */}
+        {isMj && task.mjStage && onMjAction && (
+          <MidjourneyActionBar
+            stage={task.mjStage}
+            onAction={onMjAction}
+          />
+        )}
+
         <TooltipProvider delayDuration={200}>
           <div className="flex items-center gap-2">
             <Tooltip>
