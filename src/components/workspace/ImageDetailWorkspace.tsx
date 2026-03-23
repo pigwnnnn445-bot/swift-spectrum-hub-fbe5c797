@@ -279,7 +279,8 @@ const ImageDetailWorkspace = ({
       {/* Mobile action buttons */}
       <ImageDetailMobileActions
         imageUrl={selectedImageUrl}
-        onRegenerate={() => {
+        task={selectedTask}
+        onRegenerate={!selectedTask.isMj ? () => {
           const model = models.find(m => m.id === selectedTask.modelId) || models[0];
           onGenerate({
             editPrompt: selectedTask.prompt,
@@ -292,7 +293,7 @@ const ImageDetailWorkspace = ({
             referenceImages: selectedTask.referenceImages || [],
             imageCount: 1,
           });
-        }}
+        } : undefined}
         onDelete={onDeleteImage ? () => {
           onDeleteImage(selectedTask.id, selectedImageIndex);
           const remaining = allImages.filter(
@@ -305,6 +306,7 @@ const ImageDetailWorkspace = ({
             handleHistorySelect(remaining[nextIdx]);
           }
         } : undefined}
+        onMjAction={onMjAction}
       />
 
       {/* Bottom composer */}
