@@ -156,7 +156,8 @@ const ImageGenDarkPage = () => {
       cooldownRef.current = null;
     }, 2000);
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    const count = imageCount;
+    const isMj = selectedModel.is_mj;
+    const count = isMj ? 4 : imageCount;
 
     const allRefImages = flattenImagesByType(referenceImagesByType);
     const hasRefImages = allRefImages.length > 0;
@@ -191,6 +192,8 @@ const ImageGenDarkPage = () => {
         similarity: hasRefImages ? activeSimilarity : undefined,
         reference_images: hasRefImages ? [...allRefImages] : undefined,
       },
+      // Midjourney 专属
+      ...(isMj ? { isMj: true, mjStage: "initial" as const } : {}),
     };
 
     // 插入到列表顶部
