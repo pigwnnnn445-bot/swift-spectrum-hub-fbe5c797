@@ -16,9 +16,8 @@ const iconBtn =
 const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
   if (stage === "initial") {
     return (
-      <div className="flex flex-wrap items-center gap-2 pt-3">
-        <TooltipProvider delayDuration={200}>
-           <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-2 pt-3">
+          <div className="flex items-center gap-2">
             {(["U1", "U2", "U3", "U4"] as MjAction[]).map((a) => (
               <button key={a} onClick={() => onAction(a)} className={chipBtn}>{a}</button>
             ))}
@@ -28,7 +27,6 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
               <button key={a} onClick={() => onAction(a)} className={chipBtn}>{a}</button>
             ))}
           </div>
-        </TooltipProvider>
       </div>
     );
   }
