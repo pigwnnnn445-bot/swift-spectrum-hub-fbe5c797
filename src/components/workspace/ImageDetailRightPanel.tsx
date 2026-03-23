@@ -5,7 +5,8 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import TaskAttributePanel from "./TaskAttributePanel";
-import type { GenerateTask } from "@/types/task";
+import MidjourneyActionBar from "./MidjourneyActionBar";
+import type { GenerateTask, MjAction } from "@/types/task";
 
 interface ImageDetailRightPanelProps {
   task: GenerateTask;
@@ -15,6 +16,7 @@ interface ImageDetailRightPanelProps {
   onOpenInpaint?: () => void;
   onRegenerate?: () => void;
   onDelete?: () => void;
+  onMjAction?: (action: MjAction) => void;
 }
 
 const ImageDetailRightPanel = ({ task, imageUrl, isMj, onApplyPrompt, onOpenInpaint, onRegenerate, onDelete }: ImageDetailRightPanelProps) => {
