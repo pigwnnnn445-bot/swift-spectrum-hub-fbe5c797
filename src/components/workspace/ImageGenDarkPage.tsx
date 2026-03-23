@@ -380,7 +380,7 @@ const ImageGenDarkPage = () => {
     setTasks((prev) => [newTask, ...prev]);
     setTasks((prev) => prev.map((t) => (t.id === newTaskId ? { ...t, status: "generating" as const } : t)));
 
-    mockGenerate(count).then((result) => {
+    mockMjGenerate(stage).then((result) => {
       setTasks((prev) => prev.map((t) => {
         if (t.id !== newTaskId) return t;
         if (result.success) return { ...t, status: "success" as const, images: result.images ?? [] };
