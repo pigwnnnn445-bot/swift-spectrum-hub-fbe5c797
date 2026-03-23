@@ -254,7 +254,7 @@ const ImageDetailWorkspace = ({
                   handleHistorySelect(remaining[nextIdx]);
                 }
               } : undefined}
-              onMjAction={selectedTask.isMj && onMjAction ? (action) => onMjAction(selectedTask, action) : undefined}
+              onMjAction={selectedTask.isMj && onMjAction ? (action) => { onMjAction(selectedTask, action); onClose(); } : undefined}
             />
           </div>
         </div>
