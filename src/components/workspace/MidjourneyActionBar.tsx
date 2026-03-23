@@ -18,18 +18,10 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
     return (
       <div className="flex flex-wrap items-center gap-2 pt-3">
         <TooltipProvider delayDuration={200}>
-          <div className="flex items-center gap-2">
+           <div className="flex items-center gap-2">
             {(["U1", "U2", "U3", "U4"] as MjAction[]).map((a) => (
               <button key={a} onClick={() => onAction(a)} className={chipBtn}>{a}</button>
             ))}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={() => onAction("refresh")} className={iconBtn}>
-                  <RefreshCw className="h-4 w-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="top">重新生成</TooltipContent>
-            </Tooltip>
           </div>
           <div className="flex items-center gap-2">
             {(["V1", "V2", "V3", "V4"] as MjAction[]).map((a) => (
