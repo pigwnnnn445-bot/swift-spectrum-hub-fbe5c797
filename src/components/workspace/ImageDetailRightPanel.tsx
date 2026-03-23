@@ -10,6 +10,7 @@ import type { GenerateTask } from "@/types/task";
 interface ImageDetailRightPanelProps {
   task: GenerateTask;
   imageUrl?: string;
+  isMj?: boolean;
   onApplyPrompt?: (prompt: string) => void;
   onOpenInpaint?: () => void;
   onRegenerate?: () => void;
