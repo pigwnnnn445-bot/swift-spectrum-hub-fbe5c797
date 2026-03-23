@@ -78,8 +78,9 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
     <div className="rounded-xl border border-workspace-border/60 bg-workspace-surface overflow-hidden">
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-5 p-4">
 
-        {/* 左侧：图片区域 — flex-[3] ≈ 60% */}
-        <div className="flex-[3] min-w-0">
+        {/* 左侧：图片区域 + MJ操作 — flex-[3] ≈ 60% */}
+        <div className="flex-[3] min-w-0 flex flex-col">
+        <div className="min-w-0">
           {/* ── 单图：count === 1 ── */}
           {task.count === 1 && (
             <>
