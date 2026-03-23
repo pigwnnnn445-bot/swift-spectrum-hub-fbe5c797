@@ -13,10 +13,7 @@ const chipBtn =
 const iconBtn =
   "flex h-9 w-9 items-center justify-center rounded-full border border-workspace-border/60 bg-workspace-chip/40 text-workspace-surface-foreground hover:bg-workspace-chip transition-colors duration-150 cursor-pointer active:scale-[0.97]";
 
-const downloadBtn =
-  "flex items-center gap-1.5 h-9 px-5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors duration-150 cursor-pointer active:scale-[0.97] select-none";
-
-const MidjourneyActionBar = ({ stage, onAction, onDownload }: MidjourneyActionBarProps) => {
+const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
   if (stage === "initial") {
     return (
       <div className="flex flex-wrap items-center gap-2 pt-3">

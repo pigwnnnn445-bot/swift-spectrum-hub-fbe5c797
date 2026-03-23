@@ -338,17 +338,14 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
           )}
         </div>
 
-        {/* Midjourney 操作按钮 */}
+        {/* Midjourney 操作按钮 — 显示在图片下方 */}
         {task.isMj && task.mjStage && isSuccess && (
-          <MidjourneyActionBar
-            stage={task.mjStage}
-            onAction={(action) => onMjAction?.(task, action)}
-            onDownload={() => {
-              if (task.images.length > 0) {
-                task.images.forEach((url, i) => handleDownloadImage(url, i));
-              }
-            }}
-          />
+          <div className="flex-[3] min-w-0 -mt-2">
+            <MidjourneyActionBar
+              stage={task.mjStage}
+              onAction={(action) => onMjAction?.(task, action)}
+            />
+          </div>
         )}
 
         {/* 右侧：属性区 — flex-[2] ≈ 40%, min 280px, max 340px */}
