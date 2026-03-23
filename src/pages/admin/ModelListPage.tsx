@@ -91,6 +91,13 @@ const ModelListPage = () => {
                   {model.image_num > 0 ? `最多${model.image_num}` : "—"}
                 </TableCell>
                 <TableCell className="text-center">
+                  {model.is_mj ? (
+                    <Badge variant="default" className="text-[11px]">MJ</Badge>
+                  ) : (
+                    <X className="h-4 w-4 text-muted-foreground/40 mx-auto" />
+                  )}
+                </TableCell>
+                <TableCell className="text-center">
                   <Badge variant={model.show_flg === 1 ? "default" : "secondary"} className="text-[11px]">
                     {model.show_flg === 1 ? "上线" : "下线"}
                   </Badge>
