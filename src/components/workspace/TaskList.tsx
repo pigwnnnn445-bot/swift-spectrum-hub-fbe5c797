@@ -1,4 +1,4 @@
-import type { GenerateTask } from "@/types/task";
+import type { GenerateTask, MjAction } from "@/types/task";
 import TaskCard from "./TaskCard";
 
 interface TaskListProps {
@@ -11,9 +11,10 @@ interface TaskListProps {
   onImageClick?: (imageUrl: string, task: GenerateTask, imageIndex: number) => void;
   onDeleteImage?: (taskId: string, imageIndex: number) => void;
   onDeleteTask?: (taskId: string) => void;
+  onMjAction?: (task: GenerateTask, action: MjAction, selectedImageIndex?: number) => void;
 }
 
-const TaskList = ({ tasks, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage, onInpaint, onImageClick, onDeleteImage, onDeleteTask }: TaskListProps) => {
+const TaskList = ({ tasks, onRetry, onApplyPrompt, onApplyReferenceImage, onEditImage, onInpaint, onImageClick, onDeleteImage, onDeleteTask, onMjAction }: TaskListProps) => {
   if (tasks.length === 0) return null;
 
   return (
@@ -34,6 +35,7 @@ const TaskList = ({ tasks, onRetry, onApplyPrompt, onApplyReferenceImage, onEdit
             onImageClick={onImageClick}
             onDeleteImage={onDeleteImage}
             onDeleteTask={onDeleteTask}
+            onMjAction={onMjAction}
           />
         ))}
       </div>
