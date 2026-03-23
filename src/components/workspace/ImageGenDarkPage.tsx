@@ -210,8 +210,8 @@ const ImageGenDarkPage = () => {
     setIsSubmitting(false);
 
     // ── 调用 mock 接口（发布时替换为真实 API） ──
-    // 闭包捕获 taskId，确保并发任务结果精确回写
-    mockGenerate(count).then((result) => {
+    const generatePromise = isMj ? mockMjGenerate("initial") : mockGenerate(count);
+    generatePromise.then((result) => {
       setTasks((prev) =>
         prev.map((t) => {
           if (t.id !== taskId) return t;
