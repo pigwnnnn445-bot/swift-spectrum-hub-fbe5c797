@@ -21,7 +21,8 @@ import type { ModelConfig, Provider } from "@/config/modelConfig";
 import { getEnabledImageLikes } from "@/config/modelConfig";
 import type { ReferenceImagesByType, SimilarityByType } from "./UploadReferencePanel";
 import { flattenImagesByType, getActiveSimilarity } from "./UploadReferencePanel";
-import type { GenerateTask, GenerationMode } from "@/types/task";
+import type { GenerateTask, GenerationMode, MjAction } from "@/types/task";
+import { getMjActionResult } from "@/types/task";
 import { toast } from "@/hooks/use-toast";
 
 const ImageGenDarkPage = () => {
