@@ -10,13 +10,14 @@ import type { GenerateTask } from "@/types/task";
 interface ImageDetailRightPanelProps {
   task: GenerateTask;
   imageUrl?: string;
+  isMj?: boolean;
   onApplyPrompt?: (prompt: string) => void;
   onOpenInpaint?: () => void;
   onRegenerate?: () => void;
   onDelete?: () => void;
 }
 
-const ImageDetailRightPanel = ({ task, imageUrl, onApplyPrompt, onOpenInpaint, onRegenerate, onDelete }: ImageDetailRightPanelProps) => {
+const ImageDetailRightPanel = ({ task, imageUrl, isMj, onApplyPrompt, onOpenInpaint, onRegenerate, onDelete }: ImageDetailRightPanelProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const handleCopyImage = async () => {
     if (!imageUrl) return;
@@ -74,14 +75,16 @@ const ImageDetailRightPanel = ({ task, imageUrl, onApplyPrompt, onOpenInpaint, o
               </TooltipTrigger>
               <TooltipContent side="bottom">复制图片</TooltipContent>
             </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={handleDownloadImage} className={btnClass}>
-                  <Download className="h-4 w-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">下载图片</TooltipContent>
-            </Tooltip>
+            {!isMj && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={handleDownloadImage} className={btnClass}>
+                    <Download className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">下载图片</TooltipContent>
+              </Tooltip>
+            )}
             {onRegenerate && (
               <Tooltip>
                 <TooltipTrigger asChild>

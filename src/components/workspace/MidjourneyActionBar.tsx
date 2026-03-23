@@ -1,11 +1,10 @@
-import { Download, RefreshCw, ArrowLeft, ArrowRight, ArrowUp, ArrowDown, Maximize2, Wand2, ZoomOut } from "lucide-react";
+import { RefreshCw, ArrowLeft, ArrowRight, ArrowUp, ArrowDown, Maximize2, Wand2, ZoomOut } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import type { MjStage, MjAction } from "@/types/task";
 
 interface MidjourneyActionBarProps {
   stage: MjStage;
   onAction: (action: MjAction) => void;
-  onDownload?: () => void;
 }
 
 const chipBtn =
@@ -14,15 +13,11 @@ const chipBtn =
 const iconBtn =
   "flex h-9 w-9 items-center justify-center rounded-full border border-workspace-border/60 bg-workspace-chip/40 text-workspace-surface-foreground hover:bg-workspace-chip transition-colors duration-150 cursor-pointer active:scale-[0.97]";
 
-const downloadBtn =
-  "flex items-center gap-1.5 h-9 px-5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors duration-150 cursor-pointer active:scale-[0.97] select-none";
-
-const MidjourneyActionBar = ({ stage, onAction, onDownload }: MidjourneyActionBarProps) => {
+const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
   if (stage === "initial") {
     return (
       <div className="flex flex-wrap items-center gap-2 pt-3">
         <TooltipProvider delayDuration={200}>
-          {/* U1-U4 + Refresh */}
           <div className="flex items-center gap-2">
             {(["U1", "U2", "U3", "U4"] as MjAction[]).map((a) => (
               <button key={a} onClick={() => onAction(a)} className={chipBtn}>{a}</button>
@@ -36,17 +31,10 @@ const MidjourneyActionBar = ({ stage, onAction, onDownload }: MidjourneyActionBa
               <TooltipContent side="top">重新生成</TooltipContent>
             </Tooltip>
           </div>
-          {/* V1-V4 + Download */}
           <div className="flex items-center gap-2">
             {(["V1", "V2", "V3", "V4"] as MjAction[]).map((a) => (
               <button key={a} onClick={() => onAction(a)} className={chipBtn}>{a}</button>
             ))}
-            {onDownload && (
-              <button onClick={onDownload} className={downloadBtn}>
-                <Download className="h-4 w-4" />
-                <span>下载</span>
-              </button>
-            )}
           </div>
         </TooltipProvider>
       </div>
@@ -57,7 +45,6 @@ const MidjourneyActionBar = ({ stage, onAction, onDownload }: MidjourneyActionBa
     return (
       <div className="flex flex-wrap items-center gap-2 pt-3">
         <TooltipProvider delayDuration={200}>
-          {/* Row 1: Upscale + Vary */}
           <div className="flex items-center gap-2 flex-wrap">
             <button onClick={() => onAction("upscale_subtle")} className={chipBtn}>
               <Maximize2 className="h-3.5 w-3.5" /> Upscale (Subtle)
@@ -72,7 +59,6 @@ const MidjourneyActionBar = ({ stage, onAction, onDownload }: MidjourneyActionBa
               <Wand2 className="h-3.5 w-3.5" /> Vary (Strong)
             </button>
           </div>
-          {/* Row 2: Zoom Out + Arrows + Download */}
           <div className="flex items-center gap-2 flex-wrap">
             <button onClick={() => onAction("zoom_out_2x")} className={chipBtn}>
               <ZoomOut className="h-3.5 w-3.5" /> Zoom Out 2x
@@ -112,12 +98,6 @@ const MidjourneyActionBar = ({ stage, onAction, onDownload }: MidjourneyActionBa
               </TooltipTrigger>
               <TooltipContent side="top">向下平移</TooltipContent>
             </Tooltip>
-            {onDownload && (
-              <button onClick={onDownload} className={downloadBtn}>
-                <Download className="h-4 w-4" />
-                <span>下载</span>
-              </button>
-            )}
           </div>
         </TooltipProvider>
       </div>
@@ -139,12 +119,6 @@ const MidjourneyActionBar = ({ stage, onAction, onDownload }: MidjourneyActionBa
         <button onClick={() => onAction("vary_strong")} className={chipBtn}>
           <Wand2 className="h-3.5 w-3.5" /> Vary (Strong)
         </button>
-        {onDownload && (
-          <button onClick={onDownload} className={downloadBtn}>
-            <Download className="h-4 w-4" />
-            <span>下载</span>
-          </button>
-        )}
       </div>
     );
   }
