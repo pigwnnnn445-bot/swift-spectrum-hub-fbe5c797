@@ -1,10 +1,19 @@
-import { useState } from "react";
-import { Copy, Download, RefreshCw, Trash2 } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Copy, Download, RefreshCw, Trash2, MoreHorizontal } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { Drawer, DrawerContent, DrawerOverlay } from "@/components/ui/drawer";
 import ConfirmDialog from "./ConfirmDialog";
 import MidjourneyActionBar from "./MidjourneyActionBar";
 import { toast } from "@/hooks/use-toast";
 import type { GenerateTask, MjAction } from "@/types/task";
+
+interface ActionItem {
+  key: string;
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+  destructive?: boolean;
+}
 
 interface ImageDetailMobileActionsProps {
   imageUrl?: string;
@@ -16,6 +25,7 @@ interface ImageDetailMobileActionsProps {
 
 const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMjAction }: ImageDetailMobileActionsProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const handleCopyImage = async () => {
     if (!imageUrl) return;
@@ -50,56 +60,113 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
 
   const isMj = task?.isMj && task?.mjStage;
 
+  // Build action list dynamically
+  const actions = useMemo<ActionItem[]>(() => {
+    const list: ActionItem[] = [];
+    list.push({
+      key: "copy",
+      icon: <Copy className="h-4 w-4" />,
+      label: "复制图片",
+      onClick: handleCopyImage,
+    });
+    list.push({
+      key: "download",
+      icon: <Download className="h-4 w-4" />,
+      label: "下载图片",
+      onClick: handleDownloadImage,
+    });
+    if (!isMj && onRegenerate) {
+      list.push({
+        key: "regenerate",
+        icon: <RefreshCw className="h-4 w-4" />,
+        label: "重新生成",
+        onClick: onRegenerate,
+      });
+    }
+    if (onDelete) {
+      list.push({
+        key: "delete",
+        icon: <Trash2 className="h-4 w-4" />,
+        label: "删除图片",
+        onClick: () => setDeleteDialogOpen(true),
+        destructive: true,
+      });
+    }
+    return list;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imageUrl, isMj, !!onRegenerate, !!onDelete]);
+
+  const MAX_VISIBLE = 3;
+  const needsMore = actions.length > MAX_VISIBLE;
+  const visibleActions = needsMore ? actions.slice(0, MAX_VISIBLE - 1) : actions;
+  const overflowActions = needsMore ? actions.slice(MAX_VISIBLE - 1) : [];
+
+  const handleOverflowAction = (action: ActionItem) => {
+    setMoreOpen(false);
+    // Small delay so drawer closes before action fires
+    setTimeout(() => action.onClick(), 150);
+  };
+
   return (
     <div className="shrink-0 lg:hidden">
-      {/* Standard action buttons */}
+      {/* Action buttons */}
       <div className="flex items-center justify-center gap-3 px-4 py-2 border-t border-workspace-border/40">
         <TooltipProvider delayDuration={200}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button onClick={handleCopyImage} className={btnClass}>
-                <Copy className="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top">复制图片</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button onClick={handleDownloadImage} className={btnClass}>
-                <Download className="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top">下载图片</TooltipContent>
-          </Tooltip>
-          {!isMj && onRegenerate && (
-            <Tooltip>
+          {visibleActions.map((action) => (
+            <Tooltip key={action.key}>
               <TooltipTrigger asChild>
-                <button onClick={onRegenerate} className={btnClass}>
-                  <RefreshCw className="h-4 w-4" />
+                <button onClick={action.onClick} className={btnClass}>
+                  {action.icon}
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="top">重新生成图片</TooltipContent>
+              <TooltipContent side="top">{action.label}</TooltipContent>
             </Tooltip>
-          )}
-          {onDelete && (
-            <>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button onClick={() => setDeleteDialogOpen(true)} className={btnClass}>
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top">删除图片</TooltipContent>
-              </Tooltip>
-              <ConfirmDialog
-                open={deleteDialogOpen}
-                onOpenChange={setDeleteDialogOpen}
-                onConfirm={onDelete}
-              />
-            </>
+          ))}
+          {needsMore && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={() => setMoreOpen(true)} className={btnClass}>
+                  <MoreHorizontal className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">更多功能</TooltipContent>
+            </Tooltip>
           )}
         </TooltipProvider>
       </div>
+
+      {/* Overflow drawer */}
+      <Drawer open={moreOpen} onOpenChange={setMoreOpen}>
+        <DrawerOverlay className="z-[150]" />
+        <DrawerContent className="z-[150] pb-safe">
+          <div className="mx-auto mt-2 mb-4 h-1 w-10 rounded-full bg-workspace-border/60" />
+          <div className="px-4 pb-6 flex flex-col gap-1">
+            {overflowActions.map((action) => (
+              <button
+                key={action.key}
+                onClick={() => handleOverflowAction(action)}
+                className={`flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium transition-colors active:scale-[0.98] cursor-pointer ${
+                  action.destructive
+                    ? "text-destructive hover:bg-destructive/10"
+                    : "text-workspace-surface-foreground hover:bg-workspace-chip/60"
+                }`}
+              >
+                {action.icon}
+                {action.label}
+              </button>
+            ))}
+          </div>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Delete confirm dialog */}
+      {onDelete && (
+        <ConfirmDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          onConfirm={onDelete}
+        />
+      )}
 
       {/* Midjourney action bar */}
       {isMj && task && onMjAction && (
