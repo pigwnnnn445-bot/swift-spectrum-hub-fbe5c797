@@ -5,7 +5,6 @@ import type { MjStage, MjAction } from "@/types/task";
 interface MidjourneyActionBarProps {
   stage: MjStage;
   onAction: (action: MjAction) => void;
-  onDownload?: () => void;
 }
 
 const chipBtn =
