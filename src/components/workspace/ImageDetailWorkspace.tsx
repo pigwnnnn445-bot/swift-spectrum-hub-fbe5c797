@@ -217,7 +217,7 @@ const ImageDetailWorkspace = ({
           {/* Big image */}
           <div className="relative flex-1 flex items-center justify-center p-6 overflow-auto min-w-0">
             <img
-              src={selectedImageUrl}
+              src={displayUrl}
               alt="大图预览"
               className="max-w-full max-h-full object-contain rounded-lg cursor-zoom-in active:scale-[0.98] transition-transform"
               onClick={() => setLightboxOpen(true)}
