@@ -884,6 +884,7 @@ const ImageGenDarkPage = () => {
               .filter((t) => !(t.status === "success" && t.images.length === 0))
             );
           }}
+          onMjAction={handleMjAction}
           onClose={() => { setDetailOpen(false); setDetailTask(null); }}
         />
       )}
