@@ -688,6 +688,7 @@ const ImageGenDarkPage = () => {
             onDeleteTask={(taskId) => {
               setTasks((prev) => prev.filter((t) => t.id !== taskId));
             }}
+            onMjAction={handleMjAction}
           />
         )}
 
