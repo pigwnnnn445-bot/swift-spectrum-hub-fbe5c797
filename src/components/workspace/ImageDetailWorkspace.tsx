@@ -225,6 +225,7 @@ const ImageDetailWorkspace = ({
             <ImageDetailRightPanel
               task={selectedTask}
               imageUrl={selectedImageUrl}
+              isMj={!!selectedTask.isMj}
               onApplyPrompt={handleApplyPrompt}
               onOpenInpaint={onInpaintGenerate ? handleOpenInpaint : undefined}
               onRegenerate={!selectedTask.isMj ? () => {
