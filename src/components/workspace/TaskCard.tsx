@@ -331,6 +331,19 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
           )}
         </div>
 
+        {/* Midjourney 操作按钮 */}
+        {task.isMj && task.mjStage && isSuccess && (
+          <MidjourneyActionBar
+            stage={task.mjStage}
+            onAction={(action) => onMjAction?.(task, action)}
+            onDownload={() => {
+              if (task.images.length > 0) {
+                task.images.forEach((url, i) => handleDownloadImage(url, i));
+              }
+            }}
+          />
+        )}
+
         {/* 右侧：属性区 — flex-[2] ≈ 40%, min 280px, max 340px */}
         <div className="w-full lg:flex-[2] lg:min-w-[280px] lg:max-w-[340px] shrink-0 flex flex-col">
           <TaskAttributePanel
