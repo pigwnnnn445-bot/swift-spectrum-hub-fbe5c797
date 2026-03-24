@@ -306,13 +306,35 @@ const ImageDetailWorkspace = ({
         </div>
       </div>
 
+      {/* MJ mode: actions first, then prompt info; non-MJ: prompt first, then actions */}
+      {selectedTask.isMj && (
+        <ImageDetailMobileActions
+          imageUrl={selectedImageUrl}
+          task={selectedTask}
+          onDelete={onDeleteImage ? () => {
+            onDeleteImage(selectedTask.id, selectedImageIndex);
+            const remaining = allImages.filter(
+              (item) => !(item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex)
+            );
+            if (remaining.length === 0) {
+              onClose();
+            } else {
+              const nextIdx = Math.min(currentIdx, remaining.length - 1);
+              handleHistorySelect(remaining[nextIdx]);
+            }
+          } : undefined}
+          onMjAction={onMjAction ? (task, action) => { onMjAction(task, action); onClose(); } : undefined}
+        />
+      )}
+
       {/* Mobile prompt info */}
       <div className="shrink-0 lg:hidden border-t border-workspace-border/40 px-4 py-3 max-h-[30vh] overflow-y-auto workspace-scroll">
         <TaskAttributePanel task={selectedTask} onApplyPrompt={!selectedTask.isMj ? handleApplyPrompt : undefined} />
       </div>
 
-      {/* Mobile action buttons */}
-      <ImageDetailMobileActions
+      {/* Non-MJ mobile action buttons */}
+      {!selectedTask.isMj && (
+        <ImageDetailMobileActions
         imageUrl={selectedImageUrl}
         task={selectedTask}
         onRegenerate={!selectedTask.isMj ? () => {
