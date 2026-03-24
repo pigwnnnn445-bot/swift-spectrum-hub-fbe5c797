@@ -51,8 +51,8 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
               <Wand2 className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">Vary Strong</span>
             </button>
           </div>
-          <div className="flex items-center gap-2">
-            <button onClick={() => onAction("zoom_out_2x")} className={`${gridBtn} flex-1`}>
+          <div className="flex flex-wrap items-center gap-2">
+            <button onClick={() => onAction("zoom_out_2x")} className={gridBtn}>
               <ZoomOut className="h-3.5 w-3.5 shrink-0" /> 2x
             </button>
             <button onClick={() => onAction("zoom_out_1_5x")} className={`${gridBtn} flex-1`}>
