@@ -329,7 +329,7 @@ const AssetCard = ({
               )}
               {!isError && onRegenerate && (
                 <button
-                  onClick={() => { setMoreOpen(false); setTimeout(() => onRegenerate(item.task.id), 150); }}
+                  onClick={() => { setMoreOpenSafe(false); setTimeout(() => onRegenerate(item.task.id), 150); }}
                   className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
                 >
                   <RefreshCw className="h-4 w-4" />
