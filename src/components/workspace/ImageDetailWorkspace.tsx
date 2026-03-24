@@ -6,6 +6,7 @@ import ImageDetailMobileActions from "./ImageDetailMobileActions";
 import MidjourneyActionBar from "./MidjourneyActionBar";
 import ImageHistoryRail from "./ImageHistoryRail";
 import ImageEditComposer from "./ImageEditComposer";
+import TaskAttributePanel from "./TaskAttributePanel";
 import type { HistoryImageItem } from "./ImageHistoryRail";
 import type { ComposerPayload, ImageEditComposerHandle } from "./ImageEditComposer";
 import type { InpaintPayload } from "./ImageInpaintModal";
@@ -303,6 +304,11 @@ const ImageDetailWorkspace = ({
             onSelect={handleHistorySelect}
           />
         </div>
+      </div>
+
+      {/* Mobile prompt info */}
+      <div className="shrink-0 lg:hidden border-t border-workspace-border/40 px-4 py-3 max-h-[30vh] overflow-y-auto workspace-scroll">
+        <TaskAttributePanel task={selectedTask} onApplyPrompt={!selectedTask.isMj ? handleApplyPrompt : undefined} />
       </div>
 
       {/* Mobile action buttons */}
