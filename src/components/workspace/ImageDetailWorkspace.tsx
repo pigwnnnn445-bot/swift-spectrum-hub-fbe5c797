@@ -251,15 +251,6 @@ const ImageDetailWorkspace = ({
         <Drawer open={topMoreOpen} onOpenChange={setTopMoreOpen}>
           <DrawerContent className="z-[200] pb-safe" overlayClassName="z-[200]">
             <div className="px-4 pb-6 pt-2 flex flex-col gap-1">
-              {/* MJ-specific actions */}
-              {selectedTask.isMj && selectedTask.mjStage && onMjAction && (
-                <div className="pb-2 mb-1 border-b border-border">
-                  <MidjourneyActionBar
-                    stage={selectedTask.mjStage}
-                    onAction={(action) => { setTopMoreOpen(false); setTimeout(() => { onMjAction(selectedTask, action); onClose(); }, 150); }}
-                  />
-                </div>
-              )}
               <button
                 onClick={async () => {
                   setTopMoreOpen(false);
@@ -428,6 +419,16 @@ const ImageDetailWorkspace = ({
         </div>
       </div>
 
+
+      {/* Mobile MJ actions displayed directly */}
+      {isMobile && selectedTask.isMj && selectedTask.mjStage && onMjAction && (
+        <div className="shrink-0 lg:hidden border-t border-workspace-border/40 px-4 py-2">
+          <MidjourneyActionBar
+            stage={selectedTask.mjStage}
+            onAction={(action) => { onMjAction(selectedTask, action); onClose(); }}
+          />
+        </div>
+      )}
 
       {/* Mobile prompt info */}
       <div className="shrink-0 lg:hidden border-t border-workspace-border/40 px-4 py-3 max-h-[30vh] overflow-y-auto workspace-scroll">
