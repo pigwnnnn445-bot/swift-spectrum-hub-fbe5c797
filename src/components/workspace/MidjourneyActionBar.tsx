@@ -90,7 +90,7 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
 
   if (stage === "upscaled_max") {
     return (
-      <div className="grid grid-cols-2 gap-2">
+      <div className="flex flex-wrap gap-2">
         <button onClick={() => onAction("redo_upscale_subtle")} className={gridBtn}>
           <Maximize2 className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">Redo Subtle</span>
         </button>
