@@ -147,8 +147,18 @@ const AssetCard = ({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [promptOpen, setPromptOpen] = useState(false);
+  const closeCooldown = useRef(false);
   const isMobile = useIsMobile();
   const isError = item.type === "error";
+
+  const setMoreOpenSafe = (open: boolean) => {
+    setMoreOpen(open);
+    if (!open) { closeCooldown.current = true; setTimeout(() => { closeCooldown.current = false; }, 300); }
+  };
+  const setPromptOpenSafe = (open: boolean) => {
+    setPromptOpen(open);
+    if (!open) { closeCooldown.current = true; setTimeout(() => { closeCooldown.current = false; }, 300); }
+  };
 
   const handleCopy = async (e?: React.MouseEvent) => {
     e?.stopPropagation();
