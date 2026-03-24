@@ -147,8 +147,18 @@ const AssetCard = ({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [promptOpen, setPromptOpen] = useState(false);
+  const closeCooldown = useRef(false);
   const isMobile = useIsMobile();
   const isError = item.type === "error";
+
+  const setMoreOpenSafe = (open: boolean) => {
+    setMoreOpen(open);
+    if (!open) { closeCooldown.current = true; setTimeout(() => { closeCooldown.current = false; }, 300); }
+  };
+  const setPromptOpenSafe = (open: boolean) => {
+    setPromptOpen(open);
+    if (!open) { closeCooldown.current = true; setTimeout(() => { closeCooldown.current = false; }, 300); }
+  };
 
   const handleCopy = async (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -187,7 +197,7 @@ const AssetCard = ({
 
   const handleCardClick = () => {
     if (isError) return;
-    if (moreOpen || promptOpen || confirmDelete) return;
+    if (moreOpen || promptOpen || confirmDelete || closeCooldown.current) return;
     onClick(item.url, item.task, item.imageIndex);
   };
 
@@ -248,7 +258,7 @@ const AssetCard = ({
             <Download className="h-3.5 w-3.5" />
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); setMoreOpen(true); }}
+            onClick={(e) => { e.stopPropagation(); setMoreOpenSafe(true); }}
             className={mobileBtnClass}
             title="更多"
           >
@@ -295,7 +305,7 @@ const AssetCard = ({
       {isMobile && isError && (
         <div className="absolute top-1.5 right-1.5">
           <button
-            onClick={(e) => { e.stopPropagation(); setMoreOpen(true); }}
+            onClick={(e) => { e.stopPropagation(); setMoreOpenSafe(true); }}
             className={mobileBtnClass}
           >
             <MoreHorizontal className="h-3.5 w-3.5" />
@@ -305,12 +315,12 @@ const AssetCard = ({
 
       {/* Mobile More drawer */}
       {isMobile && (
-        <Drawer open={moreOpen} onOpenChange={setMoreOpen}>
+        <Drawer open={moreOpen} onOpenChange={setMoreOpenSafe}>
           <DrawerContent className="z-[200] pb-safe" overlayClassName="z-[200]">
             <div className="px-4 pb-6 pt-2 flex flex-col gap-1">
               {!isError && (
                 <button
-                  onClick={() => { setMoreOpen(false); setTimeout(() => handleCopy(), 150); }}
+                  onClick={() => { setMoreOpenSafe(false); setTimeout(() => handleCopy(), 150); }}
                   className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
                 >
                   <Copy className="h-4 w-4" />
@@ -319,7 +329,7 @@ const AssetCard = ({
               )}
               {!isError && onRegenerate && (
                 <button
-                  onClick={() => { setMoreOpen(false); setTimeout(() => onRegenerate(item.task.id), 150); }}
+                  onClick={() => { setMoreOpenSafe(false); setTimeout(() => onRegenerate(item.task.id), 150); }}
                   className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
                 >
                   <RefreshCw className="h-4 w-4" />
@@ -327,7 +337,7 @@ const AssetCard = ({
                 </button>
               )}
               <button
-                onClick={() => { setMoreOpen(false); setTimeout(() => handleDeleteClick(), 150); }}
+                onClick={() => { setMoreOpenSafe(false); setTimeout(() => handleDeleteClick(), 150); }}
                 className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors active:scale-[0.98]"
               >
                 <Trash2 className="h-4 w-4" />
@@ -335,7 +345,7 @@ const AssetCard = ({
               </button>
               {!isError && (
                 <button
-                  onClick={() => { setMoreOpen(false); setTimeout(() => setPromptOpen(true), 150); }}
+                  onClick={() => { setMoreOpenSafe(false); setTimeout(() => setPromptOpenSafe(true), 150); }}
                   className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
                 >
                   <FileText className="h-4 w-4" />
@@ -349,7 +359,7 @@ const AssetCard = ({
 
       {/* Mobile Prompt drawer */}
       {isMobile && (
-        <Drawer open={promptOpen} onOpenChange={setPromptOpen}>
+        <Drawer open={promptOpen} onOpenChange={setPromptOpenSafe}>
           <DrawerContent className="z-[200] pb-safe" overlayClassName="z-[200]">
             <div className="px-4 pb-6 pt-2">
               <p className="text-sm font-medium text-foreground mb-2">提示词</p>
