@@ -345,17 +345,19 @@ const ImageDetailWorkspace = ({
         <ImageLightbox src={selectedImageUrl} onClose={() => setLightboxOpen(false)} />
       )}
 
-      <ImageEditComposer
-        ref={composerRef}
-        key={`${selectedTask.id}-${selectedImageIndex}`}
-        task={selectedTask}
-        currentImageUrl={selectedImageUrl}
-        models={models}
-        onGenerate={onGenerate}
-        onInpaintGenerate={onInpaintGenerate ? (payload, task) => {
-          onInpaintGenerate(payload, task);
-        } : undefined}
-      />
+      {!selectedTask.isMj && (
+        <ImageEditComposer
+          ref={composerRef}
+          key={`${selectedTask.id}-${selectedImageIndex}`}
+          task={selectedTask}
+          currentImageUrl={selectedImageUrl}
+          models={models}
+          onGenerate={onGenerate}
+          onInpaintGenerate={onInpaintGenerate ? (payload, task) => {
+            onInpaintGenerate(payload, task);
+          } : undefined}
+        />
+      )}
     </div>
   );
 };
