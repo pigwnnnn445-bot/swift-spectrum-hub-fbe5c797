@@ -8,7 +8,7 @@ interface MidjourneyActionBarProps {
 }
 
 const gridBtn =
-  "flex items-center justify-center gap-1.5 h-10 rounded-xl border border-workspace-border/50 bg-workspace-chip/30 text-sm font-medium text-workspace-surface-foreground hover:bg-workspace-chip hover:border-workspace-border transition-all duration-150 cursor-pointer active:scale-[0.96] select-none";
+  "inline-flex items-center justify-center gap-1.5 h-10 px-5 rounded-xl border border-workspace-border/50 bg-workspace-chip/30 text-sm font-medium text-workspace-surface-foreground hover:bg-workspace-chip hover:border-workspace-border transition-all duration-150 cursor-pointer active:scale-[0.96] select-none";
 
 const iconBtn =
   "flex h-10 w-10 items-center justify-center rounded-xl border border-workspace-border/50 bg-workspace-chip/30 text-workspace-surface-foreground hover:bg-workspace-chip hover:border-workspace-border transition-all duration-150 cursor-pointer active:scale-[0.96]";
