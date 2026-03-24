@@ -55,7 +55,7 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
             <button onClick={() => onAction("zoom_out_2x")} className={gridBtn}>
               <ZoomOut className="h-3.5 w-3.5 shrink-0" /> 2x
             </button>
-            <button onClick={() => onAction("zoom_out_1_5x")} className={`${gridBtn} flex-1`}>
+            <button onClick={() => onAction("zoom_out_1_5x")} className={gridBtn}>
               <ZoomOut className="h-3.5 w-3.5 shrink-0" /> 1.5x
             </button>
             <Tooltip>
