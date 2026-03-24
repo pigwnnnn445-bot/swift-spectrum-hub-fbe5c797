@@ -305,7 +305,7 @@ const AssetCard = ({
       {isMobile && isError && (
         <div className="absolute top-1.5 right-1.5">
           <button
-            onClick={(e) => { e.stopPropagation(); setMoreOpen(true); }}
+            onClick={(e) => { e.stopPropagation(); setMoreOpenSafe(true); }}
             className={mobileBtnClass}
           >
             <MoreHorizontal className="h-3.5 w-3.5" />
