@@ -371,22 +371,13 @@ const AssetCard = ({
                 <span>·</span>
                 <span>{new Date(item.task.createdAt).toLocaleDateString()}</span>
               </div>
-              <div className="mt-4 flex gap-2">
+              <div className="mt-4">
                 <button
-                  onClick={handleCopyPrompt}
-                  className="flex-1 flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
+                  onClick={() => setPromptOpenSafe(false)}
+                  className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
                 >
-                  <Copy className="h-4 w-4" />
-                  复制
+                  关闭
                 </button>
-                {onApplyPrompt && (
-                  <button
-                    onClick={handleApply}
-                    className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors active:scale-[0.98]"
-                  >
-                    应用提示词
-                  </button>
-                )}
               </div>
             </div>
           </DrawerContent>
