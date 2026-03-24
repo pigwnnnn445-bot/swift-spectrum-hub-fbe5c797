@@ -430,10 +430,6 @@ const ImageDetailWorkspace = ({
         </div>
       )}
 
-      {/* Mobile prompt info */}
-      <div className="shrink-0 lg:hidden border-t border-workspace-border/40 px-4 py-3 max-h-[30vh] overflow-y-auto workspace-scroll">
-        <TaskAttributePanel task={selectedTask} onApplyPrompt={!selectedTask.isMj ? handleApplyPrompt : undefined} />
-      </div>
 
 
       {/* Bottom composer */}
