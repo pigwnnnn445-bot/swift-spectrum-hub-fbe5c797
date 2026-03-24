@@ -187,6 +187,7 @@ const AssetCard = ({
 
   const handleCardClick = () => {
     if (isError) return;
+    if (moreOpen || promptOpen || confirmDelete) return;
     onClick(item.url, item.task, item.imageIndex);
   };
 
