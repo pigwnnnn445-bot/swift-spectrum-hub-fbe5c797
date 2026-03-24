@@ -82,6 +82,9 @@ const ImageDetailWorkspace = ({
   const composerRef = useRef<ImageEditComposerHandle>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [displayUrl, setDisplayUrl] = useState(initialImageUrl);
+  const [topMoreOpen, setTopMoreOpen] = useState(false);
+  const [topDeleteOpen, setTopDeleteOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   // Keep old image visible until new one loads to prevent flicker
   useEffect(() => {
