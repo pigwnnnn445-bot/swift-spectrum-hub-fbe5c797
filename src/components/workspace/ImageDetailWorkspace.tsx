@@ -430,6 +430,12 @@ const ImageDetailWorkspace = ({
         </div>
       )}
 
+      {/* Mobile: model attributes only (no prompt) */}
+      {isMobile && (
+        <div className="shrink-0 lg:hidden border-t border-workspace-border/40 px-4 py-3">
+          <TaskAttributePanel task={selectedTask} hidePrompt />
+        </div>
+      )}
 
 
       {/* Bottom composer */}

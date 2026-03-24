@@ -9,9 +9,11 @@ interface TaskAttributePanelProps {
   task: GenerateTask;
   /** Optional: called when user clicks "apply prompt" */
   onApplyPrompt?: (prompt: string) => void;
+  /** If true, hide the prompt section and only show attribute chips */
+  hidePrompt?: boolean;
 }
 
-const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) => {
+const TaskAttributePanel = ({ task, onApplyPrompt, hidePrompt }: TaskAttributePanelProps) => {
   const hasReferenceImages = (task.referenceImages?.length ?? 0) > 0;
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -65,6 +67,7 @@ const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) =>
   return (
     <div className="flex flex-col">
       {/* 1) 提示词区（主信息） */}
+      {!hidePrompt && (
       <div className="relative pb-[10px] mb-[10px] border-b border-workspace-border/40">
         <div className="relative">
           <p
@@ -120,6 +123,7 @@ const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) =>
           </button>
         )}
       </div>
+      )}
 
       {/* 2) 核心参数标签区：模型 → 比例 → 风格 → 分辨率 */}
       <div className="flex flex-wrap items-center gap-1.5">
