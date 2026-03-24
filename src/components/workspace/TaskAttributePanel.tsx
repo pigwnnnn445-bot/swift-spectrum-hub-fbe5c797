@@ -9,6 +9,8 @@ interface TaskAttributePanelProps {
   task: GenerateTask;
   /** Optional: called when user clicks "apply prompt" */
   onApplyPrompt?: (prompt: string) => void;
+  /** If true, hide the prompt section and only show attribute chips */
+  hidePrompt?: boolean;
 }
 
 const TaskAttributePanel = ({ task, onApplyPrompt }: TaskAttributePanelProps) => {
