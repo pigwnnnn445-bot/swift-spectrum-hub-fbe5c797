@@ -258,7 +258,7 @@ const AssetCard = ({
             <Download className="h-3.5 w-3.5" />
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); setMoreOpen(true); }}
+            onClick={(e) => { e.stopPropagation(); setMoreOpenSafe(true); }}
             className={mobileBtnClass}
             title="更多"
           >
