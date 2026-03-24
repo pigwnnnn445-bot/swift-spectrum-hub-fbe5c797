@@ -320,7 +320,7 @@ const AssetCard = ({
             <div className="px-4 pb-6 pt-2 flex flex-col gap-1">
               {!isError && (
                 <button
-                  onClick={() => { setMoreOpen(false); setTimeout(() => handleCopy(), 150); }}
+                  onClick={() => { setMoreOpenSafe(false); setTimeout(() => handleCopy(), 150); }}
                   className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
                 >
                   <Copy className="h-4 w-4" />
