@@ -365,6 +365,7 @@ const ImageDetailWorkspace = ({
         } : undefined}
         onMjAction={onMjAction ? (task, action) => { onMjAction(task, action); onClose(); } : undefined}
       />
+      )}
 
       {/* Bottom composer */}
 
