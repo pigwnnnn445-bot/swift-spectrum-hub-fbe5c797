@@ -486,6 +486,8 @@ const ImageGenDarkPage = () => {
           onDeleteTask={(taskId) => {
             setTasks((prev) => prev.filter((t) => t.id !== taskId));
           }}
+          onRegenerate={handleRetry}
+          onApplyPrompt={handleApplyPrompt}
         />
         {/* 大图详情视图（复用） */}
         {detailOpen && detailTask && (
