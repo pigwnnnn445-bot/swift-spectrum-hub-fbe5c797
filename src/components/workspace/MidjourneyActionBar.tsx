@@ -17,7 +17,7 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
   if (stage === "initial") {
     return (
       <div className="flex flex-col gap-2">
-        <div className="grid grid-cols-4 gap-2">
+        <div className="flex flex-wrap gap-2">
           {(["U1", "U2", "U3", "U4"] as MjAction[]).map((a) => (
             <button key={a} onClick={() => onAction(a)} className={gridBtn}>{a}</button>
           ))}
