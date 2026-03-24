@@ -359,7 +359,7 @@ const AssetCard = ({
 
       {/* Mobile Prompt drawer */}
       {isMobile && (
-        <Drawer open={promptOpen} onOpenChange={setPromptOpen}>
+        <Drawer open={promptOpen} onOpenChange={setPromptOpenSafe}>
           <DrawerContent className="z-[200] pb-safe" overlayClassName="z-[200]">
             <div className="px-4 pb-6 pt-2">
               <p className="text-sm font-medium text-foreground mb-2">提示词</p>
