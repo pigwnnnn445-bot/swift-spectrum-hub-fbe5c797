@@ -315,7 +315,7 @@ const AssetCard = ({
 
       {/* Mobile More drawer */}
       {isMobile && (
-        <Drawer open={moreOpen} onOpenChange={setMoreOpen}>
+        <Drawer open={moreOpen} onOpenChange={setMoreOpenSafe}>
           <DrawerContent className="z-[200] pb-safe" overlayClassName="z-[200]">
             <div className="px-4 pb-6 pt-2 flex flex-col gap-1">
               {!isError && (
