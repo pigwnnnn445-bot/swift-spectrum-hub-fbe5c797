@@ -43,7 +43,7 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
               <Maximize2 className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">Creative</span>
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-wrap gap-2">
             <button onClick={() => onAction("vary_subtle")} className={gridBtn}>
               <Wand2 className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">Vary Subtle</span>
             </button>
