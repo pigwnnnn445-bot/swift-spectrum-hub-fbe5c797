@@ -422,7 +422,7 @@ const ImageDetailWorkspace = ({
 
       {/* Mobile MJ actions displayed directly */}
       {isMobile && selectedTask.isMj && selectedTask.mjStage && onMjAction && (
-        <div className="shrink-0 lg:hidden border-t border-workspace-border/40 px-4 py-2">
+        <div className="shrink-0 lg:hidden border-t border-workspace-border/40 px-4 py-2 mt-0.5">
           <MidjourneyActionBar
             stage={selectedTask.mjStage}
             onAction={(action) => { onMjAction(selectedTask, action); onClose(); }}
