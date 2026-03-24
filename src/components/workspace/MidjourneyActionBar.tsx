@@ -35,7 +35,7 @@ const MidjourneyActionBar = ({ stage, onAction }: MidjourneyActionBarProps) => {
     return (
       <TooltipProvider delayDuration={200}>
         <div className="flex flex-col gap-2">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-wrap gap-2">
             <button onClick={() => onAction("upscale_subtle")} className={gridBtn}>
               <Maximize2 className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">Subtle</span>
             </button>
