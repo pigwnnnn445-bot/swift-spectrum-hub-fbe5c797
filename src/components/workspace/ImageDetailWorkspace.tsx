@@ -6,6 +6,7 @@ import ImageDetailMobileActions from "./ImageDetailMobileActions";
 import MidjourneyActionBar from "./MidjourneyActionBar";
 import ImageHistoryRail from "./ImageHistoryRail";
 import ImageEditComposer from "./ImageEditComposer";
+import TaskAttributePanel from "./TaskAttributePanel";
 import type { HistoryImageItem } from "./ImageHistoryRail";
 import type { ComposerPayload, ImageEditComposerHandle } from "./ImageEditComposer";
 import type { InpaintPayload } from "./ImageInpaintModal";
