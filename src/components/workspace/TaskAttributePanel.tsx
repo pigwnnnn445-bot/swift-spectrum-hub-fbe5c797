@@ -67,6 +67,7 @@ const TaskAttributePanel = ({ task, onApplyPrompt, hidePrompt }: TaskAttributePa
   return (
     <div className="flex flex-col">
       {/* 1) 提示词区（主信息） */}
+      {!hidePrompt && (
       <div className="relative pb-[10px] mb-[10px] border-b border-workspace-border/40">
         <div className="relative">
           <p
@@ -122,6 +123,7 @@ const TaskAttributePanel = ({ task, onApplyPrompt, hidePrompt }: TaskAttributePa
           </button>
         )}
       </div>
+      )}
 
       {/* 2) 核心参数标签区：模型 → 比例 → 风格 → 分辨率 */}
       <div className="flex flex-wrap items-center gap-1.5">
