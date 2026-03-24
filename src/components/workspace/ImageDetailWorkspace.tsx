@@ -206,10 +206,13 @@ const ImageDetailWorkspace = ({
     if (hasNext) handleHistorySelect(allImages[currentIdx + 1]);
   }, [hasNext, currentIdx, allImages, handleHistorySelect]);
 
-  const fileName = useMemo(() => {
+  const filePrefix = useMemo(() => {
     const date = formatDate(selectedTask.createdAt);
-    const summary = summarizePrompt(selectedTask.prompt);
-    return `Rita_${date}_作品_${summary}`;
+    return `Rita_${date}_作品`;
+  }, [selectedTask]);
+
+  const fileSuffix = useMemo(() => {
+    return summarizePrompt(selectedTask.prompt);
   }, [selectedTask]);
 
   return (
@@ -218,11 +221,14 @@ const ImageDetailWorkspace = ({
       <div className="flex items-center gap-3 px-4 py-3 border-b border-workspace-border shrink-0">
         <button
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-workspace-chip transition-colors cursor-pointer"
+          className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-workspace-chip transition-colors cursor-pointer shrink-0"
         >
           <ArrowLeft className="h-4 w-4 text-workspace-surface-foreground" />
         </button>
-        <h1 className="text-sm font-medium text-workspace-surface-foreground truncate">{fileName}</h1>
+        <div className="flex items-center min-w-0 flex-1 mr-2">
+          <span className="text-sm font-medium text-workspace-surface-foreground whitespace-nowrap shrink-0">{filePrefix}</span>
+          <span className="text-sm text-muted-foreground truncate ml-1.5">_{fileSuffix}</span>
+        </div>
       </div>
 
       {/* Main content area */}
