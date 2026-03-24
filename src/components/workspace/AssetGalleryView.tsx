@@ -345,7 +345,7 @@ const AssetCard = ({
               </button>
               {!isError && (
                 <button
-                  onClick={() => { setMoreOpen(false); setTimeout(() => setPromptOpen(true), 150); }}
+                  onClick={() => { setMoreOpenSafe(false); setTimeout(() => setPromptOpenSafe(true), 150); }}
                   className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
                 >
                   <FileText className="h-4 w-4" />
