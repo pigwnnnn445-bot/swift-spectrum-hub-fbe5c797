@@ -251,6 +251,15 @@ const ImageDetailWorkspace = ({
         <Drawer open={topMoreOpen} onOpenChange={setTopMoreOpen}>
           <DrawerContent className="z-[200] pb-safe" overlayClassName="z-[200]">
             <div className="px-4 pb-6 pt-2 flex flex-col gap-1">
+              {/* MJ-specific actions */}
+              {selectedTask.isMj && selectedTask.mjStage && onMjAction && (
+                <div className="pb-2 mb-1 border-b border-border">
+                  <MidjourneyActionBar
+                    stage={selectedTask.mjStage}
+                    onAction={(action) => { setTopMoreOpen(false); setTimeout(() => { onMjAction(selectedTask, action); onClose(); }, 150); }}
+                  />
+                </div>
+              )}
               <button
                 onClick={async () => {
                   setTopMoreOpen(false);
@@ -279,10 +288,10 @@ const ImageDetailWorkspace = ({
               >
                 <Download className="h-4 w-4" /> 下载图片
               </button>
-              <button
-                onClick={() => {
-                  setTopMoreOpen(false);
-                  if (!selectedTask.isMj) {
+              {!selectedTask.isMj && (
+                <button
+                  onClick={() => {
+                    setTopMoreOpen(false);
                     const model = models.find(m => m.id === selectedTask.modelId) || models[0];
                     onGenerate({
                       editPrompt: selectedTask.prompt,
@@ -295,12 +304,12 @@ const ImageDetailWorkspace = ({
                       referenceImages: selectedTask.referenceImages || [],
                       imageCount: 1,
                     });
-                  }
-                }}
-                className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
-              >
-                <RefreshCw className="h-4 w-4" /> 重新生成
-              </button>
+                  }}
+                  className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
+                >
+                  <RefreshCw className="h-4 w-4" /> 重新生成
+                </button>
+              )}
               {onDeleteImage && (
                 <button
                   onClick={() => { setTopMoreOpen(false); setTimeout(() => setTopDeleteOpen(true), 150); }}
@@ -419,66 +428,12 @@ const ImageDetailWorkspace = ({
         </div>
       </div>
 
-      {/* MJ mode: actions first, then prompt info; non-MJ: prompt first, then actions */}
-      {selectedTask.isMj && (
-        <ImageDetailMobileActions
-          imageUrl={selectedImageUrl}
-          task={selectedTask}
-          onDelete={onDeleteImage ? () => {
-            onDeleteImage(selectedTask.id, selectedImageIndex);
-            const remaining = allImages.filter(
-              (item) => !(item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex)
-            );
-            if (remaining.length === 0) {
-              onClose();
-            } else {
-              const nextIdx = Math.min(currentIdx, remaining.length - 1);
-              handleHistorySelect(remaining[nextIdx]);
-            }
-          } : undefined}
-          onMjAction={onMjAction ? (task, action) => { onMjAction(task, action); onClose(); } : undefined}
-        />
-      )}
 
       {/* Mobile prompt info */}
       <div className="shrink-0 lg:hidden border-t border-workspace-border/40 px-4 py-3 max-h-[30vh] overflow-y-auto workspace-scroll">
         <TaskAttributePanel task={selectedTask} onApplyPrompt={!selectedTask.isMj ? handleApplyPrompt : undefined} />
       </div>
 
-      {/* Non-MJ mobile action buttons */}
-      {!selectedTask.isMj && (
-        <ImageDetailMobileActions
-        imageUrl={selectedImageUrl}
-        task={selectedTask}
-        onRegenerate={!selectedTask.isMj ? () => {
-          const model = models.find(m => m.id === selectedTask.modelId) || models[0];
-          onGenerate({
-            editPrompt: selectedTask.prompt,
-            model,
-            ratio: selectedTask.ratio || "1:1",
-            resolution: selectedTask.resolution || "",
-            styleId: selectedTask.styleId ?? null,
-            styleName: selectedTask.styleName || "",
-            similarity: selectedTask.similarity ?? 50,
-            referenceImages: selectedTask.referenceImages || [],
-            imageCount: 1,
-          });
-        } : undefined}
-        onDelete={onDeleteImage ? () => {
-          onDeleteImage(selectedTask.id, selectedImageIndex);
-          const remaining = allImages.filter(
-            (item) => !(item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex)
-          );
-          if (remaining.length === 0) {
-            onClose();
-          } else {
-            const nextIdx = Math.min(currentIdx, remaining.length - 1);
-            handleHistorySelect(remaining[nextIdx]);
-          }
-        } : undefined}
-        onMjAction={onMjAction ? (task, action) => { onMjAction(task, action); onClose(); } : undefined}
-      />
-      )}
 
       {/* Bottom composer */}
 
