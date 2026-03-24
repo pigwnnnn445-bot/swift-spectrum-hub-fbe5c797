@@ -1,5 +1,9 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, MoreHorizontal, Copy, Download, RefreshCw, Trash2 } from "lucide-react";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import ConfirmDialog from "./ConfirmDialog";
+import { toast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import ImageLightbox from "./ImageLightbox";
 import ImageDetailRightPanel from "./ImageDetailRightPanel";
 import ImageDetailMobileActions from "./ImageDetailMobileActions";
