@@ -337,7 +337,7 @@ const AssetCard = ({
                 </button>
               )}
               <button
-                onClick={() => { setMoreOpen(false); setTimeout(() => handleDeleteClick(), 150); }}
+                onClick={() => { setMoreOpenSafe(false); setTimeout(() => handleDeleteClick(), 150); }}
                 className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors active:scale-[0.98]"
               >
                 <Trash2 className="h-4 w-4" />
