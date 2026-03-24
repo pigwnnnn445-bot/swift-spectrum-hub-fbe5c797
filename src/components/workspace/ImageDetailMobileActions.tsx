@@ -59,8 +59,10 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
     "flex h-9 w-9 items-center justify-center rounded-xl border border-workspace-border/60 bg-workspace-chip/40 text-workspace-surface-foreground hover:bg-workspace-chip transition-colors duration-150 cursor-pointer active:scale-[0.96]";
 
   const isMj = task?.isMj && task?.mjStage;
+  const hasMjActions = !!(isMj && task && onMjAction);
 
-  const actions = useMemo<ActionItem[]>(() => {
+  // Standard utility actions
+  const utilityActions = useMemo<ActionItem[]>(() => {
     const list: ActionItem[] = [];
     list.push({ key: "copy", icon: <Copy className="h-4 w-4" />, label: "复制图片", onClick: handleCopyImage });
     list.push({ key: "download", icon: <Download className="h-4 w-4" />, label: "下载图片", onClick: handleDownloadImage });
@@ -74,21 +76,73 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUrl, isMj, !!onRegenerate, !!onDelete]);
 
-  const MAX_VISIBLE = 3;
-  const hasOverflow = actions.length > MAX_VISIBLE;
-  const hasMjActions = !!(isMj && task && onMjAction);
-  const needsMore = hasOverflow || hasMjActions;
-  const visibleActions = needsMore ? actions.slice(0, MAX_VISIBLE - 1) : actions;
-  const overflowActions = needsMore ? actions.slice(MAX_VISIBLE - 1) : [];
-
   const handleOverflowAction = (action: ActionItem) => {
     setMoreOpen(false);
     setTimeout(() => action.onClick(), 150);
   };
 
+  // For MJ mode: show MJ action bar directly, all utility actions go to "more" drawer
+  // For non-MJ mode: show up to 3 utility actions, overflow goes to drawer
+  if (hasMjActions) {
+    return (
+      <div className="shrink-0 lg:hidden">
+        {/* MJ actions shown prominently */}
+        <div className="px-4 py-2 border-t border-workspace-border/40">
+          <MidjourneyActionBar
+            stage={task!.mjStage!}
+            onAction={(action) => onMjAction!(task!, action)}
+          />
+        </div>
+        {/* "More" button for utility actions */}
+        <div className="flex items-center justify-center gap-3 px-4 py-2 border-t border-workspace-border/40">
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={() => setMoreOpen(true)} className={btnClass}>
+                  <MoreHorizontal className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">更多功能</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
+        <Drawer open={moreOpen} onOpenChange={setMoreOpen}>
+          <DrawerContent className="z-[200] pb-safe" overlayClassName="z-[200]">
+            <div className="px-4 pb-6 pt-2 flex flex-col gap-1">
+              {utilityActions.map((action) => (
+                <button
+                  key={action.key}
+                  onClick={() => handleOverflowAction(action)}
+                  className={`flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium transition-colors active:scale-[0.98] cursor-pointer ${
+                    action.destructive
+                      ? "text-destructive hover:bg-destructive/10"
+                      : "text-workspace-surface-foreground hover:bg-workspace-chip/60"
+                  }`}
+                >
+                  {action.icon}
+                  {action.label}
+                </button>
+              ))}
+            </div>
+          </DrawerContent>
+        </Drawer>
+
+        {onDelete && (
+          <ConfirmDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} onConfirm={onDelete} />
+        )}
+      </div>
+    );
+  }
+
+  // Non-MJ mode: standard layout with overflow at 3+
+  const MAX_VISIBLE = 3;
+  const hasOverflow = utilityActions.length > MAX_VISIBLE;
+  const visibleActions = hasOverflow ? utilityActions.slice(0, MAX_VISIBLE - 1) : utilityActions;
+  const overflowActions = hasOverflow ? utilityActions.slice(MAX_VISIBLE - 1) : [];
+
   return (
     <div className="shrink-0 lg:hidden">
-      {/* Action buttons */}
       <div className="flex items-center justify-center gap-3 px-4 py-2 border-t border-workspace-border/40">
         <TooltipProvider delayDuration={200}>
           {visibleActions.map((action) => (
@@ -99,7 +153,7 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
               <TooltipContent side="top">{action.label}</TooltipContent>
             </Tooltip>
           ))}
-          {needsMore && (
+          {hasOverflow && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={() => setMoreOpen(true)} className={btnClass}>
@@ -112,21 +166,9 @@ const ImageDetailMobileActions = ({ imageUrl, task, onRegenerate, onDelete, onMj
         </TooltipProvider>
       </div>
 
-      {/* Overflow drawer: MJ actions + utility overflow */}
       <Drawer open={moreOpen} onOpenChange={setMoreOpen}>
         <DrawerContent className="z-[200] pb-safe" overlayClassName="z-[200]">
           <div className="px-4 pb-6 pt-2 flex flex-col gap-1">
-            {hasMjActions && (
-              <div className="pb-2 mb-2 border-b border-workspace-border/30">
-                <MidjourneyActionBar
-                  stage={task!.mjStage!}
-                  onAction={(action) => {
-                    setMoreOpen(false);
-                    setTimeout(() => onMjAction!(task!, action), 150);
-                  }}
-                />
-              </div>
-            )}
             {overflowActions.map((action) => (
               <button
                 key={action.key}
