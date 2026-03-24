@@ -1,5 +1,9 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, MoreHorizontal, Copy, Download, RefreshCw, Trash2 } from "lucide-react";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import ConfirmDialog from "./ConfirmDialog";
+import { toast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import ImageLightbox from "./ImageLightbox";
 import ImageDetailRightPanel from "./ImageDetailRightPanel";
 import ImageDetailMobileActions from "./ImageDetailMobileActions";
@@ -78,6 +82,9 @@ const ImageDetailWorkspace = ({
   const composerRef = useRef<ImageEditComposerHandle>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [displayUrl, setDisplayUrl] = useState(initialImageUrl);
+  const [topMoreOpen, setTopMoreOpen] = useState(false);
+  const [topDeleteOpen, setTopDeleteOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   // Keep old image visible until new one loads to prevent flicker
   useEffect(() => {
@@ -225,11 +232,111 @@ const ImageDetailWorkspace = ({
         >
           <ArrowLeft className="h-4 w-4 text-workspace-surface-foreground" />
         </button>
-        <div className="flex items-center min-w-0 flex-1 mr-2">
+        <div className="flex items-center min-w-0 flex-1">
           <span className="text-sm font-medium text-workspace-surface-foreground whitespace-nowrap shrink-0">{filePrefix}</span>
           <span className="text-sm text-muted-foreground truncate ml-1.5">_{fileSuffix}</span>
         </div>
+        {isMobile && (
+          <button
+            onClick={() => setTopMoreOpen(true)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-workspace-border bg-workspace-chip/50 text-workspace-surface-foreground hover:bg-workspace-chip transition-colors cursor-pointer shrink-0 ml-2"
+          >
+            <MoreHorizontal className="h-4 w-4" />
+          </button>
+        )}
       </div>
+
+      {/* Mobile top-bar more drawer */}
+      {isMobile && (
+        <Drawer open={topMoreOpen} onOpenChange={setTopMoreOpen}>
+          <DrawerContent className="z-[200] pb-safe" overlayClassName="z-[200]">
+            <div className="px-4 pb-6 pt-2 flex flex-col gap-1">
+              <button
+                onClick={async () => {
+                  setTopMoreOpen(false);
+                  if (!selectedImageUrl) return;
+                  try {
+                    const res = await fetch(selectedImageUrl);
+                    const blob = await res.blob();
+                    await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+                    toast({ title: "已复制到剪贴板" });
+                  } catch { toast({ title: "复制失败", variant: "destructive" }); }
+                }}
+                className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
+              >
+                <Copy className="h-4 w-4" /> 复制图片
+              </button>
+              <button
+                onClick={() => {
+                  setTopMoreOpen(false);
+                  if (!selectedImageUrl) return;
+                  const a = document.createElement("a");
+                  a.href = selectedImageUrl;
+                  a.download = `image_${selectedTask.id}_${selectedImageIndex}.png`;
+                  a.click();
+                }}
+                className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
+              >
+                <Download className="h-4 w-4" /> 下载图片
+              </button>
+              <button
+                onClick={() => {
+                  setTopMoreOpen(false);
+                  if (!selectedTask.isMj) {
+                    const model = models.find(m => m.id === selectedTask.modelId) || models[0];
+                    onGenerate({
+                      editPrompt: selectedTask.prompt,
+                      model,
+                      ratio: selectedTask.ratio || "1:1",
+                      resolution: selectedTask.resolution || "",
+                      styleId: selectedTask.styleId ?? null,
+                      styleName: selectedTask.styleName || "",
+                      similarity: selectedTask.similarity ?? 50,
+                      referenceImages: selectedTask.referenceImages || [],
+                      imageCount: 1,
+                    });
+                  }
+                }}
+                className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors active:scale-[0.98]"
+              >
+                <RefreshCw className="h-4 w-4" /> 重新生成
+              </button>
+              {onDeleteImage && (
+                <button
+                  onClick={() => { setTopMoreOpen(false); setTimeout(() => setTopDeleteOpen(true), 150); }}
+                  className="flex items-center gap-3 w-full rounded-xl px-4 py-3 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors active:scale-[0.98]"
+                >
+                  <Trash2 className="h-4 w-4" /> 删除图片
+                </button>
+              )}
+            </div>
+          </DrawerContent>
+        </Drawer>
+      )}
+
+      {/* Mobile top-bar delete confirm */}
+      {isMobile && (
+        <ConfirmDialog
+          open={topDeleteOpen}
+          onOpenChange={setTopDeleteOpen}
+          onConfirm={() => {
+            if (onDeleteImage) {
+              onDeleteImage(selectedTask.id, selectedImageIndex);
+              const remaining = allImages.filter(
+                (item) => !(item.task.id === selectedTask.id && item.imageIndex === selectedImageIndex)
+              );
+              if (remaining.length === 0) {
+                onClose();
+              } else {
+                const nextIdx = Math.min(currentIdx, remaining.length - 1);
+                handleHistorySelect(remaining[nextIdx]);
+              }
+            }
+            setTopDeleteOpen(false);
+            toast({ title: "图片已删除" });
+          }}
+        />
+      )}
 
       {/* Main content area */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
