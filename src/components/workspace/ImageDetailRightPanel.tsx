@@ -69,7 +69,7 @@ const ImageDetailRightPanel = ({ task, imageUrl, isMj, onApplyPrompt, onOpenInpa
 
         {/* Midjourney action bar between inpaint and copy/delete */}
         {isMj && task.mjStage && onMjAction && (
-          <div className="w-full">
+          <div className="w-full mt-2">
             <MidjourneyActionBar
               stage={task.mjStage}
               onAction={onMjAction}
