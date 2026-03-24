@@ -335,12 +335,14 @@ const TaskCard = ({ task, onRetry, onApplyPrompt, onApplyReferenceImage, onEditI
           )}
         </div>
 
-        {/* Midjourney 操作按钮 — 显示在图片下方 */}
+        {/* Midjourney 操作按钮 — 显示在图片下方，与画板横向内边距一致 */}
         {task.isMj && task.mjStage && isSuccess && (
-          <MidjourneyActionBar
-            stage={task.mjStage}
-            onAction={(action) => onMjAction?.(task, action)}
-          />
+          <div className="mt-4">
+            <MidjourneyActionBar
+              stage={task.mjStage}
+              onAction={(action) => onMjAction?.(task, action)}
+            />
+          </div>
         )}
         </div>
 
